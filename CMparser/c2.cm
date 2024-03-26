@@ -1,0 +1,26 @@
+/* Semantic Errors:
+    1. Row 12: undefined function sort() called.
+    2. Row 20: operation expression has a mismatched type (trying to compare int and bool types).
+*/
+
+int main (void) {
+  int x; 
+  int y;
+  int fac;
+  bool z;
+
+  x = sort();
+  fac = -1;
+  while (x > 1) {
+    fac = fac * x;
+    x = x - 1;
+    y = y + 1;
+  } 
+
+  if(z == 1){
+    fac = fac + 2;
+  }
+  else{
+    fac = 10;
+  }
+}

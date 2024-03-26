@@ -1,0 +1,13 @@
+/* A program with no syntatic or semantic errors.*/
+
+void main (void) {
+  int x; 
+  int y;
+
+  x = 10;
+  y = 0;
+  while (y > x) {
+    y = y + 1;
+  } 
+  
+}

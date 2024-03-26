@@ -1,0 +1,39 @@
+/*
+Semantic Errors:
+  1. Row 27: Undeclared variable used.
+  2. Row 27: Mismatched type in the assignment expression (from the undeclared left side).
+  3. No main function.
+*/
+
+void sort (int a[], int low, int high) {
+  int i;
+  int k;
+  int j[10];
+
+  i = low;
+  while (i < high - 1) {
+    int t;
+    a[i] = t;
+    i = i + 1;
+  }
+}
+
+void driver(void) {
+  int i;
+  int j;
+
+  i = 0;
+  while (i < 10) {
+    x[i] = input();
+    i = i + 1;
+    j = j * 2;
+  }
+
+  sort(j, 0, 10);
+
+  i = 0;
+  while (i < 10) {
+    output(j);
+    i = i + 2;
+  }
+}
