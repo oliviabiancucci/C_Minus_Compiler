@@ -226,6 +226,11 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( AssignExp exp, int level, boolean isAddr){
+		emmitComment("-> assign");
+
+
+
+		emmitComment("<- assign");
 
 	}
   
@@ -238,19 +243,38 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( ReturnExp exp, int level, boolean isAddr){
-
+		emmitComment("-> return");
+		if(exp.exp != null)
+		{
+			exp.exp.accept(this, level, isAddr);
+		}
+		emmitRM("LD", pc, -1, fp, "return to call");
+		emmitComment("<- return");
 	}
   
 	public void visit( CompoundExp exp, int level, boolean isAddr){
+		emmitComment("-> compound");
+		if(exp != null)
+		{
+			exp.decs.accept(this, level, isAddr);
+			exp.exp.accept(this, level, isAddr);
+		}
+		emitComment("<- compound");
 
 	}
 
 	public void visit( FuncDec exp, int level, boolean isAddr){
-
+		if(exp != null)
+		{
+			
+		}
 	}
   
 	public void visit( SimpleDec exp, int level, boolean isAddr){
-
+		if(exp != null)
+		{
+			//NodeType dec = new NodeType(exp.name, exp, level);
+		}
 	}
   
 	public void visit( ArrayDec exp, int level, boolean isAddr){
