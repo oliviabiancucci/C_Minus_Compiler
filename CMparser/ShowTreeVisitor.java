@@ -9,7 +9,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
 
   //NameTy
 
-  public void visit( NameTy exp, int level )
+  public void visit( NameTy exp, int level, boolean isAddr)
   {
     indent(level);
     System.out.print("NameTy: ");
@@ -42,13 +42,13 @@ public class ShowTreeVisitor implements AbsynVisitor {
 
   //Vars
 
-  public void visit( SimpleVar exp, int level )
+  public void visit( SimpleVar exp, int level, boolean isAddr)
   {
     indent(level);
     System.out.println("SimpleVar: " + exp.name);
   }
 
-  public void visit( IndexVar exp, int level )
+  public void visit( IndexVar exp, int level, boolean isAddr)
   {
     indent(level);
     System.out.println("IndexVar : " + exp.name);
@@ -58,7 +58,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
 
   //NilExp
 
-  public void visit( NilExp exp, int level)
+  public void visit( NilExp exp, int level, boolean isAddr)
   {
     indent( level );
     System.out.println("NilExp");
@@ -66,18 +66,18 @@ public class ShowTreeVisitor implements AbsynVisitor {
 
   //Exps
 
-  public void visit( IntExp exp, int level ) {
+  public void visit( IntExp exp, int level, boolean isAddr) {
     indent( level );
     System.out.println("IntExp: " + exp.value ); 
   }
 
-  public void visit( BoolExp exp, int level )
+  public void visit( BoolExp exp, int level, boolean isAddr)
   {
     indent (level);
     System.out.println("BoolExp: " + exp.value);
   }
 
-  public void visit( VarExp exp, int level ) {
+  public void visit( VarExp exp, int level, boolean isAddr) {
     indent( level );
     System.out.println("VarExp: ");
     level++;
@@ -87,7 +87,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
     }
   }
 
-  public void visit( CallExp exp, int level )
+  public void visit( CallExp exp, int level, boolean isAddr)
   {
     indent(level);
     System.out.println("CallExp: "+ exp.func);
@@ -98,7 +98,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
     }
   }
 
-  public void visit( OpExp exp, int level ) {
+  public void visit( OpExp exp, int level, boolean isAddr) {
     indent( level );
     System.out.print( "OpExp:" ); 
     switch( exp.op ) {
@@ -165,7 +165,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
     }
   }
 
-  public void visit( AssignExp exp, int level ) {
+  public void visit( AssignExp exp, int level, boolean isAddr) {
     indent( level );
     System.out.println( "AssignExp:" );
     level++;
@@ -179,7 +179,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
     }
   }
 
-  public void visit( IfExp exp, int level ) {
+  public void visit( IfExp exp, int level, boolean isAddr) {
     indent( level );
     System.out.println( "IfExp:" );
     level++;
@@ -200,7 +200,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
     }
   }
 
-  public void visit( WhileExp exp, int level )
+  public void visit( WhileExp exp, int level, boolean isAddr)
   {
     indent(level);
     System.out.println("WhileExp:");
@@ -215,7 +215,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
     }
   }
 
-  public void visit( ReturnExp exp, int level )
+  public void visit( ReturnExp exp, int level, boolean isAddr)
   {
     indent(level);
     System.out.println("ReturnExp:");
@@ -226,7 +226,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
     }
   }
 
-  public void visit( CompoundExp exp, int level )
+  public void visit( CompoundExp exp, int level, boolean isAddr)
   {
     indent(level);
     System.out.println("CompoundExp:");
@@ -243,7 +243,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
 
   //FunctionDec
 
-  public void visit( FuncDec exp, int level)
+  public void visit( FuncDec exp, int level, boolean isAddr)
   {
     indent(level);
     System.out.println("FunctionDec: " + exp.func);
@@ -270,7 +270,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
 
   //Decs
 
-  public void visit( SimpleDec exp, int level )
+  public void visit( SimpleDec exp, int level, boolean isAddr)
   {
     indent(level);
     System.out.println("SimpleDec: " + exp.name);
@@ -281,7 +281,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
     }
   }
 
-  public void visit( ArrayDec exp, int level )
+  public void visit( ArrayDec exp, int level, boolean isAddr)
   {
     indent(level);
     System.out.println("ArrayDec: " + exp.name);
@@ -299,7 +299,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
 
   //Lists
 
-  public void visit( VarDecLists exp, int level ) {
+  public void visit( VarDecLists exp, int level, boolean isAddr) {
     while( exp != null ) {
       if(exp.head != null)
       {
@@ -309,7 +309,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
     }
   }
 
-  public void visit( DecLists exp, int level ) {
+  public void visit( DecLists exp, int level, boolean isAddr) {
     while( exp != null ) {
       if(exp.head != null)
       {
@@ -319,7 +319,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
     }
   }
 
-  public void visit(ExpList exp, int level) {
+  public void visit(ExpList exp, int level, boolean isAddr) {
     while (exp != null) {
         if (exp.head != null) {
             exp.head.accept(this, level);
@@ -330,7 +330,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
 
   //Misc
 
-  public void visit( Vartype exp, int level ) {
+  public void visit( Vartype exp, int level, boolean isAddr) {
     indent( level );
     System.out.println( "Vartype: " + exp.type );
   }
