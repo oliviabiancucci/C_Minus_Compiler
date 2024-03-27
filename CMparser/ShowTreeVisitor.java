@@ -53,7 +53,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
     indent(level);
     System.out.println("IndexVar : " + exp.name);
     level++;
-    exp.index.accept(this, level);
+    exp.index.accept(this, level, false);
   }
 
   //NilExp
@@ -83,7 +83,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
     level++;
     if(exp.varName != null)
     {
-      exp.varName.accept(this, level);
+      exp.varName.accept(this, level, false);
     }
   }
 
@@ -94,7 +94,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
     level++;
     if(exp.args != null)
     {
-      exp.args.accept(this, level);
+      exp.args.accept(this, level, false);
     }
   }
 
@@ -152,13 +152,13 @@ public class ShowTreeVisitor implements AbsynVisitor {
     }
     level++;
     if (exp.left != null)
-       exp.left.accept( this, level );
+       exp.left.accept( this, level, false );
     else{
       indent(level);
       System.out.println("Unrecognized left side expression");
     }
     if (exp.right != null)
-       exp.right.accept( this, level );
+       exp.right.accept( this, level, false );
     else{
       indent(level);
       System.out.println("Unrecognized right side expression");
@@ -171,11 +171,11 @@ public class ShowTreeVisitor implements AbsynVisitor {
     level++;
     if (exp.lhs != null)
     {
-      exp.lhs.accept( this, level );
+      exp.lhs.accept( this, level, false );
     }
     if(exp.rhs != null)
     {
-      exp.rhs.accept( this, level );
+      exp.rhs.accept( this, level, false );
     }
   }
 
@@ -184,19 +184,19 @@ public class ShowTreeVisitor implements AbsynVisitor {
     System.out.println( "IfExp:" );
     level++;
     if (exp.test != null )
-      exp.test.accept( this, level );
+      exp.test.accept( this, level, false );
     else
     {
       indent( level );
       System.out.println("Missing condition");
     }
     if (exp.thenpart != null )
-      exp.thenpart.accept( this, level );
+      exp.thenpart.accept( this, level, false );
     if (!(exp.elsepart instanceof NilExp))
     {
       indent(level - 1);
       System.out.println("ElseExp:");
-      exp.elsepart.accept( this, level );
+      exp.elsepart.accept( this, level, false );
     }
   }
 
@@ -207,11 +207,11 @@ public class ShowTreeVisitor implements AbsynVisitor {
     level++;
     if(exp.test != null)
     {
-      exp.test.accept(this, level);
+      exp.test.accept(this, level, false);
     }
     if(exp.body != null)
     {
-      exp.body.accept(this, level);
+      exp.body.accept(this, level, false);
     }
   }
 
@@ -222,7 +222,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
     level++;
     if(exp.exp != null)
     {
-      exp.exp.accept(this, level);
+      exp.exp.accept(this, level, false);
     }
   }
 
@@ -233,11 +233,11 @@ public class ShowTreeVisitor implements AbsynVisitor {
     level++;
     if(exp.decs != null)
     {
-      exp.decs.accept(this, level);
+      exp.decs.accept(this, level, false);
     }
     if(exp.exp != null)
     {
-      exp.exp.accept(this, level);
+      exp.exp.accept(this, level, false);
     }
   }
 
@@ -251,20 +251,20 @@ public class ShowTreeVisitor implements AbsynVisitor {
 
     if(exp.result != null)
     {
-      exp.result.accept(this, level);
+      exp.result.accept(this, level, false);
     }
     if(exp.params != null)
     {
       VarDecLists paramsList = exp.params;
       while (paramsList != null)
       {
-        paramsList.head.accept(this, level);
+        paramsList.head.accept(this, level, false);
         paramsList = paramsList.tail;
       }
     }
     if(exp.body != null)
     {
-      exp.body.accept(this, level);
+      exp.body.accept(this, level, false);
     }
   }
 
@@ -277,7 +277,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
     level++;
     if(exp.typ != null)
     {
-      exp.typ.accept(this, level);
+      exp.typ.accept(this, level, false);
     }
   }
 
@@ -293,7 +293,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
     }
     if(exp.type != null)
     {
-      exp.type.accept(this, level);
+      exp.type.accept(this, level, false);
     }
   }
 
@@ -303,7 +303,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
     while( exp != null ) {
       if(exp.head != null)
       {
-        exp.head.accept( this, level );
+        exp.head.accept( this, level, false );
       }
       exp = exp.tail;
     }
@@ -313,7 +313,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
     while( exp != null ) {
       if(exp.head != null)
       {
-        exp.head.accept( this, level );
+        exp.head.accept( this, level, false );
       }
       exp = exp.tail;
     }
@@ -322,7 +322,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
   public void visit(ExpList exp, int level, boolean isAddr) {
     while (exp != null) {
         if (exp.head != null) {
-            exp.head.accept(this, level);
+            exp.head.accept(this, level, false);
         }
         exp = exp.tail;
     }
