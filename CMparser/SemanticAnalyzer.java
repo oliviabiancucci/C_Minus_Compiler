@@ -248,7 +248,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
                     }
                 }                                                                                                                                                                                                                                                                                
             }
-            exp.dec = (VarDec) var.dec; //TODO anywhere a simple is used we need a reference to where it is declared
+            //exp.dec = (VarDec) var.dec; //TODO anywhere a simple is used we need a reference to where it is declared
         }
     }
 
