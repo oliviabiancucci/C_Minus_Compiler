@@ -15,8 +15,8 @@ public class WhileExp extends Exp{
         this.body = body;
     }
 
-    public void accept( AbsynVisitor visitor, int level )
+    public void accept( AbsynVisitor visitor, int level, boolean isAddr)
     {
-        visitor.visit(this, level);
+        visitor.visit(this, level, isAddr);
     }
 }

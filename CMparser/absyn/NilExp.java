@@ -8,8 +8,8 @@ public class NilExp extends Exp{
         this.col = col;
     }
 
-    public void accept(AbsynVisitor visitor, int level)
+    public void accept(AbsynVisitor visitor, int level, boolean isAddr)
     {
-        visitor.visit(this, level);
+        visitor.visit(this, level, isAddr);
     }
 }

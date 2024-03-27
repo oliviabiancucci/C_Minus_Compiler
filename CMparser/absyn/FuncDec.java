@@ -92,7 +92,7 @@ public class FuncDec extends Dec{
 		return retString;
     }
 	
-	public void accept( AbsynVisitor visitor, int level ) {
-		visitor.visit( this, level );
+	public void accept( AbsynVisitor visitor, int level, boolean isAddr) {
+		visitor.visit( this, level, isAddr );
 	}
 }
