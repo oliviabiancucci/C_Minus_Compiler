@@ -6,6 +6,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
     HashMap<String, ArrayList<NodeType>> table = new HashMap<String, ArrayList<NodeType>>();
 
     final static int SPACES = 4;
+    public static boolean valid = true;
     String currFunc = "";
 
     private void indent(int level)  {

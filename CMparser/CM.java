@@ -19,10 +19,12 @@ import absyn.*;
 class CM {
   public static boolean SHOW_TREE = false;
   public static boolean SHOW_TABLE = false;
+  public static boolean SHOW_CODE = false;
   static public void main(String argv[]) {  
     int i;
     File absFile = null;
     File symFile = null;
+    File tmFile = null;
 
     for(i = 0; i < argv.length; i++)
     {
@@ -33,6 +35,10 @@ class CM {
       else if (argv[i].equals("-s"))
       {
         SHOW_TABLE = true;
+      }
+      else if(argv[i].equals("-c"));
+      {
+        SHOW_CODE = true;
       }
     }
     //TODO: finish implementing the options below - show_tree and show_table generation to file
@@ -64,6 +70,19 @@ class CM {
           System.setOut(symFileStream);
           SemanticAnalyzer semVisitor = new SemanticAnalyzer();
           result.accept(semVisitor, 0);
+        }
+      }
+      if(SemanticAnalyzer.valid == true)
+      {
+        if(SHOW_CODE && result != null)
+        {
+          int fileExt = argv[argv.length - 1].lastIndexOf(".");
+          String fileName = argv[argv.length - 1].substring(0, fileExt);
+          fileName = fileName + ".tm";
+          tmFile = new File(fileName);
+          PrintStream tmFileStream = new PrintStream(symFile);
+          System.setOut(tmFileStream);
+          //add new stuff here
         }
       }
       else
