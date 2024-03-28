@@ -130,8 +130,6 @@ public class CodeGenerator implements AbsynVisitor{
 	public void prelude(String fileName) {
 		int inSavedLoc = 0;
 		int outSavedLoc = 0;
-		int inFuncLocation = 0;
-		int outFuncLocation = 0;
 
 		emitComment("C-Minus Compilation to TM Code");
 		emitComment("File: " + fileName);
@@ -145,30 +143,23 @@ public class CodeGenerator implements AbsynVisitor{
 		//Jump to a different instruction
 		emitComment("Jump around i/o routines here");
 
-		/* 
 		//Input Routine
 		emitComment("code for input routine");
 		inSavedLoc = emitSkip(1);
-		inFuncLocation = emitLoc;
-		//NodeType inNode = new NodeType("input", null, 0); //TODO: void instead of null?
-		//insert(inNode);
 		emitRM("ST", ac, retFO, fp, "store return");
 		emitRO("IN", 0, 0, 0, "input");
-		emitRM("LD", pc, retFO, fp, "return to caller");  //TODO: double check the argument values here
+		emitRM("LD", pc, retFO, fp, "return to caller");
 
 		//Output Routine
 		emitComment("code for output routine");
-		outFuncLocation = emitLoc;
-		//NodeType outNode = new NodeType("output", null, 0); //TODO: -2 instead of null?
-		//insert(outNode);
 		emitRM("ST", ac, retFO, fp, "store return");
 		emitRM("LD", 0, initFO, fp, "load output value");
 		emitRO("OUT", 0, 0, 0, "output");
-		emitRM("LD", pc, retFO, fp, "return to caller"); //TODO: double check the argument values here
-		outSavedLoc = emitLoc;
-		emitBackup(outFuncLocation);
+		emitRM("LD", pc, retFO, fp, "return to caller");
+		outSavedLoc = emitSkip(0);
+		emitBackup(inSavedLoc);
 		emitRM_Abs("LDA", pc, outSavedLoc, "jump around i/o code");
-        */
+
 		emitRestore();
         emitComment("End of standard prelude.");
 	}
@@ -317,7 +308,7 @@ public class CodeGenerator implements AbsynVisitor{
 		exp.lhs.accept(this, level, isAddr);
 		exp.rhs.accept(this, level - 1, isAddr);
 		
-		emitRM( "LD", ac, level - 1, fp, "retrieve result")
+		emitRM( "LD", ac, level - 1, fp, "retrieve result");
 		emitRM( "ST", ac, 0, ac1, "store result in variable" );
 	
 		emitComment("<- assign");
