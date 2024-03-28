@@ -285,7 +285,6 @@ public class CodeGenerator implements AbsynVisitor{
 
 
 		emitComment("<- assign");
-
 	}
   
 	public void visit( IfExp exp, int level, boolean isAddr){
@@ -362,10 +361,17 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( SimpleDec exp, int level, boolean isAddr){
-		if(exp != null)
-		{
-			//NodeType dec = new NodeType(exp.name, exp, level);
+		exp.offset = level;
+
+		if(exp.name != null){
+			if (exp.nestLevel == 0){
+				emitComment("allocating global var: " + exp.name);
+			}
+			else{
+				emitComment("processing global var: " + exp.name);
+			}
 		}
+		
 	}
   
 	public void visit( ArrayDec exp, int level, boolean isAddr){
@@ -384,6 +390,22 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit ( VarDecLists exp, int level, boolean isAddr){
+		while(exp != null && exp.head != null){
+			exp.head.accept(this, level, isAddr);
 
+			int offset = 1; //default offset
+
+			if(exp.head instanceof ArrayDec){ //offset an array by its size
+				offset = (((ArrayDec)exp.head).size) + 1; //TODO: check that this is the right result
+			}
+
+			if(exp.head.nestLevel == 0){
+				globalOffset -= offset;
+			}
+
+			level -= offset;
+			exp = exp.tail;
+		}
+		//frameOffset = level; ????
 	}
 }

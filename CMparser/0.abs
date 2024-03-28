@@ -4,3 +4,7 @@ FunctionDec: main
     CompoundExp:
         SimpleDec: x
             NameTy: INT
+        AssignExp:
+            VarExp: 
+                SimpleVar: x
+            IntExp: 10
