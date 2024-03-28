@@ -37,10 +37,11 @@
  17:   LDC 0, 5(0)	load const
  18:    ST 0, -4(5)	op: push left
 * <- constant
-* ---------------------------------------------------------> VAREXP
  19:    LD 0, -3(5)	load value in variable y
  20:    ST 0, -5(5)	store variable value on stack
-* ---------------------------------------------------------> SIMPLEVAR
+* -> id
+* looking up id: y
+* <- id
  21:    LD 0, -4(5)	
  22:    LD 1, -5(5)	
  23:   ADD 0, 0, 1	perform add operation

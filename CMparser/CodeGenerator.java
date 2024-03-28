@@ -171,7 +171,7 @@ public class CodeGenerator implements AbsynVisitor{
 
 		//Finale
 		emitRM( "ST", fp, globalOffset + ofpFO, fp, "push ofp" );
-		emitRM( "LDA", fp, globalOffset, fp, "push frame" );
+		emitRM( "LDA", fp, globalOffset, fp, "push frame" ); //TODO: globalOffset may be wrong
 		emitRM( "LDA", ac, 1, pc, "load ac with ret ptr" );
 		emitRM_Abs( "LDA", pc, mainEntry, "jump to main loc" );
 		emitRM( "LD", fp, ofpFO, fp, "pop frame" );
@@ -185,30 +185,19 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( SimpleVar exp, int level, boolean isAddr){
-<<<<<<< HEAD
 		emitComment("-> id");
         emitComment("looking up id: " + exp.name);
 
-		if(isAddr){
-			emitRM("LDA", ac, exp.dec.offset, fp, "load address");
-			emitRM("ST", ac, level, fp, "store address value on stack");
-		}
-		else{
-			emitRM("LD", ac, exp.dec.offset, fp, "load variable value");
-			emitRM("ST", ac, level, fp, "store variable value on stack");
-		}
-
-		emitComment("<- id");
-=======
-		emitComment("---------------------------------------------------------> SIMPLEVAR");
 		// if(isAddr){
-
+		// 	emitRM("LDA", ac, exp.dec.offset, fp, "load address");
+		// 	emitRM("ST", ac, level, fp, "store address value on stack");
 		// }
 		// else{
 		// 	emitRM("LD", ac, exp.dec.offset, fp, "load variable value");
 		// 	emitRM("ST", ac, level, fp, "store variable value on stack");
 		// }
->>>>>>> 7e7004b97b697f85ae0a8146a99411dcc6455630
+
+		emitComment("<- id");
 	}
   
 	public void visit( IndexVar exp, int level, boolean isAddr){
@@ -237,39 +226,11 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( VarExp exp, int level, boolean isAddr){
-<<<<<<< HEAD
-		// if(exp != null)
-		// {
-		// 	if(exp.dtype instanceof SimpleDec)
-		// 	{
-		// 		SimpleDec simp = (SimpleDec)exp.dtype;
-
-		// 		if(simp.nestLevel == 0) //global scope
-		// 		{
-		// 			emitRM( "LD", ac, simp.offset, gp, "load value in variable " + simp.name);
-		// 			emitRM( "ST", ac, level, gp, "store variable value on stack");
-		// 		}
-		// 		else // local scope
-		// 		{
-		// 			emitRM( "LD", ac, simp.offset, fp, "load value in variable " + simp.name);
-		// 			emitRM( "ST", ac, level, fp, "store variable value on stack");
-		// 		}
-		// 	}
-		// 	else if(exp.dtype instanceof ArrayDec)
-		// 	{
-		// 		ArrayDec array = (ArrayDec)exp.dtype;
-		// 		System.out.println(array.name);
-		// 	}
-		// }
-=======
-		emitComment("---------------------------------------------------------> VAREXP");
-		
 		if(exp != null)
 		{
 			if(exp.dtype instanceof SimpleDec)
 			{
 				SimpleDec simp = (SimpleDec)exp.dtype;
-				exp.dec = simp;
 
 				if(simp.nestLevel == 0) //global scope
 				{
@@ -285,11 +246,9 @@ public class CodeGenerator implements AbsynVisitor{
 			else if(exp.dtype instanceof ArrayDec)
 			{
 				ArrayDec array = (ArrayDec)exp.dtype;
-				exp.dec = array;
 				System.out.println(array.name);
 			}
 		}
->>>>>>> 7e7004b97b697f85ae0a8146a99411dcc6455630
 
 		if(exp.varName != null){
 			exp.varName.accept(this, level, isAddr);
