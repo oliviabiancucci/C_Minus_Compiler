@@ -162,13 +162,15 @@ public class CodeGenerator implements AbsynVisitor{
 		emitRM("ST", ac, retFO, fp, "store return");
 		emitRM("LD", 0, initOF, fp, "load output value");
 		emitRM("OUT", 0, 0, 0, "output");
-		emitRM("LD", 7, -1, 5, "return to caller");  //TODO: double check the argument values here
+		emitRM("LD", 7, -1, 5, "return to caller"); //TODO: double check the argument values here
 		outSavedLoc = emitSkip(0);
 		emitBackup(outFuncLocation);
 		emitRM_Abs("LDA", pc, outSavedLoc, "jump around i/o code");
         
 		emitRestore();
         emitComment("End of standard prelude.");
+
+		//call visit here
 
 		if (mainEntry == 0){ //if there is no main function
 			emitRO("HALT", 0, 0, 0, ""); //emit error
@@ -206,7 +208,11 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( IntExp exp, int level, boolean isAddr){
-
+        emitComment("-> constant");
+        emitRM("LDC", ac, Integer.parseInt(exp.value), 0, "load const");
+        emitRM("ST", ac, level, fp, "op: push left");
+        emitComment("<- constant");
+		//TODO: globalOffset--?
 	}
   
 	public void visit( BoolExp exp, int level, boolean isAddr){
@@ -222,38 +228,98 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( OpExp exp, int level, boolean isAddr){
+		emitComment("-> op");
 
+		switch(exp.op) {
+			case OpExp.PLUS:
+			  emitRO("ADD", ac, ac, ac1, "perform add operation");
+			  break;
+			case OpExp.MINUS:
+			  emitRO("SUB", ac, ac, ac1, "perform subtract operation");
+			  break;
+			case OpExp.TIMES:
+			  emitRO("MUL", ac, ac, ac1, "perform multiply operation");
+			  break;
+			case OpExp.DIVIDE:
+			  emitRO("DIV", ac, ac, ac1, "perform division operation");
+			  break;
+			case OpExp.EQ:
+			  
+			  break;
+			case OpExp.NE:
+			  
+			  break;
+			case OpExp.NOT:
+			  
+			  break;
+			case OpExp.LT:
+			  
+			  break;
+			case OpExp.LTE:
+			 
+			  break;
+			case OpExp.GT:
+			  
+			  break;
+			case OpExp.GTE:
+			  
+			  break;
+
+			default:
+		
+		emitComment("<- op");
 	}
   
 	public void visit( AssignExp exp, int level, boolean isAddr){
-		emmitComment("-> assign");
+		emitComment("-> assign");
 
 
 
-		emmitComment("<- assign");
+		emitComment("<- assign");
 
 	}
   
 	public void visit( IfExp exp, int level, boolean isAddr){
+        emitComment("-> if");
 
+		emitComment("<- if");
 	}
   
 	public void visit( WhileExp exp, int level, boolean isAddr){
+		emitComment("-> while");
 
+        int top = emitSkip(0);
+        exp.test.accept(this, level, isAddr);
+        int savedLoc = emitSkip(1);
+
+		if (exp.body != null)
+		{
+            exp.body.accept(this, level, isAddr);
+        }
+
+		int savedLoc3 = emitSkip(0);
+        emitRM("LDA", pc, top - savedLoc3 - 1, pc, "while: absolute jump to test");
+
+        int savedLoc2 = emitSkip(0);
+        emitBackup(savedLoc);
+        emitRM(exp.test.def, ac, savedLoc2 - savedLoc - 1, pc, "while: jump to end");
+        emitRestore();
+
+		emitComment("<- while");
 	}
   
 	public void visit( ReturnExp exp, int level, boolean isAddr){
-		emmitComment("-> return");
+		emitComment("-> return");
 		if(exp.exp != null)
 		{
 			exp.exp.accept(this, level, isAddr);
 		}
-		emmitRM("LD", pc, -1, fp, "return to call");
-		emmitComment("<- return");
+		emitRM("LD", pc, -1, fp, "return to call");
+		emitComment("<- return");
 	}
   
 	public void visit( CompoundExp exp, int level, boolean isAddr){
-		emmitComment("-> compound");
+		emitComment("-> compound");
 		if(exp != null)
 		{
 			exp.decs.accept(this, level, isAddr);
