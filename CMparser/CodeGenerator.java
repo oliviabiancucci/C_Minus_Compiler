@@ -234,6 +234,7 @@ public class CodeGenerator implements AbsynVisitor{
 				if(simp.nestLevel == 0) //global scope
 				{
 					emitRM( "LDA", ac, simp.offset, gp, "load declaration address: " + simp.name);
+					//emitRM( "ST")
 				}
 				else // local scope
 				{
@@ -246,10 +247,6 @@ public class CodeGenerator implements AbsynVisitor{
 				System.out.println(array.name);
 			}
 		}
-
-		//emitRM("LD", ac, the expr offset, scope ptr or gp?, "load id value");
-
-		//emitRM("ST", ac, level, fp, "store array value");
 	}
   
 	public void visit( CallExp exp, int level, boolean isAddr){
@@ -305,19 +302,16 @@ public class CodeGenerator implements AbsynVisitor{
 
 		emitRM("ST", ac, level, fp, "storing operation result");
 
-		//emitRO("LDC", ac1, 0, 0, "clearing register ac1");
-		//emitRO("ADD", ac1, 0, ac, "perform add operation");
-
 		emitComment("<- op");
 	}
   
 	public void visit( AssignExp exp, int level, boolean isAddr){
 		emitComment("-> assign");
 		
-		exp.lhs.accept(this, level, isAddr);
-		exp.rhs.accept(this, level - 1, isAddr);
+		exp.lhs.accept(this, level - 1, isAddr);
+		exp.rhs.accept(this, level - 2, isAddr);
 		
-		emitRM( "LD", ac, level - 1, fp, "retrieve result")
+		emitRM( "LD", ac1, level - 2, fp, "retrieve result" );
 		emitRM( "ST", ac, 0, ac1, "store result in variable" );
 	
 		emitComment("<- assign");
