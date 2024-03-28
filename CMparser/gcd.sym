@@ -1,0 +1,18 @@
+Entering global scope:
+    Entering the scope of the gcd function:
+        Entering the If block scope:
+        Exiting the If block scope
+        Entering the Else block scope
+        Exiting the Else block scope
+        u INT
+        v INT
+    Exiting the scope of the gcd function
+    Entering the scope of the main function:
+        x INT
+    Exiting the scope of the main function
+    output (INT) -> VOID
+    input (VOID) -> INT
+    y INT
+    gcd (INT, INT) -> INT
+    main (VOID) -> VOID
+Exiting global scope
