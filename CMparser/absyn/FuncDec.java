@@ -5,6 +5,7 @@ public class FuncDec extends Dec{
 	public String func;
 	public VarDecLists params;
 	public Exp body;
+	public int funAddr;
 
 	public FuncDec(int row, int col, NameTy result, String func, VarDecLists params, Exp body)
 	{
