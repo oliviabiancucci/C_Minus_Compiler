@@ -332,6 +332,9 @@ public class CodeGenerator implements AbsynVisitor{
 	public void visit( FuncDec exp, int level, boolean isAddr){
 		if(exp != null)
 		{
+			exp.params.accept(this, level, false);
+			exp.body.accept(this, level, false);
+
 			
 		}
 	}

@@ -152,12 +152,12 @@ public class SemanticAnalyzer implements AbsynVisitor{
                 System.err.println("ERROR: the variable " + exp.name + " is undeclared at row " + (exp.row + 1) + ", column " + (exp.col + 1));
             }
 
-            exp.index.accept(this, level);
+            exp.index.accept(this, level, false);
             //check if the index returns an integer for indexing the variable
             if(exp.index instanceof VarExp)
             {
                 VarExp var = (VarExp)exp.index;
-                visit(var, level);
+                visit(var, level, false);
                 if(var.dtype instanceof SimpleDec)
                 {
                     SimpleDec dec = (SimpleDec)var.dtype;
@@ -170,7 +170,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
             else if(exp.index instanceof CallExp)
             {
                 CallExp call = (CallExp)exp.index;
-                visit(call, level);
+                visit(call, level, false);
                 FuncDec func = (FuncDec)call.dtype;
                 if(func.result.type != NameTy.INT)
                 {
@@ -204,7 +204,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
         if(exp != null)
         {
             //go to var in VarExp
-            exp.varName.accept(this, level);
+            exp.varName.accept(this, level, false);
             if(exp.varName instanceof SimpleVar) // if var is a simplevar
             {
                 SimpleVar var = (SimpleVar)exp.varName;
@@ -272,7 +272,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
             }
 
             if (isDeclared && exp.args != null) {
-                exp.args.accept(this, level);
+                exp.args.accept(this, level, false);
             }
             else if (!isDeclared) {
                 System.err.println("ERROR: undefined function " + exp.func + " called at row " + (exp.row + 1) + ", column " + (exp.col + 1));
@@ -404,8 +404,8 @@ public class SemanticAnalyzer implements AbsynVisitor{
             int leftExpRes = 3;
             int rightExpRes = -3;
 
-            exp.left.accept(this, level);
-            exp.right.accept(this, level);
+            exp.left.accept(this, level, false);
+            exp.right.accept(this, level, false);
 
             //left and right can be IntExp, BoolExp, CallExp, OpExp, VarExp
             //mismatched types on each side of the expression
@@ -425,7 +425,6 @@ public class SemanticAnalyzer implements AbsynVisitor{
             }
             //if there is a function call on either side
             else if (exp.left instanceof CallExp) {
-                //visit((CallExp)exp.left, level); // need this to get the function declaration dtype assigned if it is not already
                 FuncDec func = (FuncDec)exp.left.dtype;
                 if(func != null)
                 {
@@ -438,7 +437,6 @@ public class SemanticAnalyzer implements AbsynVisitor{
                 
             }
             else if (exp.left instanceof OpExp) {
-                //visit((OpExp)exp.left, level); //TODO: not sure if this is needed since it would already be called in the accept above?
                 OpExp op = (OpExp)exp.left;  
                 //expressions that can equate to an integer are simple, function call, or an array
                 if(op.dtype instanceof SimpleDec)
@@ -489,7 +487,6 @@ public class SemanticAnalyzer implements AbsynVisitor{
             }
             //if there is a function call on either side
             else if (exp.right instanceof CallExp) {
-                //visit((CallExp)exp.right, level); // need this to get the function declaration dtype assigned if it is not already
                 FuncDec func = (FuncDec)exp.right.dtype;
                 if(func != null)
                 {
@@ -502,7 +499,6 @@ public class SemanticAnalyzer implements AbsynVisitor{
             }
             //if there is another operation expression on either side 
             else if (exp.right instanceof OpExp) {
-                //visit((OpExp)exp.right, level); //TODO: not sure if this is needed since it would already be called in the accept above?
                 OpExp op = (OpExp)exp.right;
                 //expressions that can equate to an integer are simple, function call, or an array
                 if(op.dtype instanceof SimpleDec)
@@ -569,8 +565,8 @@ public class SemanticAnalyzer implements AbsynVisitor{
             int rightExpRes = -3;
 
             // lhs of assignment can be a simple or array
-            exp.lhs.accept(this, level);
-            exp.rhs.accept(this, level);
+            exp.lhs.accept(this, level, false);
+            exp.rhs.accept(this, level, false);
 
             if(exp.lhs.dtype instanceof SimpleDec)
             {
@@ -669,10 +665,10 @@ public class SemanticAnalyzer implements AbsynVisitor{
             System.out.println("Entering the If block scope:");
 
             //IF
-            exp.test.accept(this, level);
+            exp.test.accept(this, level, false);
             //TODO: possible check for void here? not sure yet
             level++;
-            exp.thenpart.accept(this, level);
+            exp.thenpart.accept(this, level, false);
 
 
             printTable(level);
@@ -687,7 +683,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
                 System.out.println("Entering the Else block scope");
                 
                 level++;
-                exp.elsepart.accept(this, level);
+                exp.elsepart.accept(this, level, false);
                 printTable(level);
                 delete(level);
                 
@@ -705,11 +701,11 @@ public class SemanticAnalyzer implements AbsynVisitor{
             indent(level);
             System.out.println("Entering the While block scope:");
 
-            exp.test.accept(this, level);
+            exp.test.accept(this, level, false);
             if(exp.test instanceof CallExp)
             {
                 CallExp call = (CallExp)exp.test;
-                visit(call, level);
+                visit(call, level, false);
                 FuncDec dec = (FuncDec)call.dtype;
                 if(dec == null)
                 {
@@ -728,7 +724,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
             
             if(exp.body != null)
             {
-                exp.body.accept(this, level);
+                exp.body.accept(this, level, false);
             }
             printTable(level);
             delete(level);
@@ -746,7 +742,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
         }
         else {
             int returnType = 99; //initialize it as a number that is not associated with a return type
-            exp.exp.accept(this, level);
+            exp.exp.accept(this, level, false);
 
             //return type of the corresponding function
             for (ArrayList<NodeType> list: table.values()){
@@ -770,7 +766,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
                 returnType = NameTy.INT;
             }
             else if (exp.exp instanceof CallExp) {
-                visit((CallExp)exp.exp, level);
+                visit((CallExp)exp.exp, level, false);
                 if ((FuncDec)exp.exp.dtype != null) {
                     FuncDec fun2 = (FuncDec)exp.exp.dtype;
                     returnType = fun2.result.type;
@@ -789,7 +785,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
                 }
             }
             else if (exp.exp instanceof OpExp){
-                visit((OpExp)exp.exp, level);
+                visit((OpExp)exp.exp, level, false);
                 if(exp.exp.dtype instanceof SimpleDec)
                 {
                     SimpleDec simp = (SimpleDec)exp.exp.dtype;
@@ -816,8 +812,8 @@ public class SemanticAnalyzer implements AbsynVisitor{
 
     public void visit(CompoundExp exp, int level, boolean isAddr) {
         if(exp != null){
-            visit(exp.decs, level); //visit VarDecLists
-            visit(exp.exp, level); //visit ExpList
+            visit(exp.decs, level, false); //visit VarDecLists
+            visit(exp.exp, level, false); //visit ExpList
         }
     }
 
@@ -840,12 +836,12 @@ public class SemanticAnalyzer implements AbsynVisitor{
 
         //function parameters
         if (exp.params != null){
-            exp.params.accept(this, level);
+            exp.params.accept(this, level, false);
         }
 
         //function body
         if (exp.body != null){
-            exp.body.accept(this, level);
+            exp.body.accept(this, level, false);
         }
 
         printTable(level);
@@ -895,7 +891,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
 
     public void visit(ExpList exp, int level, boolean isAddr) {
         while (exp != null && exp.head != null) {
-            exp.head.accept(this, level);
+            exp.head.accept(this, level, false);
             exp = exp.tail;
         }
     }
@@ -911,15 +907,13 @@ public class SemanticAnalyzer implements AbsynVisitor{
         SimpleDec outInt = new SimpleDec(0, 0, inputType, "outInt");
         VarDecLists outParams = new VarDecLists(outInt, null);
         FuncDec outputDec = new FuncDec(0, 0, outType, "input", outParams, null);
-
         NodeType inputFunc = new NodeType("input", inputDec, level);
         NodeType outputFunc = new NodeType("output", outputDec, level);
         insert(inputFunc);
         insert(outputFunc);
 
-
         while(exp != null && exp.head != null){
-            exp.head.accept(this, level);
+            exp.head.accept(this, level, false);
             exp = exp.tail;
         }
 
