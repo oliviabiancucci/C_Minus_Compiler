@@ -382,7 +382,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
                     expHead = expHead.tail;
                 }
 
-                if(expHead != null)
+                if(expHead != null && !(expHead.head instanceof NilExp))
                 {
                     numCall++;
                 }

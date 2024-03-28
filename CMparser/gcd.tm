@@ -46,7 +46,7 @@
  20:   LDA 0, 0(5)	load declaration address: y
 * -> constant
  21:   LDC 1, 10(0)	load const
- 22:    ST 1, -3(5)	op: push left
+ 22:    ST 1, -4(5)	op: push left
 * <- constant
  23:    LD 0, -3(5)	retrieve result
  24:    ST 0, 0(1)	store result in variable

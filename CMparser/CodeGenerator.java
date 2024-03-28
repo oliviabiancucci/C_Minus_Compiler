@@ -224,12 +224,13 @@ public class CodeGenerator implements AbsynVisitor{
 
 				if(simp.nestLevel == 0) //global scope
 				{
-					emitRM( "LDA", ac, simp.offset, gp, "load declaration address: " + simp.name);
-					//emitRM( "ST")
+					emitRM( "LD", ac, simp.offset, gp, "load declaration address: " + simp.name);
+					
 				}
 				else // local scope
 				{
-					emitRM( "LDA", ac, simp.offset, fp, "load declaration address: " + simp.name);
+					emitRM( "LD", ac, simp.offset, fp, "load declaration address: " + simp.name);
+					
 				}
 			}
 			else if(exp.dtype instanceof ArrayDec)
