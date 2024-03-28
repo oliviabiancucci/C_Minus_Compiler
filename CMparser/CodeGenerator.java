@@ -153,7 +153,7 @@ public class CodeGenerator implements AbsynVisitor{
 		//Output Routine
 		emitComment("code for output routine");
 		emitRM("ST", ac, retFO, fp, "store return");
-		emitRM("LD", 0, initFO, fp, "load output value");
+		emitRM("LD", 0, initFO, fp, "load output value"); //TODO: CHECK THIS
 		emitRO("OUT", 0, 0, 0, "output");
 		emitRM("LD", pc, retFO, fp, "return to caller");
 		outSavedLoc = emitSkip(0);
@@ -186,6 +186,13 @@ public class CodeGenerator implements AbsynVisitor{
   
 	public void visit( SimpleVar exp, int level, boolean isAddr){
 		emitComment("---------------------------------------------------------> SIMPLEVAR");
+		if(isAddr){
+
+		}
+		else{
+			emitRM("LD", ac, exp.dec.offset, fp, "load variable value");
+			emitRM("ST", ac, level, fp, "store variable value on stack");
+		}
 	}
   
 	public void visit( IndexVar exp, int level, boolean isAddr){
@@ -216,27 +223,32 @@ public class CodeGenerator implements AbsynVisitor{
 	public void visit( VarExp exp, int level, boolean isAddr){
 		emitComment("---------------------------------------------------------> VAREXP");
 		
-		if(exp != null)
-		{
-			if(exp.dtype instanceof SimpleDec)
-			{
-				SimpleDec simp = (SimpleDec)exp.dtype;
+		// if(exp != null)
+		// {
+		// 	if(exp.dtype instanceof SimpleDec)
+		// 	{
+		// 		SimpleDec simp = (SimpleDec)exp.dtype;
 
-				if(simp.nestLevel == 0) //global scope
-				{
-					emitRM( "LDA", ac, simp.offset, gp, "load declaration address: " + simp.name);
-					//emitRM( "ST")
-				}
-				else // local scope
-				{
-					emitRM( "LDA", ac, simp.offset, fp, "load declaration address: " + simp.name);
-				}
-			}
-			else if(exp.dtype instanceof ArrayDec)
-			{
-				ArrayDec array = (ArrayDec)exp.dtype;
-				System.out.println(array.name);
-			}
+		// 		if(simp.nestLevel == 0) //global scope
+		// 		{
+		// 			emitRM( "LD", ac, simp.offset, gp, "load value in variable " + simp.name);
+		// 			emitRM( "ST", ac, level, gp, "store variable value on stack");
+		// 		}
+		// 		else // local scope
+		// 		{
+		// 			emitRM( "LD", ac, simp.offset, fp, "load value in variable " + simp.name);
+		// 			emitRM( "ST", ac, level, fp, "store variable value on stack");
+		// 		}
+		// 	}
+		// 	else if(exp.dtype instanceof ArrayDec)
+		// 	{
+		// 		ArrayDec array = (ArrayDec)exp.dtype;
+		// 		System.out.println(array.name);
+		// 	}
+		// }
+
+		if(exp.varName != null){
+			exp.varName.accept(this, level, isAddr);
 		}
 	}
   
@@ -302,8 +314,8 @@ public class CodeGenerator implements AbsynVisitor{
 		exp.lhs.accept(this, level - 1, isAddr);
 		exp.rhs.accept(this, level - 2, isAddr);
 		
-		emitRM( "LD", ac, level - 1, fp, "retrieve result");
-		emitRM( "ST", ac, 0, ac1, "store result in variable" );
+		emitRM( "LD", ac, level - 2, fp, "retrieve result");
+		emitRM( "ST", ac, level - 1, fp, "store result in variable");
 	
 		emitComment("<- assign");
 	}

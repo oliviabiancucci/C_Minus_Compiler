@@ -1,0 +1,11 @@
+Entering global scope:
+    Entering the scope of the main function:
+        Entering the While block scope:
+        Exiting the While block scope
+        x INT
+        fac INT
+    Exiting the scope of the main function
+    output (INT) -> VOID
+    input (VOID) -> INT
+    main (VOID) -> VOID
+Exiting global scope
