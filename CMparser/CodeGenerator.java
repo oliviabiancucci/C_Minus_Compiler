@@ -186,13 +186,6 @@ public class CodeGenerator implements AbsynVisitor{
   
 	public void visit( SimpleVar exp, int level, boolean isAddr){
 		emitComment("---------------------------------------------------------> SIMPLEVAR");
-		// if(isAddr){
-
-		// }
-		// else{
-		// 	emitRM("LD", ac, exp.dec.offset, fp, "load variable value");
-		// 	emitRM("ST", ac, level, fp, "store variable value on stack");
-		// }
 	}
   
 	public void visit( IndexVar exp, int level, boolean isAddr){
@@ -228,7 +221,7 @@ public class CodeGenerator implements AbsynVisitor{
 			if(exp.dtype instanceof SimpleDec)
 			{
 				SimpleDec simp = (SimpleDec)exp.dtype;
-				exp.dec = simp;
+				//exp.dec = simp;
 
 				if(simp.nestLevel == 0) //global scope
 				{
@@ -244,7 +237,7 @@ public class CodeGenerator implements AbsynVisitor{
 			else if(exp.dtype instanceof ArrayDec)
 			{
 				ArrayDec array = (ArrayDec)exp.dtype;
-				exp.dec = array;
+				//exp.dec = array;
 				System.out.println(array.name);
 			}
 		}
