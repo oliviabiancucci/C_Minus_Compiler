@@ -189,22 +189,23 @@ public class CodeGenerator implements AbsynVisitor{
 	}
 
 	public void visit( NameTy exp, int level, boolean isAddr){
-
+		emitComment("---------------------------------------------------------> NAMETY");
 	}
   
 	public void visit( SimpleVar exp, int level, boolean isAddr){
-
+		emitComment("---------------------------------------------------------> SIMPLEVAR");
 	}
   
 	public void visit( IndexVar exp, int level, boolean isAddr){
-
+		emitComment("---------------------------------------------------------> INDEXVAR");
 	}
   
 	public void visit( Vartype exp, int level, boolean isAddr){
-
+		emitComment("---------------------------------------------------------> VARTYPE");
 	}
   
 	public void visit( NilExp exp, int level, boolean isAddr){
+		emitComment("---------------------------------------------------------> NILEXP");
 
 	}
   
@@ -217,10 +218,11 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( BoolExp exp, int level, boolean isAddr){
-
+		emitComment("---------------------------------------------------------> BOOLEXP");
 	}
   
 	public void visit( VarExp exp, int level, boolean isAddr){
+		emitComment("---------------------------------------------------------> VAREXP");
 		//TODO: this is very incomplete
 		//emitRM("LD", ac, the expr offset, scope ptr or gp?, "load id value");
 		//emitRM("ST", ac, level, fp, "store array value");
@@ -228,7 +230,7 @@ public class CodeGenerator implements AbsynVisitor{
   
 	public void visit( CallExp exp, int level, boolean isAddr){
 		int funAddr = -1;
-
+		emitComment("---------------------------------------------------------> CALLEXP");
 	}
   
 	public void visit( OpExp exp, int level, boolean isAddr){
@@ -281,7 +283,6 @@ public class CodeGenerator implements AbsynVisitor{
   
 	public void visit( AssignExp exp, int level, boolean isAddr){
 		emitComment("-> assign");
-
 
 
 		emitComment("<- assign");
@@ -375,11 +376,14 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( ArrayDec exp, int level, boolean isAddr){
-
+		emitComment("---------------------------------------------------------> ARRAYDEC");
 	}
 
 	public void visit( ExpList exp, int level, boolean isAddr){
-
+		while(exp != null && exp.head != null){
+			exp.head.accept(this, level, isAddr);
+			exp = exp.tail;
+		}
 	}
   
 	public void visit ( DecLists exp, int level, boolean isAddr){

@@ -21,12 +21,16 @@
 * jump around function body
  12:    ST 0, -1(5)	store return
 * -> compound
+* allocating global var: x
+* ---------------------------------------------------------> EXPLIST
+* -> assign
+* <- assign
 * <- compound
  13:    LD 7, -1(5)	load return address
 * <- fundecl
  14:   LDA 7, 2(7)	jump body
- 15:    ST 5, 0(5)	push ofp
- 16:   LDA 5, 0(5)	push frame
+ 15:    ST 5, -1(5)	push ofp
+ 16:   LDA 5, -1(5)	push frame
  17:   LDA 0, 1(7)	load ac with ret ptr
  18:   LDA 7, -7(7)	jump to main loc
  19:    LD 5, 0(5)	pop frame
