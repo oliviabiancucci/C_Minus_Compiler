@@ -50,14 +50,36 @@
  25:    LD 0, -4(5)	retrieve result
  26:    ST 0, -2(5)	store result in variable
 * <- assign
+* -> if
+* -> op
+ 27:    LD 0, -3(5)	load value in variable y
+ 28:    ST 0, -2(5)	store variable value on stack
+* -> id
+* looking up id: y
+* <- id
+* -> constant
+ 29:   LDC 0, 10(0)	load const
+ 30:    ST 0, -3(5)	op: push left
+* <- constant
+ 31:    LD 0, -2(5)	
+ 32:    LD 1, -3(5)	
+ 33:    ST 0, -2(5)	storing operation result
+* <- op
+* -> compound
 * <- compound
- 27:    LD 7, -1(5)	load return address
+* if: jump to end belongs here
+ 34:   JEQ 7, 0(7)	if: jmp to else
+* if: jump to else belongs here
+* ---------------------------------------------------------> NILEXP
+* <- if
+* <- compound
+ 35:    LD 7, -1(5)	load return address
 * <- fundecl
- 28:   LDA 7, 16(7)	jump body
- 29:    ST 5, -2(5)	push ofp
- 30:   LDA 5, -2(5)	push frame
- 31:   LDA 0, 1(7)	load ac with ret ptr
- 32:   LDA 7, -21(7)	jump to main loc
- 33:    LD 5, 0(5)	pop frame
+ 36:   LDA 7, 24(7)	jump body
+ 37:    ST 5, -2(5)	push ofp
+ 38:   LDA 5, -2(5)	push frame
+ 39:   LDA 0, 1(7)	load ac with ret ptr
+ 40:   LDA 7, -29(7)	jump to main loc
+ 41:    LD 5, 0(5)	pop frame
 * End of execution.
- 34:  HALT 0, 0, 0	
+ 42:  HALT 0, 0, 0	

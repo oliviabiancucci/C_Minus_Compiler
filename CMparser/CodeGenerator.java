@@ -188,15 +188,6 @@ public class CodeGenerator implements AbsynVisitor{
 		emitComment("-> id");
         emitComment("looking up id: " + exp.name);
 
-		// if(isAddr){
-		// 	emitRM("LDA", ac, exp.dec.offset, fp, "load address");
-		// 	emitRM("ST", ac, level, fp, "store address value on stack");
-		// }
-		// else{
-		// 	emitRM("LD", ac, exp.dec.offset, fp, "load variable value");
-		// 	emitRM("ST", ac, level, fp, "store variable value on stack");
-		// }
-
 		emitComment("<- id");
 	}
   
@@ -218,7 +209,7 @@ public class CodeGenerator implements AbsynVisitor{
         emitRM("LDC", ac, Integer.parseInt(exp.value), 0, "load const"); // holds constant in ac1
         emitRM("ST", ac, level, fp, "op: push left");
         emitComment("<- constant");
-		//TODO: globalOffset--?
+		//TODO: globalOffset--;
 	}
   
 	public void visit( BoolExp exp, int level, boolean isAddr){
@@ -342,7 +333,7 @@ public class CodeGenerator implements AbsynVisitor{
 		
 		emitBackup(loc1);
 		emitComment("if: jump to end belongs here");
-		emitRM_Abs("JEQ", pc, loc2, "if: jmp to else");
+		emitRM_Abs("JEQ", 0, loc2, "if: jmp to else");
 		emitRestore();
 
 		//ELSE
@@ -367,6 +358,8 @@ public class CodeGenerator implements AbsynVisitor{
 		{
             exp.body.accept(this, level, isAddr);
         }
+
+
 
 
 

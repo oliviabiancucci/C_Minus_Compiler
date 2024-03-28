@@ -17,3 +17,9 @@ FunctionDec: main
                 IntExp: 5
                 VarExp: 
                     SimpleVar: y
+        IfExp:
+            OpExp: == 
+                VarExp: 
+                    SimpleVar: y
+                IntExp: 10
+            CompoundExp:

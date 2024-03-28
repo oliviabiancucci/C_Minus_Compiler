@@ -5,4 +5,8 @@ void main(void){
 
     y = 10;
     x = 5 + y;
+
+    if(y == 10){
+
+    }
 }
