@@ -23,43 +23,7 @@
  12:    ST 0, -1(5)	store return
 * -> compound
 * -> if
-* <- if
-* <- compound
- 13:    LD 7, -1(5)	load return address
-* <- fundecl
- 14:   LDA 7, 2(7)	jump body
-* -> fundecl
-* processing function: main
-* jump around function body
- 16:    ST 0, -1(5)	store return
-* -> compound
-* allocated local var: x -2
-* -> assign
+* -> op
 * ---------------------------------------------------------> VAREXP
- 17:   LDA 0, -2(5)	load declaration address: x
-* ---------------------------------------------------------> CALLEXP
- 18:    LD 0, -3(5)	retrieve result
- 19:    ST 0, 0(1)	store result in variable
-* <- assign
-* -> assign
-* ---------------------------------------------------------> VAREXP
- 20:   LDA 0, 0(5)	load declaration address: y
-* -> constant
- 21:   LDC 1, 10(0)	load const
- 22:    ST 1, -4(5)	op: push left
-* <- constant
- 23:    LD 0, -3(5)	retrieve result
- 24:    ST 0, 0(1)	store result in variable
-* <- assign
-* ---------------------------------------------------------> CALLEXP
-* <- compound
- 25:    LD 7, -1(5)	load return address
-* <- fundecl
- 26:   LDA 7, 10(7)	jump body
- 27:    ST 5, -1(5)	push ofp
- 28:   LDA 5, -1(5)	push frame
- 29:   LDA 0, 1(7)	load ac with ret ptr
- 30:   LDA 7, -15(7)	jump to main loc
- 31:    LD 5, 0(5)	pop frame
-* End of execution.
- 32:  HALT 0, 0, 0	
+* -> id
+* looking up id: v

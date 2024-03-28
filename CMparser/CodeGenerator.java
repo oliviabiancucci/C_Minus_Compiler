@@ -185,14 +185,19 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( SimpleVar exp, int level, boolean isAddr){
-		emitComment("---------------------------------------------------------> SIMPLEVAR");
-		if(isAddr){
+		emitComment("-> id");
+        emitComment("looking up id: " + exp.name);
 
+		if(isAddr){
+			emitRM("LDA", ac, exp.dec.offset, fp, "load address");
+			emitRM("ST", ac, level, fp, "store address value on stack");
 		}
 		else{
 			emitRM("LD", ac, exp.dec.offset, fp, "load variable value");
 			emitRM("ST", ac, level, fp, "store variable value on stack");
 		}
+
+		emitComment("<- id");
 	}
   
 	public void visit( IndexVar exp, int level, boolean isAddr){
@@ -221,32 +226,6 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( VarExp exp, int level, boolean isAddr){
-		emitComment("---------------------------------------------------------> VAREXP");
-		
-<<<<<<< HEAD
-		if(exp != null)
-		{
-			if(exp.dtype instanceof SimpleDec)
-			{
-				SimpleDec simp = (SimpleDec)exp.dtype;
-
-				if(simp.nestLevel == 0) //global scope
-				{
-					emitRM( "LD", ac, simp.offset, gp, "load declaration address: " + simp.name);
-					
-				}
-				else // local scope
-				{
-					emitRM( "LD", ac, simp.offset, fp, "load declaration address: " + simp.name);
-					
-				}
-			}
-			else if(exp.dtype instanceof ArrayDec)
-			{
-				ArrayDec array = (ArrayDec)exp.dtype;
-				System.out.println(array.name);
-			}
-=======
 		// if(exp != null)
 		// {
 		// 	if(exp.dtype instanceof SimpleDec)
@@ -273,7 +252,6 @@ public class CodeGenerator implements AbsynVisitor{
 
 		if(exp.varName != null){
 			exp.varName.accept(this, level, isAddr);
->>>>>>> 2912e60747625478aacc0503b1dd4a3cfbb8d8b6
 		}
 	}
   
@@ -348,12 +326,34 @@ public class CodeGenerator implements AbsynVisitor{
 	public void visit( IfExp exp, int level, boolean isAddr){
         emitComment("-> if");
 
+		//IF
+		exp.test.accept(this, level, isAddr);
+		int loc1 = emitSkip(1);
+		exp.thenpart.accept(this, level, isAddr);
+		int loc2 = emitSkip(0);
+		
+		emitBackup(loc1);
+		emitComment("if: jump to end belongs here");
+		emitRM_Abs("JEQ", pc, loc2, "if: jmp to else");
+		emitRestore();
+
+		//ELSE
+		if(exp.elsepart != null){
+			emitComment("if: jump to else belongs here");
+			exp.elsepart.accept(this, level, isAddr);
+		}
+
 		emitComment("<- if");
 	}
   
 	public void visit( WhileExp exp, int level, boolean isAddr){
 		emitComment("-> while");
+		emitComment("while: jump after body comes back here");
 
+		if (exp.test != null)
+		{
+            exp.test.accept(this, level, isAddr);
+        }
 
 		if (exp.body != null)
 		{
