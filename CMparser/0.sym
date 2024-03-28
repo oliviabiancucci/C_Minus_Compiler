@@ -1,7 +1,8 @@
 Entering global scope:
     Entering the scope of the main function:
+        Entering the If block scope:
+        Exiting the If block scope
         x INT
-        y INT
     Exiting the scope of the main function
     output (INT) -> VOID
     input (VOID) -> INT

@@ -4,16 +4,17 @@ FunctionDec: main
     CompoundExp:
         SimpleDec: x
             NameTy: INT
-        SimpleDec: y
-            NameTy: INT
-        AssignExp:
-            VarExp: 
-                SimpleVar: y
-            IntExp: 10
         AssignExp:
             VarExp: 
                 SimpleVar: x
-            OpExp: + 
-                IntExp: 5
+            IntExp: 0
+        IfExp:
+            OpExp: == 
                 VarExp: 
-                    SimpleVar: y
+                    SimpleVar: x
+                IntExp: 0
+            CompoundExp:
+                AssignExp:
+                    VarExp: 
+                        SimpleVar: x
+                    IntExp: 5
