@@ -56,7 +56,7 @@ class CM {
         System.setOut(absFileStream);
         System.out.println("The abstract syntax tree is:");
         AbsynVisitor visitor = new ShowTreeVisitor();
-        result.accept(visitor, 0); 
+        result.accept(visitor, 0, false); 
       }
       if(parser.valid == true)
       {
@@ -69,7 +69,7 @@ class CM {
           PrintStream symFileStream = new PrintStream(symFile);
           System.setOut(symFileStream);
           SemanticAnalyzer semVisitor = new SemanticAnalyzer();
-          result.accept(semVisitor, 0);
+          result.accept(semVisitor, 0, false);
         }
       }
       if(SemanticAnalyzer.valid == true)
@@ -80,9 +80,12 @@ class CM {
           String fileName = argv[argv.length - 1].substring(0, fileExt);
           fileName = fileName + ".tm";
           tmFile = new File(fileName);
-          PrintStream tmFileStream = new PrintStream(symFile);
+          PrintStream tmFileStream = new PrintStream(tmFile);
           System.setOut(tmFileStream);
-          //add new stuff here
+          CodeGenerator codeGenVisit = new CodeGenerator();
+          codeGenVisit.prelude(fileName);
+          result.accept(codeGenVisit, 0, false);
+          codeGenVisit.finale();
         }
       }
       else

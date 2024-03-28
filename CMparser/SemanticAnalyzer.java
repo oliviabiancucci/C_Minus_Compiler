@@ -931,7 +931,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
 
     public void visit(VarDecLists exp, int level, boolean isAddr) {
         while (exp != null && exp.head != null) {
-            exp.head.accept(this, level);
+            exp.head.accept(this, level, false);
             exp = exp.tail;
         }
     }

@@ -55,4 +55,5 @@ public interface AbsynVisitor {
   public void visit ( DecLists exp, int level, boolean isAddr);
 
   public void visit ( VarDecLists exp, int level, boolean isAddr);
+
 }

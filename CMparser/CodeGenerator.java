@@ -7,8 +7,6 @@ public class CodeGenerator implements AbsynVisitor{
 
 	//how to calculate a jump: target - current location - 1
 
-	HashMap<String, ArrayList<NodeType>> table;
-
 	int emitLoc = 0; //current instruction we are generating
 	int highEmitLoc = 0; //next available space for instructions
 
@@ -21,6 +19,11 @@ public class CodeGenerator implements AbsynVisitor{
 	int globalOffset; //this will be subtracted by 1 for every int
 	int mainEntry = 0; //store where the main is
 
+	int ofpFO = 0;
+	int retFO = -1;
+	int initFO = -2;
+
+/* 
 	private void insert(NodeType node){
         if(table.containsKey(node.name)){
             table.get(node.name).add(0, node);
@@ -74,13 +77,12 @@ public class CodeGenerator implements AbsynVisitor{
             }
         }
     }
-
+*/
 
 	public void codeGenerator() {
 		int frameOffset = -2; //TODO: check this?
-		table = new HashMap<String, ArrayList<NodeType>>();
-
 		globalOffset = 0;
+
 	}
 
 	public void emitRO( String op, int r, int s, int t, String c ) {
@@ -125,8 +127,7 @@ public class CodeGenerator implements AbsynVisitor{
 		System.out.printf("* %s\n", c );
 	}
 
-	//the "main function"
-	public void visit(String fileName){
+	public void prelude(String fileName) {
 		int inSavedLoc = 0;
 		int outSavedLoc = 0;
 		int inFuncLocation = 0;
@@ -147,33 +148,33 @@ public class CodeGenerator implements AbsynVisitor{
 		//Input Routine
 		emitComment("code for input routine");
 		inSavedLoc = emitSkip(1);
-		inFuncLocation = emitSkip(0);
-		NodeType inNode = new NodeType("input", "VOID", 0);
-		insert(inNode);
+		inFuncLocation = emitLoc;
+		//NodeType inNode = new NodeType("input", null, 0); //TODO: void instead of null?
+		//insert(inNode);
 		emitRM("ST", ac, retFO, fp, "store return");
 		emitRM("IN", 0, 0, 0, "input");
 		emitRM("LD", 7, -1, 5, "return to caller");  //TODO: double check the argument values here
 
 		//Output Routine
 		emitComment("code for output routine");
-		outFuncLocation = emitSkip(0);
-		NodeType outNode = new NodeType("output", "-2", 0); //TODO: check -2 here
-		insert(outNode);
+		outFuncLocation = emitLoc;
+		//NodeType outNode = new NodeType("output", null, 0); //TODO: -2 instead of null?
+		//insert(outNode);
 		emitRM("ST", ac, retFO, fp, "store return");
-		emitRM("LD", 0, initOF, fp, "load output value");
+		emitRM("LD", 0, initFO, fp, "load output value");
 		emitRM("OUT", 0, 0, 0, "output");
 		emitRM("LD", 7, -1, 5, "return to caller"); //TODO: double check the argument values here
-		outSavedLoc = emitSkip(0);
+		outSavedLoc = emitLoc;
 		emitBackup(outFuncLocation);
 		emitRM_Abs("LDA", pc, outSavedLoc, "jump around i/o code");
         
 		emitRestore();
         emitComment("End of standard prelude.");
+	}
 
-		//call visit here
-
+	public void finale(){
 		if (mainEntry == 0){ //if there is no main function
-			emitRO("HALT", 0, 0, 0, ""); //emit error
+			emitRO("HALT", 0, 0, 0, "no main"); //emit error
 		}
 
 		//Finale
@@ -274,7 +275,7 @@ public class CodeGenerator implements AbsynVisitor{
 			case OpExp.GTE:
 			  
 			  break;
-		
+		}
 		emitComment("<- op");
 	}
   
@@ -321,8 +322,12 @@ public class CodeGenerator implements AbsynVisitor{
 		emitComment("-> compound");
 		if(exp != null)
 		{
-			exp.decs.accept(this, level, isAddr);
-			exp.exp.accept(this, level, isAddr);
+			if(exp.decs != null){
+				exp.decs.accept(this, level, isAddr);
+			}
+			if(exp.exp != null){
+				exp.exp.accept(this, level, isAddr);
+			}
 		}
 		emitComment("<- compound");
 
@@ -347,7 +352,7 @@ public class CodeGenerator implements AbsynVisitor{
 
 		exp.body.accept(this, frameOffset, isAddr);
 
-		emitRM("LD", pc, 01, fp, "load return address");
+		emitRM("LD", pc, -1, fp, "load return address");
 
 		emitComment("<- fundecl");
 
@@ -372,7 +377,10 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit ( DecLists exp, int level, boolean isAddr){
-
+		while(exp != null && exp.head != null){
+			exp.head.accept(this, level, isAddr);
+			exp = exp.tail;
+		}
 	}
   
 	public void visit ( VarDecLists exp, int level, boolean isAddr){

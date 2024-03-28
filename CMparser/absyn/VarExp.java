@@ -2,7 +2,7 @@ package absyn;
 
 public class VarExp extends Exp {
   public Var varName;
-  public Dec dec;
+  public VarDec dec;
 
   public VarExp( int row, int col, Var varName ) {
     this.row = row;

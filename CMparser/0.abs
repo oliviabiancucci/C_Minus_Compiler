@@ -1,0 +1,6 @@
+The abstract syntax tree is:
+FunctionDec: main
+    NameTy: VOID
+    CompoundExp:
+        SimpleDec: x
+            NameTy: INT
