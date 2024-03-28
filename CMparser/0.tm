@@ -46,7 +46,7 @@
  22:    LD 1, -5(5)	
  23:   ADD 0, 0, 1	perform add operation
  24:    ST 0, -4(5)	storing operation result
-* <- op
+* <- op4
  25:    LD 0, -4(5)	retrieve result
  26:    ST 0, -2(5)	store result in variable
 * <- assign

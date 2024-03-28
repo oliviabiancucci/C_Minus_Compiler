@@ -258,6 +258,19 @@ public class CodeGenerator implements AbsynVisitor{
 	public void visit( CallExp exp, int level, boolean isAddr){
 		int funAddr = -1;
 		emitComment("---------------------------------------------------------> CALLEXP");
+
+		//save current line in memory
+
+		//go to function address
+		
+		//create space for parameters
+
+		// run function code
+
+		//pass back function returns
+
+		// return to previous line in memory
+
 	}
   
 	public void visit( OpExp exp, int level, boolean isAddr){
