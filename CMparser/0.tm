@@ -22,7 +22,6 @@
  12:    ST 0, -1(5)	store return
 * -> compound
 * allocating global var: x
-* ---------------------------------------------------------> EXPLIST
 * -> assign
 * <- assign
 * <- compound

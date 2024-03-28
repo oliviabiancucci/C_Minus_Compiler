@@ -223,8 +223,16 @@ public class CodeGenerator implements AbsynVisitor{
   
 	public void visit( VarExp exp, int level, boolean isAddr){
 		emitComment("---------------------------------------------------------> VAREXP");
-		//TODO: this is very incomplete
+		
+		if(exp != null)
+		{
+			System.out.println(exp.dtype.getClass());
+
+
+		}
+
 		//emitRM("LD", ac, the expr offset, scope ptr or gp?, "load id value");
+
 		//emitRM("ST", ac, level, fp, "store array value");
 	}
   
@@ -283,6 +291,8 @@ public class CodeGenerator implements AbsynVisitor{
   
 	public void visit( AssignExp exp, int level, boolean isAddr){
 		emitComment("-> assign");
+		
+		
 
 
 		emitComment("<- assign");
