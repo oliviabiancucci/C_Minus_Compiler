@@ -1,6 +1,7 @@
 Entering global scope:
     Entering the scope of the main function:
         x INT
+        y INT
     Exiting the scope of the main function
     output (INT) -> VOID
     input (VOID) -> INT

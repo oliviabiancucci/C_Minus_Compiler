@@ -874,6 +874,15 @@ public class SemanticAnalyzer implements AbsynVisitor{
                     insert(dec);
                 }
             }
+
+            if(level != 0)
+            {
+                exp.nestLevel = 1;
+            }
+            else
+            {
+                exp.nestLevel = 0;
+            }
         }       
     }
 
@@ -886,6 +895,15 @@ public class SemanticAnalyzer implements AbsynVisitor{
             }
             else{
                 insert(dec); //adds it to the table
+            }
+
+            if(level != 0)
+            {
+                exp.nestLevel = 1;
+            }
+            else
+            {
+                exp.nestLevel = 0;
             }
         }
     }

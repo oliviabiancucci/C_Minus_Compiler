@@ -145,6 +145,7 @@ public class CodeGenerator implements AbsynVisitor{
 		//Jump to a different instruction
 		emitComment("Jump around i/o routines here");
 
+		/* 
 		//Input Routine
 		emitComment("code for input routine");
 		inSavedLoc = emitSkip(1);
@@ -152,8 +153,8 @@ public class CodeGenerator implements AbsynVisitor{
 		//NodeType inNode = new NodeType("input", null, 0); //TODO: void instead of null?
 		//insert(inNode);
 		emitRM("ST", ac, retFO, fp, "store return");
-		emitRM("IN", 0, 0, 0, "input");
-		emitRM("LD", 7, -1, 5, "return to caller");  //TODO: double check the argument values here
+		emitRO("IN", 0, 0, 0, "input");
+		emitRM("LD", pc, retFO, fp, "return to caller");  //TODO: double check the argument values here
 
 		//Output Routine
 		emitComment("code for output routine");
@@ -162,12 +163,12 @@ public class CodeGenerator implements AbsynVisitor{
 		//insert(outNode);
 		emitRM("ST", ac, retFO, fp, "store return");
 		emitRM("LD", 0, initFO, fp, "load output value");
-		emitRM("OUT", 0, 0, 0, "output");
-		emitRM("LD", 7, -1, 5, "return to caller"); //TODO: double check the argument values here
+		emitRO("OUT", 0, 0, 0, "output");
+		emitRM("LD", pc, retFO, fp, "return to caller"); //TODO: double check the argument values here
 		outSavedLoc = emitLoc;
 		emitBackup(outFuncLocation);
 		emitRM_Abs("LDA", pc, outSavedLoc, "jump around i/o code");
-        
+        */
 		emitRestore();
         emitComment("End of standard prelude.");
 	}
@@ -211,8 +212,8 @@ public class CodeGenerator implements AbsynVisitor{
   
 	public void visit( IntExp exp, int level, boolean isAddr){
         emitComment("-> constant");
-        emitRM("LDC", ac, Integer.parseInt(exp.value), 0, "load const");
-        emitRM("ST", ac, level, fp, "op: push left");
+        emitRM("LDC", ac1, Integer.parseInt(exp.value), 0, "load const"); // holds constant in ac1
+        emitRM("ST", ac1, level, fp, "op: push left");
         emitComment("<- constant");
 		//TODO: globalOffset--?
 	}
@@ -226,9 +227,24 @@ public class CodeGenerator implements AbsynVisitor{
 		
 		if(exp != null)
 		{
-			System.out.println(exp.dtype.getClass());
+			if(exp.dtype instanceof SimpleDec)
+			{
+				SimpleDec simp = (SimpleDec)exp.dtype;
 
-
+				if(simp.nestLevel == 0) //global scope
+				{
+					emitRM( "LDA", ac, simp.offset, gp, "load declaration address: " + simp.name);
+				}
+				else // local scope
+				{
+					emitRM( "LDA", ac, simp.offset, fp, "load declaration address: " + simp.name);
+				}
+			}
+			else if(exp.dtype instanceof ArrayDec)
+			{
+				ArrayDec array = (ArrayDec)exp.dtype;
+				System.out.println(array.name);
+			}
 		}
 
 		//emitRM("LD", ac, the expr offset, scope ptr or gp?, "load id value");
@@ -249,7 +265,7 @@ public class CodeGenerator implements AbsynVisitor{
 
 		//TODO: idk anymore about this emits
 		emitRM("LD", ac, level, fp, "");
-		emitRM("ST", ac1, level - 1, fp, "");
+		emitRM("LD", ac1, level - 1, fp, "");
 
 		switch(exp.op) {
 			case OpExp.PLUS:
@@ -286,17 +302,23 @@ public class CodeGenerator implements AbsynVisitor{
 			  
 			  break;
 		}
+
+		emitRM("ST", ac, level, fp, "storing operation result");
+
+		//emitRO("LDC", ac1, 0, 0, "clearing register ac1");
+		//emitRO("ADD", ac1, 0, ac, "perform add operation");
+
 		emitComment("<- op");
 	}
   
 	public void visit( AssignExp exp, int level, boolean isAddr){
 		emitComment("-> assign");
 		
-		
-
 		exp.lhs.accept(this, level, isAddr);
-		exp.rhs.accept(this, level, isAddr);
-
+		exp.rhs.accept(this, level - 1, isAddr);
+		
+		emitRM( "LD", ac, level - 1, fp, "retrieve result")
+		emitRM( "ST", ac, 0, ac1, "store result in variable" );
 	
 		emitComment("<- assign");
 	}
@@ -382,7 +404,7 @@ public class CodeGenerator implements AbsynVisitor{
 				emitComment("allocating global var: " + exp.name);
 			}
 			else{
-				emitComment("processing global var: " + exp.name);
+				emitComment("allocated local var: " + exp.name + " " + exp.offset);
 			}
 		}
 		
