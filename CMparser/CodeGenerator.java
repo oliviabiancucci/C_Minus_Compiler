@@ -284,7 +284,10 @@ public class CodeGenerator implements AbsynVisitor{
 	public void visit( AssignExp exp, int level, boolean isAddr){
 		emitComment("-> assign");
 
+		exp.lhs.accept(this, level, isAddr);
+		exp.rhs.accept(this, level, isAddr);
 
+	
 		emitComment("<- assign");
 	}
   

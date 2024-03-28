@@ -22,17 +22,21 @@
  12:    ST 0, -1(5)	store return
 * -> compound
 * allocating global var: x
-* ---------------------------------------------------------> EXPLIST
 * -> assign
+* ---------------------------------------------------------> VAREXP
+* -> constant
+ 13:   LDC 0, 10(0)	load const
+ 14:    ST 0, -2(5)	op: push left
+* <- constant
 * <- assign
 * <- compound
- 13:    LD 7, -1(5)	load return address
+ 15:    LD 7, -1(5)	load return address
 * <- fundecl
- 14:   LDA 7, 2(7)	jump body
- 15:    ST 5, -1(5)	push ofp
- 16:   LDA 5, -1(5)	push frame
- 17:   LDA 0, 1(7)	load ac with ret ptr
- 18:   LDA 7, -7(7)	jump to main loc
- 19:    LD 5, 0(5)	pop frame
+ 16:   LDA 7, 4(7)	jump body
+ 17:    ST 5, -1(5)	push ofp
+ 18:   LDA 5, -1(5)	push frame
+ 19:   LDA 0, 1(7)	load ac with ret ptr
+ 20:   LDA 7, -9(7)	jump to main loc
+ 21:    LD 5, 0(5)	pop frame
 * End of execution.
- 20:  HALT 0, 0, 0	
+ 22:  HALT 0, 0, 0	
