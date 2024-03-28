@@ -220,15 +220,25 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( VarExp exp, int level, boolean isAddr){
-
+		//TODO: this is very incomplete
+		//emitRM("LD", ac, the expr offset, scope ptr or gp?, "load id value");
+		//emitRM("ST", ac, level, fp, "store array value");
 	}
   
 	public void visit( CallExp exp, int level, boolean isAddr){
+		int funAddr = -1;
 
 	}
   
 	public void visit( OpExp exp, int level, boolean isAddr){
 		emitComment("-> op");
+
+		exp.left.accept(this, level, isAddr);
+		exp.right.accept(this, level - 1, isAddr);
+
+		//TODO: idk anymore about this emits
+		emitRM("LD", ac, level, fp, "");
+		emitRM("ST", ac1, level - 1, fp, "");
 
 		switch(exp.op) {
 			case OpExp.PLUS:
@@ -253,7 +263,7 @@ public class CodeGenerator implements AbsynVisitor{
 			  
 			  break;
 			case OpExp.LT:
-			  
+
 			  break;
 			case OpExp.LTE:
 			 
@@ -264,8 +274,6 @@ public class CodeGenerator implements AbsynVisitor{
 			case OpExp.GTE:
 			  
 			  break;
-
-			default:
 		
 		emitComment("<- op");
 	}
@@ -288,22 +296,13 @@ public class CodeGenerator implements AbsynVisitor{
 	public void visit( WhileExp exp, int level, boolean isAddr){
 		emitComment("-> while");
 
-        int top = emitSkip(0);
-        exp.test.accept(this, level, isAddr);
-        int savedLoc = emitSkip(1);
 
 		if (exp.body != null)
 		{
             exp.body.accept(this, level, isAddr);
         }
 
-		int savedLoc3 = emitSkip(0);
-        emitRM("LDA", pc, top - savedLoc3 - 1, pc, "while: absolute jump to test");
 
-        int savedLoc2 = emitSkip(0);
-        emitBackup(savedLoc);
-        emitRM(exp.test.def, ac, savedLoc2 - savedLoc - 1, pc, "while: jump to end");
-        emitRestore();
 
 		emitComment("<- while");
 	}
@@ -330,13 +329,31 @@ public class CodeGenerator implements AbsynVisitor{
 	}
 
 	public void visit( FuncDec exp, int level, boolean isAddr){
-		if(exp != null)
-		{
-			exp.params.accept(this, level, false);
-			exp.body.accept(this, level, false);
+		emitComment("-> fundecl");
+    	emitComment("processing function: " + exp.func);
+    	emitComment("jump around function body");
 
-			
+		int startLoc = emitSkip(1);
+
+		exp.funAddr = emitLoc;
+
+		if (exp.func.equals("main")) {
+			mainEntry = emitLoc;
 		}
+
+		emitRM("ST", 0, -1, fp, "store return"); //TODO: make sure the return address is in register 0
+
+		int frameOffset = -2;
+
+		exp.body.accept(this, frameOffset, isAddr);
+
+		emitRM("LD", pc, 01, fp, "load return address");
+
+		emitComment("<- fundecl");
+
+		int endLoc = emitLoc;
+		emitRM("LDA", pc, endLoc - startLoc - 1, pc, "jump body");
+		emitRestore();
 	}
   
 	public void visit( SimpleDec exp, int level, boolean isAddr){
