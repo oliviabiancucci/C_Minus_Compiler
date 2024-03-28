@@ -38,53 +38,54 @@
  19:    ST 0, -2(5)	storing operation result
 * <- op
 * -> return
- 21:    LD 0, 0(5)	load value in variable u
- 22:    ST 0, -2(5)	store variable value on stack
+ 22:    LD 0, 0(5)	load value in variable u
+ 23:    ST 0, -3(5)	store variable value on stack
 * -> id
 * looking up id: u
 * <- id
- 23:    LD 7, -1(5)	return to call
+ 24:    LD 7, -1(5)	return to call
 * <- return
-* if: jump to end belongs here
- 20:   JEQ 7, 3(7)	if: jmp to else
 * if: jump to else belongs here
 * -> return
 * ---------------------------------------------------------> CALLEXP
- 24:    LD 7, -1(5)	return to call
+ 26:    LD 7, -1(5)	return to call
 * <- return
+ 25:   LDA 7, 1(7)	if: jmp to end
+ 20:    LD 0, -2(5)	load result
+ 21:   JEQ 0, 3(7)	if: jmp to else
 * <- if
 * <- compound
- 25:    LD 7, -1(5)	load return address
+ 27:    LD 7, -1(5)	load return address
 * <- fundecl
- 26:   LDA 7, 14(7)	jump body
+ 28:   LDA 7, 16(7)	jump body
 * -> fundecl
 * processing function: main
 * jump around function body
- 28:    ST 0, -1(5)	store return
+ 30:    ST 0, -1(5)	store return
 * -> compound
 * allocated local var: x -2
 * -> assign
 * ---------------------------------------------------------> CALLEXP
- 29:    LD 0, -4(5)	retrieve result
- 30:    ST 0, -2(5)	store result in variable
+ 31:    LD 0, -4(5)	retrieve result
+ 32:    ST 0, -2(5)	store result in variable
 * <- assign
 * -> assign
 * -> constant
- 31:   LDC 0, 10(0)	load const
- 32:    ST 0, -4(5)	op: push left
+ 33:   LDC 0, 10(0)	load const
+ 34:    ST 0, -4(5)	op: push left
 * <- constant
- 33:    LD 0, -4(5)	retrieve result
- 34:    ST 0, 0(5)	store result in variable
+ 35:    LD 0, -4(5)	retrieve result
+ 36:    ST 0, 0(5)	store result in variable
 * <- assign
 * ---------------------------------------------------------> CALLEXP
 * <- compound
- 35:    LD 7, -1(5)	load return address
+ 37:    LD 7, -1(5)	load return address
 * <- fundecl
- 36:   LDA 7, 8(7)	jump body
- 37:    ST 5, -1(5)	push ofp
- 38:   LDA 5, -1(5)	push frame
- 39:   LDA 0, 1(7)	load ac with ret ptr
- 40:   LDA 7, -13(7)	jump to main loc
- 41:    LD 5, 0(5)	pop frame
+ 38:   LDA 7, 8(7)	jump body
+ 39:    ST 5, -1(5)	push ofp
+ 40:   LDA 5, -1(5)	push frame
+ 41:   LDA 0, 1(7)	load ac with ret ptr
+ 42:   LDA 7, -13(7)	jump to main loc
+ 43:    LD 5, 0(5)	pop frame
 * End of execution.
- 42:  HALT 0, 0, 0	
+ 44:  HALT 0, 0, 0	

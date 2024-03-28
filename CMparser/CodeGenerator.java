@@ -323,24 +323,37 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( IfExp exp, int level, boolean isAddr){
+		int loc3 = -1; //end of then block
+		int loc4 = -1; //end of else block
+
         emitComment("-> if");
 
 		//IF
 		exp.test.accept(this, level, isAddr);
-		int loc1 = emitSkip(1);
-		exp.thenpart.accept(this, level, isAddr);
-		int loc2 = emitSkip(0);
+		int loc1 = emitSkip(2); //save two lines to load the result of the condition
+		exp.thenpart.accept(this, level - 1, isAddr);
+		int loc2 = emitLoc;
 		
-		emitBackup(loc1);
-		emitComment("if: jump to end belongs here");
-		emitRM_Abs("JEQ", 0, loc2, "if: jmp to else");
-		emitRestore();
+		// emitBackup(loc1);
+		// emitComment("if: jump to end belongs here");
+		// emitRM_Abs("JEQ", 0, loc2, "if: jmp to else");
+		// emitRestore();
 
 		//ELSE
 		if(exp.elsepart != null){
+			loc3 = emitSkip(1);
 			emitComment("if: jump to else belongs here");
 			exp.elsepart.accept(this, level, isAddr);
+			loc4 = emitLoc;
+			emitBackup(loc3);
+			emitRM_Abs("LDA", pc, loc4, "if: jmp to end");
+			emitRestore();
 		}
+
+		emitBackup(loc1);
+		emitRM("LD", ac, level, fp, "load result");
+		emitRM_Abs("JEQ", 0, loc2, "if: jmp to else");
+		emitRestore();
 
 		emitComment("<- if");
 	}
