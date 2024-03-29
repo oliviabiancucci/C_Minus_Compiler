@@ -262,11 +262,11 @@ public class CodeGenerator implements AbsynVisitor{
 			  int loc4 = emitLoc; //end of statement
 
 			  emitBackup(loc2);
-			  emitRM("LDA", pc, emitLoc - loc4 - 1, pc, "");
+			  emitRM("LDA", pc, loc4 - emitLoc - 1, pc, ""); //not confident on these arguments
 			  emitRestore();
 
 			  emitBackup(loc1);
-			  emitRM("JEQ", ac, emitLoc - loc3 - 1, pc, "");
+			  emitRM("JEQ", ac, loc3 - emitLoc - 1, pc, ""); //not confident on these arguments
 			  emitRestore();
 			  break;
 			case OpExp.LT:
