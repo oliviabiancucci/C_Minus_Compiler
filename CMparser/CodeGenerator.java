@@ -376,7 +376,7 @@ public class CodeGenerator implements AbsynVisitor{
 	public void visit( WhileExp exp, int level, boolean isAddr){
 		emitComment("-> while");
 		emitComment("while: jump after body comes back here");
-
+		int whileTest = emitLoc;
 		if (!(exp.test instanceof NilExp))
 		{
             exp.test.accept(this, level, isAddr);
@@ -384,15 +384,27 @@ public class CodeGenerator implements AbsynVisitor{
 		int loc1 = emitSkip(2);
 		
         exp.body.accept(this, level - 1, isAddr);
-		emitRM_Abs("LDA", pc, loc1, "while: jmp back to test exp");
+		emitRM_Abs("LDA", pc, whileTest, "while: jmp back to test exp");
 		int loc2 = emitLoc;
         
-
+		// writes lines just below test expression
 		emitBackup(loc1); // back up to two reserved lines
 		emitRM("LD", ac, level, fp, "load result"); // loads the result from the stack into ac
 		emitRM_Abs("JEQ", 0, loc2, "while: jmp to below while loop"); // compares ac against 0, jumps to loc2 if ac == 0
+
 		emitRestore(); // moves back to correct place to continue writing lines of code
 		emitComment("<- while");
+
+		/*
+		 77* 		TEST EXPRESSION 
+		 * 
+		 * 		"LD", ac, level, fp, "load result"
+		 * 		"JEQ", 0, loc2, "while: jmp to below while loop" conditional jump
+		 * 		
+		 * 		BODY
+		 * 
+		 * 		"LDA", pc, whileTest, "while: jmp back to test exp" unconditional jump
+		 */
 	}
   
 	public void visit( ReturnExp exp, int level, boolean isAddr){
