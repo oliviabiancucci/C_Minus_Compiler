@@ -23,62 +23,6 @@ public class CodeGenerator implements AbsynVisitor{
 	int retFO = -1;
 	int initFO = -2;
 
-/* 
-	private void insert(NodeType node){
-        if(table.containsKey(node.name)){
-            table.get(node.name).add(0, node);
-        }
-        else{ 
-            ArrayList<NodeType> arrList = new ArrayList<NodeType>();
-            arrList.add(0, node);
-            table.put(node.name, arrList);
-        }
-    }
-
-    private ArrayList<NodeType> lookup(NodeType node){
-        if(table.containsKey(node.name)){
-            return table.get(node.name);
-        }
-        return null;
-    }
-
-    private void delete(int level){
-        boolean delCheck;
-        while(true)
-        {
-            delCheck = false;
-            for(ArrayList<NodeType> nodes : table.values())
-            {
-                if(nodes.isEmpty() == false)
-                {
-                    for(int i = 0; i < nodes.size(); i++)
-                    {
-                        NodeType node = nodes.get(i);
-                        if(node.level == level)
-                        {
-                            nodes.remove(i);
-                            if(nodes.size() == 0)
-                            {
-                                table.remove(node.name);
-                                delCheck = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-                if(delCheck == true) // if something is deleted
-                {
-                    break;
-                }
-            }
-            if(delCheck == false) // if nothing is deleted
-            {
-                break;
-            }
-        }
-    }
-*/
-
 	public void codeGenerator() {
 		int frameOffset = -2; //TODO: check this?
 		globalOffset = 0;
