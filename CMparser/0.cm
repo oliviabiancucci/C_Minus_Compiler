@@ -1,9 +1,10 @@
-void main(void){
-    int x;
+void main(void) {
+  int x; 
+  int fac;
 
-    x = 0;
+  x = 2;
 
-    if(x == 0){
-        x = 5;
-    }
+  while (x > 1) {
+    fac = 5;
+  } 
 }
