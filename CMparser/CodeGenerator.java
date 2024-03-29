@@ -375,18 +375,20 @@ public class CodeGenerator implements AbsynVisitor{
             exp.test.accept(this, level, isAddr);
         }
 		int loc1 = emitSkip(2);
-		
+
+		emitComment("-----> while body start");
         exp.body.accept(this, level - 1, isAddr);
 		// unconditional jump to before the test condition
-		emitRM_Abs("LDA", pc, whileTest - emitLoc - 1, "while: jmp back to test exp"); // (whileTest: top) - (emitLoc: current) - 1
+		emitRM_Abs("LDA", pc, whileTest, "while: jmp back to test exp"); // (whileTest: top) - (emitLoc: current) - 1
 		int loc2 = emitLoc;
+		emitComment("<----- while body end");
         
 		// writes lines just below test expression
 		emitBackup(loc1); // back up to two reserved lines
 		emitRM("LD", ac, level, fp, "load result"); // loads the result from the stack into ac
-		emitRM_Abs("JEQ", 0, loc2 - emitLoc - 1, "while: jmp to below while loop"); // compares ac against 0, jumps to loc2 if ac == 0
-
+		emitRM_Abs("JEQ", 0, loc2 , "while: jmp to below while loop"); // compares ac against 0, jumps to loc2 if ac == 0
 		emitRestore(); // moves back to correct place to continue writing lines of code
+
 		emitComment("<- while");
 
 		/*
