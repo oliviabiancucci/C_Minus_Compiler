@@ -248,7 +248,9 @@ public class CodeGenerator implements AbsynVisitor{
   
 	public void visit( CallExp exp, int level, boolean isAddr){
 		int funAddr = -1;
+		int loc2 = -1;
 		emitComment("---------------------------------------------------------> CALLEXP");
+
 
 		//save current line in memory
 
@@ -375,20 +377,21 @@ public class CodeGenerator implements AbsynVisitor{
 		emitComment("-> while");
 		emitComment("while: jump after body comes back here");
 
-		if (exp.test != null)
+		if (!(exp.test instanceof NilExp))
 		{
             exp.test.accept(this, level, isAddr);
         }
+		int loc1 = emitSkip(2);
+		
+        exp.body.accept(this, level - 1, isAddr);
+		emitRM_Abs("LDA", pc, loc1, "while: jmp back to test exp");
+		int loc2 = emitLoc;
+        
 
-		if (exp.body != null)
-		{
-            exp.body.accept(this, level, isAddr);
-        }
-
-
-
-
-
+		emitBackup(loc1); // back up to two reserved lines
+		emitRM("LD", ac, level, fp, "load result"); // loads the result from the stack into ac
+		emitRM_Abs("JEQ", 0, loc2, "while: jmp to below while loop"); // compares ac against 0, jumps to loc2 if ac == 0
+		emitRestore(); // moves back to correct place to continue writing lines of code
 		emitComment("<- while");
 	}
   
@@ -398,7 +401,7 @@ public class CodeGenerator implements AbsynVisitor{
 		{
 			exp.exp.accept(this, level, isAddr);
 		}
-		emitRM("LD", pc, -1, fp, "return to call");
+		emitRM("LD", pc, -1, 77, "return to call");
 		emitComment("<- return");
 	}
   
@@ -436,11 +439,11 @@ public class CodeGenerator implements AbsynVisitor{
 
 		exp.body.accept(this, frameOffset, isAddr);
 
-		emitRM("LD", pc, -1, fp, "load return address");
+		emitRM("LD", pc, -1, fp, "load return address"); // places the value offset(fp) in program counter
 
 		emitComment("<- fundecl");
 
-		int endLoc = emitLoc;
+		int endLoc = 7;
 		emitRM("LDA", pc, endLoc - startLoc - 1, pc, "jump body");
 		emitRestore();
 	}
