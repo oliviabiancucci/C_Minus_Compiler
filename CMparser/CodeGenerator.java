@@ -181,7 +181,7 @@ public class CodeGenerator implements AbsynVisitor{
 	}
 
 	public void visit( NameTy exp, int level, boolean isAddr){
-		emitComment("---------------------------------------------------------> NAMETY");
+
 	}
   
 	public void visit( SimpleVar exp, int level, boolean isAddr){
@@ -193,6 +193,7 @@ public class CodeGenerator implements AbsynVisitor{
   
 	public void visit( IndexVar exp, int level, boolean isAddr){
 		emitComment("---------------------------------------------------------> INDEXVAR");
+		exp.index.accept(this, level, isAddr);
 	}
   
 	public void visit( Vartype exp, int level, boolean isAddr){
@@ -200,7 +201,6 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( NilExp exp, int level, boolean isAddr){
-		emitComment("---------------------------------------------------------> NILEXP");
 
 	}
   
@@ -213,7 +213,13 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( BoolExp exp, int level, boolean isAddr){
-		emitComment("---------------------------------------------------------> BOOLEXP");
+		if(exp.value == false){
+			emitRM("LDC", ac, 0, 0, "false condition");
+		}
+		else{
+			emitRM("LDC", ac, 1, 0, "true condition");
+		}
+		emitRM("ST", ac, level, fp, "");
 	}
   
 	public void visit( VarExp exp, int level, boolean isAddr){
@@ -275,25 +281,68 @@ public class CodeGenerator implements AbsynVisitor{
 			  emitRO("DIV", ac, ac, ac1, "perform division operation");
 			  break;
 			case OpExp.EQ:
-			  
+			  emitRO("SUB", ac, ac, ac1, "op ==");
+			  emitRM("JEQ", ac, 2, pc, "br if true");
+			  emitRM("LDC", ac, 0, 0, "false case");
+			  emitRM("LDA", pc, 1, pc, "unconditional jump");
+			  emitRM("LDC", ac, 1, 0, "true case");
 			  break;
 			case OpExp.NE:
-			  
+			  emitRO("SUB", ac, ac, ac1, "op !=");
+              emitRM("JNE", ac, 2, pc, "br if true");
+			  emitRM("LDC", ac, 0, 0, "false case");
+			  emitRM("LDA", pc, 1, pc, "unconditional jump");
+			  emitRM("LDC", ac, 1, 0, "true case");
 			  break;
 			case OpExp.NOT:
-			  
+			  int loc1 = 0;
+			  emitRM("LDC", ac, 0, 0, "");
+			  int loc2 = emitSkip(1); //unconditional jump
+			  int loc3 = emitLoc;
+			  emitRM("LDC", ac, 1, 0, "");
+			  int loc4 = emitLoc; //end of statement
+
+			  emitBackup(loc2);
+			  emitRM("LDA", pc, emitLoc - loc4 - 1, pc, "");
+			  emitRestore();
+
+			  emitBackup(loc1);
+			  emitRM("JEQ", ac, emitLoc - loc3 - 1, pc, "");
+			  emitRestore();
 			  break;
 			case OpExp.LT:
-
+			  emitRO("SUB", ac, ac, ac1, "op <");
+			  emitRM("JLT", ac, 2, pc, "br if true");
+			  emitRM("LDC", ac, 0, 0, "false case");
+			  emitRM("LDA", pc, 1, pc, "unconditional jump");
+			  emitRM("LDC", ac, 1, 0, "true case");
 			  break;
 			case OpExp.LTE:
-			 
+			  emitRO("SUB", ac, ac, ac1, "op <=");
+			  emitRM("JLE", ac, 2, pc, "br if true");
+			  emitRM("LDC", ac, 0, 0, "false case");
+			  emitRM("LDA", pc, 1, pc, "unconditional jump");
+			  emitRM("LDC", ac, 1, 0, "true case");
 			  break;
 			case OpExp.GT:
-			  
+			  emitRO("SUB", ac, ac, ac1, "op >");
+			  emitRM("JGT", ac, 2, pc, "br if true");
+			  emitRM("LDC", ac, 0, 0, "false case");
+			  emitRM("LDA", pc, 1, pc, "unconditional jump");
+			  emitRM("LDC", ac, 1, 0, "true case");
 			  break;
 			case OpExp.GTE:
-			  
+			  emitRO("SUB", ac, ac, ac1, "op >=");
+			  emitRM("JGE", ac, 2, pc, "br if true");
+			  emitRM("LDC", ac, 0, 0, "false case");
+			  emitRM("LDA", pc, 1, pc, "unconditional jump");
+			  emitRM("LDC", ac, 1, 0, "true case");
+			  break;
+			case OpExp.AND:
+
+			  break;
+			case OpExp.OR:
+
 			  break;
 		}
 
@@ -438,16 +487,27 @@ public class CodeGenerator implements AbsynVisitor{
 		if(exp.name != null){
 			if (exp.nestLevel == 0){
 				emitComment("allocating global var: " + exp.name);
+				emitComment("<- vardecl");
 			}
 			else{
-				emitComment("allocated local var: " + exp.name + " " + exp.offset);
+				emitComment("processing local var: " + exp.name + " " + exp.offset);
 			}
 		}
 		
 	}
   
 	public void visit( ArrayDec exp, int level, boolean isAddr){
-		emitComment("---------------------------------------------------------> ARRAYDEC");
+		exp.offset = level;
+
+		if(exp.name != null){
+			if (exp.nestLevel == 0){
+				emitComment("allocating global array: " + exp.name);
+				emitComment("<- vardecl");
+			}
+			else{
+				emitComment("processing local array: " + exp.name + " " + exp.offset);
+			}
+		}
 	}
 
 	public void visit( ExpList exp, int level, boolean isAddr){
