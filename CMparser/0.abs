@@ -2,10 +2,12 @@ The abstract syntax tree is:
 FunctionDec: main
     NameTy: VOID
     CompoundExp:
-        SimpleDec: x
-            NameTy: INT
-        SimpleDec: fac
-            NameTy: INT
+        VarDecList
+            SimpleDec: x
+                NameTy: INT
+        VarDecList
+            SimpleDec: fac
+                NameTy: INT
         AssignExp:
             VarExp: 
                 SimpleVar: x

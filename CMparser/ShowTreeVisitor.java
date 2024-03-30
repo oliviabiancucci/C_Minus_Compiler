@@ -303,7 +303,11 @@ public class ShowTreeVisitor implements AbsynVisitor {
     while( exp != null ) {
       if(exp.head != null)
       {
+        indent(level);
+        System.out.println("VarDecList");
+        level++;
         exp.head.accept( this, level, false );
+        level--;
       }
       exp = exp.tail;
     }
