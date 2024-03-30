@@ -10,5 +10,6 @@ Entering global scope:
     Exiting the scope of the main function
     output (INT) -> VOID
     input (VOID) -> INT
+    global INT
     main (VOID) -> VOID
 Exiting global scope

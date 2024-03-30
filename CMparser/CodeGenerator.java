@@ -133,14 +133,14 @@ public class CodeGenerator implements AbsynVisitor{
 	public void visit( SimpleVar exp, int level, boolean isAddr){
 		emitComment("-> id");
         emitComment("looking up id: " + exp.name);
-
+		/*
 		if(isAddr == false){ //TODO: i think level might not be right for the offset here in these emits
 			emitRM("LD", ac, level, fp, "load id value"); 
 		}
 		else{
 			emitRM("LDA", ac, level, fp, "load id address");
 		}
-		
+		*/
 		emitComment("<- id");
 	}
   
@@ -176,30 +176,31 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( VarExp exp, int level, boolean isAddr){
-		// if(exp != null)
-		// {
-		// 	if(exp.dtype instanceof SimpleDec)
-		// 	{
-		// 		SimpleDec simp = (SimpleDec)exp.dtype;
+		
+		if(exp != null)
+		{
+			if(exp.dtype instanceof SimpleDec)
+			{
+				SimpleDec simp = (SimpleDec)exp.dtype;
 
-		// 		if(simp.nestLevel == 0) //global scope
-		// 		{
-		// 			emitRM( "LD", ac, simp.offset, gp, "load value in variable " + simp.name);
-		// 			emitRM( "ST", ac, level, gp, "store variable value on stack");
-		// 		}
-		// 		else // local scope
-		// 		{
-		// 			emitRM( "LD", ac, simp.offset, fp, "load value in variable " + simp.name);
-		// 			emitRM( "ST", ac, level, fp, "store variable value on stack");
-		// 		}
-		// 	}
-		// 	else if(exp.dtype instanceof ArrayDec)
-		// 	{
-		// 		ArrayDec array = (ArrayDec)exp.dtype;
-		// 		System.out.println(array.name);
-		// 	}
-		// }
-
+				if(simp.nestLevel == 0) //global scope
+				{
+					emitRM( "LD", ac, simp.offset, gp, "load value in variable " + simp.name);
+					emitRM( "ST", ac, level, gp, "store variable value on stack");
+				}
+				else // local scope
+				{
+					emitRM( "LD", ac, simp.offset, fp, "load value in variable " + simp.name);
+					emitRM( "ST", ac, level, fp, "store variable value on stack");
+				}
+			}
+			else if(exp.dtype instanceof ArrayDec)
+			{
+				ArrayDec array = (ArrayDec)exp.dtype;
+				System.out.println(array.name);
+			}
+		}
+		
 		if(exp.varName != null){
 			exp.varName.accept(this, level, isAddr);
 		}
@@ -252,7 +253,7 @@ public class CodeGenerator implements AbsynVisitor{
 			case OpExp.DIVIDE:
 			  emitRO("DIV", ac, ac, ac1, "op /");
 			  break;
-			case OpExp.EQ:
+			case OpExp.COMP:
 			  emitRO("SUB", ac, ac, ac1, "op ==");
 			  emitRM("JEQ", ac, 2, pc, "br if true");
 			  emitRM("LDC", ac, 0, 0, "false case");
@@ -318,7 +319,7 @@ public class CodeGenerator implements AbsynVisitor{
 			  break;
 		}
 
-		//emitRM("ST", ac, level, fp, "storing operation result");
+		emitRM("ST", ac, level, fp, "storing operation result");
 
 		emitComment("<- op");
 	}
@@ -363,26 +364,28 @@ public class CodeGenerator implements AbsynVisitor{
 		exp.thenpart.accept(this, level - 1, isAddr);
 		int loc2 = emitLoc;
 		
-		// emitBackup(loc1);
-		// emitComment("if: jump to end belongs here");
-		// emitRM_Abs("JEQ", 0, loc2, "if: jmp to else");
-		// emitRestore();
-
 		//ELSE
-		if(exp.elsepart != null){
-			loc3 = emitSkip(1);
+		if(!(exp.elsepart instanceof NilExp)){
 			emitComment("if: jump to else belongs here");
+			loc3 = emitSkip(1);
 			exp.elsepart.accept(this, level, isAddr);
 			loc4 = emitLoc;
 			emitBackup(loc3);
 			emitRM_Abs("LDA", pc, loc4, "if: jmp to end");
 			emitRestore();
-		}
 
-		emitBackup(loc1);
-		emitRM("LD", ac, level, fp, "load result");
-		emitRM_Abs("JEQ", 0, loc2, "if: jmp to else");
-		emitRestore();
+			emitBackup(loc1);
+			emitRM("LD", ac, level, fp, "load result");
+			emitRM_Abs("JEQ", 0, loc2 + 1, "if: jmp to else"); // loc2 + 1 to account for added line by else jump
+			emitRestore();
+		}
+		else
+		{
+			emitBackup(loc1);
+			emitRM("LD", ac, level, fp, "load result");
+			emitRM_Abs("JEQ", 0, loc2, "if: jmp to end");
+			emitRestore();
+		}
 
 		emitComment("<- if");
 	}
@@ -482,7 +485,6 @@ public class CodeGenerator implements AbsynVisitor{
 		exp.offset = level;
 
 		if(exp.name != null){
-			System.err.println(exp.nestLevel);
 			if (exp.nestLevel == 0){ //TODO: this doesnt work, for some reason the global vars are on level 1
 				emitComment("allocating global var: " + exp.name);
 				emitComment("<- vardecl");

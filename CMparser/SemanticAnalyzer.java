@@ -877,7 +877,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
                 }
             }
 
-            if(level != 0)
+            if(level > 1)
             {
                 exp.nestLevel = 1;
             }
