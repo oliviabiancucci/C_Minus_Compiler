@@ -5,6 +5,8 @@ Entering global scope:
         Entering the Else block scope
         Exiting the Else block scope
         x INT
+        y INT
+        z INT
     Exiting the scope of the main function
     output (INT) -> VOID
     input (VOID) -> INT

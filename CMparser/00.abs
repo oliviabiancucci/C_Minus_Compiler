@@ -5,26 +5,38 @@ FunctionDec: main
         VarDecList
             SimpleDec: x
                 NameTy: INT
+        VarDecList
+            SimpleDec: y
+                NameTy: INT
+        VarDecList
+            SimpleDec: z
+                NameTy: INT
         AssignExp:
             VarExp: 
                 SimpleVar: x
-            IntExp: 3
+            IntExp: 0
+        AssignExp:
+            VarExp: 
+                SimpleVar: y
+            IntExp: 1
+        AssignExp:
+            VarExp: 
+                SimpleVar: z
+            IntExp: 0
         IfExp:
             OpExp: == 
                 VarExp: 
                     SimpleVar: x
-                IntExp: 2
+                VarExp: 
+                    SimpleVar: y
             CompoundExp:
                 AssignExp:
                     VarExp: 
-                        SimpleVar: x
-                    OpExp: - 
-                        VarExp: 
-                            SimpleVar: x
-                        IntExp: 1
+                        SimpleVar: z
+                    IntExp: 1
         ElseExp:
             CompoundExp:
                 AssignExp:
                     VarExp: 
-                        SimpleVar: x
-                    IntExp: 0
+                        SimpleVar: z
+                    IntExp: 2
