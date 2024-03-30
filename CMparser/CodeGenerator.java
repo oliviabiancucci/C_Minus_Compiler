@@ -115,7 +115,7 @@ public class CodeGenerator implements AbsynVisitor{
 
 		//Finale
 		emitRM( "ST", fp, globalOffset + ofpFO, fp, "push ofp" );
-		emitRM( "LDA", fp, globalOffset, fp, "push frame" ); //TODO: globalOffset may be wrong
+		emitRM( "LDA", fp, globalOffset, fp, "push frame" );
 		emitRM( "LDA", ac, 1, pc, "load ac with ret ptr" );
 		emitRM_Abs( "LDA", pc, mainEntry, "jump to main loc" );
 		emitRM( "LD", fp, ofpFO, fp, "pop frame" );
@@ -199,21 +199,22 @@ public class CodeGenerator implements AbsynVisitor{
 	public void visit( CallExp exp, int level, boolean isAddr){
 		int funAddr = -1;
 		int loc2 = -1;
-		emitComment("---------------------------------------------------------> CALLEXP");
-
+		emitComment("-> call of function: " + exp.func);
 
 		//save current line in memory
-
 		//go to function address
-		
 		//create space for parameters
-
 		// run function code
-
 		//pass back function returns
-
 		// return to previous line in memory
 
+		emitRM("ST", fp, level, fp, "push ofp"); //ofpFO + level?
+		emitRM("LDA", fp, level, fp, "push frame");
+		emitRM("LDA", ac, 1, pc, "load ac with ret ptr");
+		emitRM_Abs("LDA", pc, ((FuncDec)exp.dtype).funAddr, "jump to fun loc");
+		emitRM("LD", fp, 0, fp, "pop frame"); //ofpFO instead of 0?
+
+		emitComment("<- call");
 	}
   
 	public void visit( OpExp exp, int level, boolean isAddr){
