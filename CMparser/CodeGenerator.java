@@ -22,6 +22,7 @@ public class CodeGenerator implements AbsynVisitor{
 	int ofpFO = 0;
 	int retFO = -1;
 	int initFO = -2;
+	int frameOffset = 0;
 
 	public void codeGenerator() {
 		int frameOffset = -2; //TODO: check this?
@@ -422,6 +423,7 @@ public class CodeGenerator implements AbsynVisitor{
 		{
 			if(exp.decs != null){
 				exp.decs.accept(this, level, isAddr);
+				level = frameOffset; //JUST ADDED
 			}
 			if(exp.exp != null){
 				exp.exp.accept(this, level, isAddr);
@@ -519,6 +521,6 @@ public class CodeGenerator implements AbsynVisitor{
 			level -= offset;
 			exp = exp.tail;
 		}
-		//frameOffset = level; ????
+		frameOffset = level; //JUST ADDED
 	}
 }

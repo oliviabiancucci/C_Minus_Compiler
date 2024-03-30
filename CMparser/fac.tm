@@ -21,72 +21,110 @@
 * jump around function body
  12:    ST 0, -1(5)	store return
 * -> compound
-* allocated local var: x -2
-* allocated local var: fac -3
+* processing local var: x -2
+* processing local var: fac -3
 * -> assign
-* ---------------------------------------------------------> VAREXP
- 13:   LDA 0, -2(5)	load declaration address: x
-* ---------------------------------------------------------> CALLEXP
- 14:    LD 0, -3(5)	retrieve result
- 15:    ST 0, 0(1)	store result in variable
+* -> call of function: input
+ 13:    ST 5, -6(5)	push ofp
+ 14:   LDA 5, -6(5)	push frame
+ 15:   LDA 0, 1(7)	load ac with ret ptr
+ 16:   LDA 7, -17(7)	jump to fun loc
+ 17:    LD 5, 0(5)	pop frame
+* <- call
+ 18:    LD 0, -6(5)	retrieve result
+ 19:    ST 0, -2(5)	store result in variable
 * <- assign
 * -> assign
-* ---------------------------------------------------------> VAREXP
- 16:   LDA 0, -3(5)	load declaration address: fac
 * -> constant
- 17:   LDC 1, 1(0)	load const
- 18:    ST 1, -4(5)	op: push left
+ 20:   LDC 0, 1(0)	load const
+ 21:    ST 0, -6(5)	op: push left
 * <- constant
- 19:    LD 0, -3(5)	retrieve result
- 20:    ST 0, 0(1)	store result in variable
+ 22:    LD 0, -6(5)	retrieve result
+ 23:    ST 0, -3(5)	store result in variable
 * <- assign
 * -> while
+* while: jump after body comes back here
+* -> op
+ 24:    LD 0, -2(5)	load value in variable x
+ 25:    ST 0, -4(5)	store variable value on stack
+* -> id
+* looking up id: x
+* <- id
+* -> constant
+ 26:   LDC 0, 1(0)	load const
+ 27:    ST 0, -5(5)	op: push left
+* <- constant
+ 28:    LD 0, -4(5)	
+ 29:    LD 1, -5(5)	
+ 30:   SUB 0, 0, 1	op >
+ 31:   JGT 0, 2(7)	br if true
+ 32:   LDC 0, 0(0)	false case
+ 33:   LDA 7, 1(7)	unconditional jump
+ 34:   LDC 0, 1(0)	true case
+ 35:    ST 0, -4(5)	storing operation result
+* <- op
+* -----> while body start
 * -> compound
 * -> assign
-* ---------------------------------------------------------> VAREXP
- 21:   LDA 0, -3(5)	load declaration address: fac
 * -> op
-* ---------------------------------------------------------> VAREXP
- 22:   LDA 0, -3(5)	load declaration address: fac
-* ---------------------------------------------------------> VAREXP
- 23:   LDA 0, -2(5)	load declaration address: x
- 24:    LD 0, -4(5)	
- 25:    LD 1, -5(5)	
- 26:   MUL 0, 0, 1	perform multiply operation
- 27:    ST 0, -4(5)	storing operation result
+ 38:    LD 0, -3(5)	load value in variable fac
+ 39:    ST 0, -7(5)	store variable value on stack
+* -> id
+* looking up id: fac
+* <- id
+ 40:    LD 0, -2(5)	load value in variable x
+ 41:    ST 0, -8(5)	store variable value on stack
+* -> id
+* looking up id: x
+* <- id
+ 42:    LD 0, -7(5)	
+ 43:    LD 1, -8(5)	
+ 44:   MUL 0, 0, 1	perform multiply operation
+ 45:    ST 0, -7(5)	storing operation result
 * <- op
- 28:    LD 0, -3(5)	retrieve result
- 29:    ST 0, 0(1)	store result in variable
+ 46:    LD 0, -7(5)	retrieve result
+ 47:    ST 0, -3(5)	store result in variable
 * <- assign
 * -> assign
-* ---------------------------------------------------------> VAREXP
- 30:   LDA 0, -2(5)	load declaration address: x
 * -> op
-* ---------------------------------------------------------> VAREXP
- 31:   LDA 0, -2(5)	load declaration address: x
+ 48:    LD 0, -2(5)	load value in variable x
+ 49:    ST 0, -7(5)	store variable value on stack
+* -> id
+* looking up id: x
+* <- id
 * -> constant
- 32:   LDC 1, 1(0)	load const
- 33:    ST 1, -5(5)	op: push left
+ 50:   LDC 0, 1(0)	load const
+ 51:    ST 0, -8(5)	op: push left
 * <- constant
- 34:    LD 0, -4(5)	
- 35:    LD 1, -5(5)	
- 36:   SUB 0, 0, 1	perform subtract operation
- 37:    ST 0, -4(5)	storing operation result
+ 52:    LD 0, -7(5)	
+ 53:    LD 1, -8(5)	
+ 54:   SUB 0, 0, 1	perform subtract operation
+ 55:    ST 0, -7(5)	storing operation result
 * <- op
- 38:    LD 0, -3(5)	retrieve result
- 39:    ST 0, 0(1)	store result in variable
+ 56:    LD 0, -7(5)	retrieve result
+ 57:    ST 0, -2(5)	store result in variable
 * <- assign
 * <- compound
+ 58:   LDA 7, -35(7)	while: jmp back to test exp
+* <----- while body end
+ 36:    LD 0, -4(5)	load result
+ 37:   JEQ 0, 21(7)	while: jmp to below while loop
 * <- while
-* ---------------------------------------------------------> CALLEXP
+* -> call of function: output
+ 59:    ST 5, -4(5)	push ofp
+ 60:   LDA 5, -4(5)	push frame
+ 61:   LDA 0, 1(7)	load ac with ret ptr
+ 62:   LDA 7, -63(7)	jump to fun loc
+ 63:    LD 5, 0(5)	pop frame
+* <- call
 * <- compound
- 40:    LD 7, -1(5)	load return address
+ 64:    LD 7, -1(5)	load return address
 * <- fundecl
- 41:   LDA 7, 29(7)	jump body
- 42:    ST 5, -2(5)	push ofp
- 43:   LDA 5, -2(5)	push frame
- 44:   LDA 0, 1(7)	load ac with ret ptr
- 45:   LDA 7, -34(7)	jump to main loc
- 46:    LD 5, 0(5)	pop frame
+ 65:   LDA 7, -5(7)	jump body
+ 66:    ST 5, -2(5)	push ofp
+ 67:   LDA 5, -2(5)	push frame
+ 68:   LDA 0, 1(7)	load ac with ret ptr
+ 69:   LDA 7, -58(7)	jump to main loc
+ 70:    LD 5, 0(5)	pop frame
 * End of execution.
- 47:  HALT 0, 0, 0	
+ 71:  HALT 0, 0, 0	
