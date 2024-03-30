@@ -307,8 +307,6 @@ public class CodeGenerator implements AbsynVisitor{
 			  break;
 		}
 
-		//TODO: this is storing the result of GT in the wrong spot, needs to store below the variables memory
-		//TODO: this error is in the if statement of 0.cm rn
 		emitRM("ST", ac, level, fp, "storing operation result");
 
 		emitComment("<- op");
@@ -317,13 +315,12 @@ public class CodeGenerator implements AbsynVisitor{
 	public void visit( AssignExp exp, int level, boolean isAddr){
 		emitComment("-> assign");
 		
-		//exp.lhs.accept(this, level - 1, isAddr);
-		exp.rhs.accept(this, level - 2, isAddr);
+		exp.rhs.accept(this, level, isAddr);
 
 		if(exp.lhs.dtype instanceof SimpleDec)
 		{
 			SimpleDec dec = (SimpleDec)exp.lhs.dtype;
-			emitRM( "LD", ac, level - 2, fp, "retrieve result");
+			emitRM( "LD", ac, level, fp, "retrieve result");
 			emitRM( "ST", ac, dec.offset, fp, "store result in variable");
 		}
 		else if(exp.lhs.dtype instanceof ArrayDec)

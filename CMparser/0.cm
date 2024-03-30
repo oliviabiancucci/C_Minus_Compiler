@@ -2,9 +2,11 @@ void main(void) {
   int x; 
   int fac;
 
-  x = 2;
+  fac = 0;
+  x = 3;
 
   while (x > 1) {
-    fac = 5;
+    fac = fac + 1;
+    x = x - 1;
   } 
 }

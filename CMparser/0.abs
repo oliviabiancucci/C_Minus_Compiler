@@ -10,8 +10,12 @@ FunctionDec: main
                 NameTy: INT
         AssignExp:
             VarExp: 
+                SimpleVar: fac
+            IntExp: 0
+        AssignExp:
+            VarExp: 
                 SimpleVar: x
-            IntExp: 2
+            IntExp: 3
         WhileExp:
             OpExp: > 
                 VarExp: 
@@ -21,4 +25,14 @@ FunctionDec: main
                 AssignExp:
                     VarExp: 
                         SimpleVar: fac
-                    IntExp: 5
+                    OpExp: + 
+                        VarExp: 
+                            SimpleVar: fac
+                        IntExp: 1
+                AssignExp:
+                    VarExp: 
+                        SimpleVar: x
+                    OpExp: - 
+                        VarExp: 
+                            SimpleVar: x
+                        IntExp: 1
