@@ -1,0 +1,11 @@
+void main(void) {
+  bool x; 
+  bool y;
+
+  x = false;
+  y = true;
+
+  if(x == y){
+    
+  }
+}

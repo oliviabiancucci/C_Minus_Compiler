@@ -134,8 +134,12 @@ public class CodeGenerator implements AbsynVisitor{
 		emitComment("-> id");
         emitComment("looking up id: " + exp.name);
 
-		//if (isAddr) emitRM("LDA", ac, exp.dec.offset, fp, "load id address"); //TODO: just added recently (march 29th), delete if u want
-		//else emitRM("LD", ac, exp.dec.offset, fp, "load id value"); 
+		if(isAddr == false){ //TODO: i think level might not be right for the offset here in these emits
+			emitRM("LD", ac, level, fp, "load id value"); 
+		}
+		else{
+			emitRM("LDA", ac, level, fp, "load id address");
+		}
 		
 		emitComment("<- id");
 	}
@@ -155,10 +159,9 @@ public class CodeGenerator implements AbsynVisitor{
   
 	public void visit( IntExp exp, int level, boolean isAddr){
         emitComment("-> constant");
-        emitRM("LDC", ac, Integer.parseInt(exp.value), 0, "load const"); // holds constant in ac1
-        emitRM("ST", ac, level, fp, "op: push left");
+        emitRM("LDC", ac, Integer.parseInt(exp.value), 0, "load const"); // holds constant in ac
         emitComment("<- constant");
-		//TODO: globalOffset--;
+		globalOffset--; //TODO: check this line
 	}
   
 	public void visit( BoolExp exp, int level, boolean isAddr){
@@ -172,29 +175,29 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( VarExp exp, int level, boolean isAddr){
-		if(exp != null)
-		{
-			if(exp.dtype instanceof SimpleDec)
-			{
-				SimpleDec simp = (SimpleDec)exp.dtype;
+		// if(exp != null)
+		// {
+		// 	if(exp.dtype instanceof SimpleDec)
+		// 	{
+		// 		SimpleDec simp = (SimpleDec)exp.dtype;
 
-				if(simp.nestLevel == 0) //global scope
-				{
-					emitRM( "LD", ac, simp.offset, gp, "load value in variable " + simp.name);
-					emitRM( "ST", ac, level, gp, "store variable value on stack");
-				}
-				else // local scope
-				{
-					emitRM( "LD", ac, simp.offset, fp, "load value in variable " + simp.name);
-					emitRM( "ST", ac, level, fp, "store variable value on stack");
-				}
-			}
-			else if(exp.dtype instanceof ArrayDec)
-			{
-				ArrayDec array = (ArrayDec)exp.dtype;
-				System.out.println(array.name);
-			}
-		}
+		// 		if(simp.nestLevel == 0) //global scope
+		// 		{
+		// 			emitRM( "LD", ac, simp.offset, gp, "load value in variable " + simp.name);
+		// 			emitRM( "ST", ac, level, gp, "store variable value on stack");
+		// 		}
+		// 		else // local scope
+		// 		{
+		// 			emitRM( "LD", ac, simp.offset, fp, "load value in variable " + simp.name);
+		// 			emitRM( "ST", ac, level, fp, "store variable value on stack");
+		// 		}
+		// 	}
+		// 	else if(exp.dtype instanceof ArrayDec)
+		// 	{
+		// 		ArrayDec array = (ArrayDec)exp.dtype;
+		// 		System.out.println(array.name);
+		// 	}
+		// }
 
 		if(exp.varName != null){
 			exp.varName.accept(this, level, isAddr);
@@ -228,22 +231,21 @@ public class CodeGenerator implements AbsynVisitor{
 		exp.left.accept(this, level, isAddr);
 		exp.right.accept(this, level - 1, isAddr);
 
-		//TODO: idk anymore about this emits
 		emitRM("LD", ac, level, fp, "");
 		emitRM("LD", ac1, level - 1, fp, "");
 
 		switch(exp.op) {
 			case OpExp.PLUS:
-			  emitRO("ADD", ac, ac, ac1, "perform add operation");
+			  emitRO("ADD", ac, ac, ac1, "op +");
 			  break;
 			case OpExp.MINUS:
-			  emitRO("SUB", ac, ac, ac1, "perform subtract operation");
+			  emitRO("SUB", ac, ac, ac1, "op -");
 			  break;
 			case OpExp.TIMES:
-			  emitRO("MUL", ac, ac, ac1, "perform multiply operation");
+			  emitRO("MUL", ac, ac, ac1, "op *");
 			  break;
 			case OpExp.DIVIDE:
-			  emitRO("DIV", ac, ac, ac1, "perform division operation");
+			  emitRO("DIV", ac, ac, ac1, "op /");
 			  break;
 			case OpExp.EQ:
 			  emitRO("SUB", ac, ac, ac1, "op ==");
@@ -311,21 +313,28 @@ public class CodeGenerator implements AbsynVisitor{
 			  break;
 		}
 
-		emitRM("ST", ac, level, fp, "storing operation result");
+		//emitRM("ST", ac, level, fp, "storing operation result");
 
 		emitComment("<- op");
 	}
   
 	public void visit( AssignExp exp, int level, boolean isAddr){
 		emitComment("-> op");
-		
+
+		if(exp.lhs != null){
+			exp.lhs.accept(this, level, true);
+		}
+
+		emitRM("ST", ac, level, fp, "op: push left");
+
 		exp.rhs.accept(this, level, isAddr);
 
 		if(exp.lhs.dtype instanceof SimpleDec)
 		{
 			SimpleDec dec = (SimpleDec)exp.lhs.dtype;
-			emitRM( "LD", ac, level, fp, "retrieve result");
-			emitRM( "ST", ac, dec.offset, fp, "store result in variable");
+
+			emitRM( "LD", ac, level, fp, "op: load left");
+			emitRM( "ST", ac, dec.offset, fp, "assign: store value");
 		}
 		else if(exp.lhs.dtype instanceof ArrayDec)
 		{
