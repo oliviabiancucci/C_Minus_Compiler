@@ -159,9 +159,10 @@ public class CodeGenerator implements AbsynVisitor{
   
 	public void visit( IntExp exp, int level, boolean isAddr){
         emitComment("-> constant");
-        emitRM("LDC", ac, Integer.parseInt(exp.value), 0, "load const"); // holds constant in ac
+        emitRM("LDC", ac, Integer.parseInt(exp.value), 0, "load const"); // holds constant in ac1
+        emitRM("ST", ac, level, fp, "op: push left");
         emitComment("<- constant");
-		globalOffset--; //TODO: check this line
+		//globalOffset--; //TODO: check this line
 	}
   
 	public void visit( BoolExp exp, int level, boolean isAddr){
@@ -321,12 +322,14 @@ public class CodeGenerator implements AbsynVisitor{
 	public void visit( AssignExp exp, int level, boolean isAddr){
 		emitComment("-> op");
 
+		// Since we assign the variable below using it's offset we dont need to accept the lhs
+		/* 
 		if(exp.lhs != null){
 			exp.lhs.accept(this, level, true);
 		}
 
 		emitRM("ST", ac, level, fp, "op: push left");
-
+		*/
 		exp.rhs.accept(this, level, isAddr);
 
 		if(exp.lhs.dtype instanceof SimpleDec)
