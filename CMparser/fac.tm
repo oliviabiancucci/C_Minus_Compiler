@@ -20,111 +20,139 @@
 * processing function: main
 * jump around function body
  12:    ST 0, -1(5)	store return
-* -> compound
+* -> compound statement
 * processing local var: x -2
 * processing local var: fac -3
-* -> assign
-* -> call of function: input
- 13:    ST 5, -6(5)	push ofp
- 14:   LDA 5, -6(5)	push frame
- 15:   LDA 0, 1(7)	load ac with ret ptr
- 16:   LDA 7, -17(7)	jump to fun loc
- 17:    LD 5, 0(5)	pop frame
-* <- call
- 18:    LD 0, -6(5)	retrieve result
- 19:    ST 0, -2(5)	store result in variable
-* <- assign
-* -> assign
-* -> constant
- 20:   LDC 0, 1(0)	load const
- 21:    ST 0, -6(5)	op: push left
-* <- constant
- 22:    LD 0, -6(5)	retrieve result
- 23:    ST 0, -3(5)	store result in variable
-* <- assign
-* -> while
-* while: jump after body comes back here
 * -> op
- 24:    LD 0, -2(5)	load value in variable x
- 25:    ST 0, -4(5)	store variable value on stack
+ 13:    LD 0, -2(5)	load value in variable x
+ 14:    ST 0, -5(5)	store variable value on stack
 * -> id
 * looking up id: x
 * <- id
-* -> constant
- 26:   LDC 0, 1(0)	load const
- 27:    ST 0, -5(5)	op: push left
-* <- constant
- 28:    LD 0, -4(5)	
- 29:    LD 1, -5(5)	
- 30:   SUB 0, 0, 1	op >
- 31:   JGT 0, 2(7)	br if true
- 32:   LDC 0, 0(0)	false case
- 33:   LDA 7, 1(7)	unconditional jump
- 34:   LDC 0, 1(0)	true case
- 35:    ST 0, -4(5)	storing operation result
+* -> call of function: input
+ 15:    ST 5, -6(5)	push ofp
+ 16:   LDA 5, -6(5)	push frame
+ 17:   LDA 0, 1(7)	load ac with ret ptr
+ 18:   LDA 7, -19(7)	jump to fun loc
+ 19:    LD 5, 0(5)	pop frame
+* <- call
+ 20:    LD 0, -5(5)	op: load left
+ 21:    LD 1, -6(5)	op: load right
+ 22:    ST 1, 0(0)	
+ 23:    ST 1, -4(5)	assign: store value
 * <- op
-* -----> while body start
-* -> compound
-* -> assign
 * -> op
- 38:    LD 0, -3(5)	load value in variable fac
- 39:    ST 0, -7(5)	store variable value on stack
+ 24:    LD 0, -3(5)	load value in variable fac
+ 25:    ST 0, -5(5)	store variable value on stack
 * -> id
 * looking up id: fac
 * <- id
- 40:    LD 0, -2(5)	load value in variable x
- 41:    ST 0, -8(5)	store variable value on stack
-* -> id
-* looking up id: x
-* <- id
- 42:    LD 0, -7(5)	
- 43:    LD 1, -8(5)	
- 44:   MUL 0, 0, 1	perform multiply operation
- 45:    ST 0, -7(5)	storing operation result
+* -> constant
+ 26:   LDC 0, 1(0)	load const
+ 27:    ST 0, -6(5)	op: push left
+* <- constant
+ 28:    LD 0, -5(5)	op: load left
+ 29:    LD 1, -6(5)	op: load right
+ 30:    ST 1, 0(0)	
+ 31:    ST 1, -4(5)	assign: store value
 * <- op
- 46:    LD 0, -7(5)	retrieve result
- 47:    ST 0, -3(5)	store result in variable
-* <- assign
-* -> assign
+* -> while
+* while: jump after body comes back here
 * -> op
- 48:    LD 0, -2(5)	load value in variable x
- 49:    ST 0, -7(5)	store variable value on stack
+ 32:    LD 0, -2(5)	load value in variable x
+ 33:    ST 0, -4(5)	store variable value on stack
 * -> id
 * looking up id: x
 * <- id
 * -> constant
- 50:   LDC 0, 1(0)	load const
- 51:    ST 0, -8(5)	op: push left
+ 34:   LDC 0, 1(0)	load const
+ 35:    ST 0, -5(5)	op: push left
 * <- constant
+ 36:    LD 0, -4(5)	
+ 37:    LD 1, -5(5)	
+ 38:   SUB 0, 0, 1	op >
+ 39:   JGT 0, 2(7)	br if true
+ 40:   LDC 0, 0(0)	false case
+ 41:   LDA 7, 1(7)	unconditional jump
+ 42:   LDC 0, 1(0)	true case
+ 43:    ST 0, -4(5)	storing operation result
+* <- op
+* -----> while body start
+* -> compound statement
+* -> op
+ 46:    LD 0, -3(5)	load value in variable fac
+ 47:    ST 0, -6(5)	store variable value on stack
+* -> id
+* looking up id: fac
+* <- id
+* -> op
+ 48:    LD 0, -3(5)	load value in variable fac
+ 49:    ST 0, -7(5)	store variable value on stack
+* -> id
+* looking up id: fac
+* <- id
+ 50:    LD 0, -2(5)	load value in variable x
+ 51:    ST 0, -8(5)	store variable value on stack
+* -> id
+* looking up id: x
+* <- id
  52:    LD 0, -7(5)	
  53:    LD 1, -8(5)	
- 54:   SUB 0, 0, 1	perform subtract operation
+ 54:   MUL 0, 0, 1	perform multiply operation
  55:    ST 0, -7(5)	storing operation result
 * <- op
- 56:    LD 0, -7(5)	retrieve result
- 57:    ST 0, -2(5)	store result in variable
-* <- assign
-* <- compound
- 58:   LDA 7, -35(7)	while: jmp back to test exp
+ 56:    LD 0, -6(5)	op: load left
+ 57:    LD 1, -7(5)	op: load right
+ 58:    ST 1, 0(0)	
+ 59:    ST 1, -5(5)	assign: store value
+* <- op
+* -> op
+ 60:    LD 0, -2(5)	load value in variable x
+ 61:    ST 0, -6(5)	store variable value on stack
+* -> id
+* looking up id: x
+* <- id
+* -> op
+ 62:    LD 0, -2(5)	load value in variable x
+ 63:    ST 0, -7(5)	store variable value on stack
+* -> id
+* looking up id: x
+* <- id
+* -> constant
+ 64:   LDC 0, 1(0)	load const
+ 65:    ST 0, -8(5)	op: push left
+* <- constant
+ 66:    LD 0, -7(5)	
+ 67:    LD 1, -8(5)	
+ 68:   SUB 0, 0, 1	perform subtract operation
+ 69:    ST 0, -7(5)	storing operation result
+* <- op
+ 70:    LD 0, -6(5)	op: load left
+ 71:    LD 1, -7(5)	op: load right
+ 72:    ST 1, 0(0)	
+ 73:    ST 1, -5(5)	assign: store value
+* <- op
+* <- compound statement
+ 74:   LDA 7, -43(7)	while: jmp back to test exp
 * <----- while body end
- 36:    LD 0, -4(5)	load result
- 37:   JEQ 0, 21(7)	while: jmp to below while loop
+ 44:    LD 0, -4(5)	load result
+ 45:   JEQ 0, 29(7)	while: jmp to below while loop
 * <- while
 * -> call of function: output
- 59:    ST 5, -4(5)	push ofp
- 60:   LDA 5, -4(5)	push frame
- 61:   LDA 0, 1(7)	load ac with ret ptr
- 62:   LDA 7, -63(7)	jump to fun loc
- 63:    LD 5, 0(5)	pop frame
+ 75:    ST 5, -4(5)	push ofp
+ 76:   LDA 5, -4(5)	push frame
+ 77:   LDA 0, 1(7)	load ac with ret ptr
+ 78:   LDA 7, -79(7)	jump to fun loc
+ 79:    LD 5, 0(5)	pop frame
 * <- call
-* <- compound
- 64:    LD 7, -1(5)	load return address
+* <- compound statement
+ 80:    LD 7, -1(5)	load return address
 * <- fundecl
- 65:   LDA 7, -5(7)	jump body
- 66:    ST 5, -2(5)	push ofp
- 67:   LDA 5, -2(5)	push frame
- 68:   LDA 0, 1(7)	load ac with ret ptr
- 69:   LDA 7, -58(7)	jump to main loc
- 70:    LD 5, 0(5)	pop frame
+ 81:   LDA 7, -5(7)	jump body
+ 82:    ST 5, -2(5)	push ofp
+ 83:   LDA 5, -2(5)	push frame
+ 84:   LDA 0, 1(7)	load ac with ret ptr
+ 85:   LDA 7, -74(7)	jump to main loc
+ 86:    LD 5, 0(5)	pop frame
 * End of execution.
- 71:  HALT 0, 0, 0	
+ 87:  HALT 0, 0, 0	

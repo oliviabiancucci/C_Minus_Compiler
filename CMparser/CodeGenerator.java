@@ -133,6 +133,9 @@ public class CodeGenerator implements AbsynVisitor{
 		emitComment("-> id");
         emitComment("looking up id: " + exp.name);
 
+		//if (isAddr) emitRM("LDA", ac, exp.dec.offset, fp, "load id address"); //TODO: just added recently (march 29th), delete if u want
+		//else emitRM("LD", ac, exp.dec.offset, fp, "load id value"); 
+		
 		emitComment("<- id");
 	}
   
@@ -315,23 +318,27 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( AssignExp exp, int level, boolean isAddr){
-		emitComment("-> assign");
+		emitComment("-> op");
 		
-		//exp.lhs.accept(this, level - 1, isAddr);
+		exp.lhs.accept(this, level - 1, isAddr);
 		exp.rhs.accept(this, level - 2, isAddr);
 
 		if(exp.lhs.dtype instanceof SimpleDec)
 		{
 			SimpleDec dec = (SimpleDec)exp.lhs.dtype;
-			emitRM( "LD", ac, level - 2, fp, "retrieve result");
-			emitRM( "ST", ac, dec.offset, fp, "store result in variable");
+			//emitRM( "LD", ac, level - 2, fp, "retrieve result");
+			//emitRM( "ST", ac, dec.offset, fp, "store result in variable");
+			emitRM("LD", ac, level - 1, fp, "op: load left");
+			emitRM("LD", ac1, level - 2, fp, "op: load right");
+			emitRM("ST", ac1, ac, ac, "");
+			emitRM("ST", ac1, level, fp, "assign: store value");
 		}
 		else if(exp.lhs.dtype instanceof ArrayDec)
 		{
-			//something eventually
+			//TODO: something eventually
 		}
 	
-		emitComment("<- assign");
+		emitComment("<- op");
 	}
   
 	public void visit( IfExp exp, int level, boolean isAddr){
@@ -418,7 +425,7 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( CompoundExp exp, int level, boolean isAddr){
-		emitComment("-> compound");
+		emitComment("-> compound statement");
 		if(exp != null)
 		{
 			if(exp.decs != null){
@@ -429,7 +436,7 @@ public class CodeGenerator implements AbsynVisitor{
 				exp.exp.accept(this, level, isAddr);
 			}
 		}
-		emitComment("<- compound");
+		emitComment("<- compound statement");
 
 	}
 
