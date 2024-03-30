@@ -305,6 +305,8 @@ public class CodeGenerator implements AbsynVisitor{
 			  break;
 		}
 
+		//TODO: this is storing the result of GT in the wrong spot, needs to store below the variables memory
+		//TODO: this error is in the if statement of 0.cm rn
 		emitRM("ST", ac, level, fp, "storing operation result");
 
 		emitComment("<- op");
