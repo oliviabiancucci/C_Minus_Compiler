@@ -35,8 +35,9 @@ FunctionDec: gcd
 FunctionDec: main
     NameTy: VOID
     CompoundExp:
-        SimpleDec: x
-            NameTy: INT
+        VarDecList
+            SimpleDec: x
+                NameTy: INT
         AssignExp:
             VarExp: 
                 SimpleVar: x

@@ -216,6 +216,10 @@ public class CodeGenerator implements AbsynVisitor{
 		//pass back function returns
 		// return to previous line in memory
 
+		if(exp.args != null){
+			exp.args.accept(this, level, isAddr);
+		}
+
 		emitRM("ST", fp, level, fp, "push ofp"); //ofpFO + level?
 		emitRM("LDA", fp, level, fp, "push frame");
 		emitRM("LDA", ac, 1, pc, "load ac with ret ptr");
@@ -231,7 +235,7 @@ public class CodeGenerator implements AbsynVisitor{
 		exp.left.accept(this, level, isAddr);
 		exp.right.accept(this, level - 1, isAddr);
 
-		emitRM("LD", ac, level, fp, "");
+		emitRM("LD", ac, level, fp, ""); //todo: i dont think these two lines are needed here/are right
 		emitRM("LD", ac1, level - 1, fp, "");
 
 		switch(exp.op) {
@@ -423,7 +427,7 @@ public class CodeGenerator implements AbsynVisitor{
 		{
 			exp.exp.accept(this, level, isAddr);
 		}
-		emitRM("LD", pc, -1, 77, "return to call");
+		emitRM("LD", pc, -1, 77, "return to caller");
 		emitComment("<- return");
 	}
   
@@ -433,7 +437,7 @@ public class CodeGenerator implements AbsynVisitor{
 		{
 			if(exp.decs != null){
 				exp.decs.accept(this, level, isAddr);
-				level = frameOffset; //JUST ADDED
+				level = frameOffset;
 			}
 			if(exp.exp != null){
 				exp.exp.accept(this, level, isAddr);
@@ -475,7 +479,8 @@ public class CodeGenerator implements AbsynVisitor{
 		exp.offset = level;
 
 		if(exp.name != null){
-			if (exp.nestLevel == 0){
+			System.err.println(exp.nestLevel);
+			if (exp.nestLevel == 0){ //TODO: this doesnt work, for some reason the global vars are on level 1
 				emitComment("allocating global var: " + exp.name);
 				emitComment("<- vardecl");
 			}
@@ -531,6 +536,6 @@ public class CodeGenerator implements AbsynVisitor{
 			level -= offset;
 			exp = exp.tail;
 		}
-		frameOffset = level; //JUST ADDED
+		frameOffset = level;
 	}
 }
