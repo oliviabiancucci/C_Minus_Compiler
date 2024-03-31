@@ -130,6 +130,7 @@ public class CodeGenerator implements AbsynVisitor{
 	public void visit( SimpleVar exp, int level, boolean isAddr){
 		emitComment("-> id");
         emitComment("looking up id: " + exp.name);
+
 		emitComment("<- id");
 	}
   
@@ -172,7 +173,6 @@ public class CodeGenerator implements AbsynVisitor{
 			{
 				SimpleDec simp = (SimpleDec)exp.dtype;
 
-				//TODO: the offset is never set in the variables so its always 0 and not correctttt
 				if(simp.nestLevel == 0) //global scope
 				{
 					emitRM( "LD", ac, simp.offset, gp, "load value in variable " + simp.name);
