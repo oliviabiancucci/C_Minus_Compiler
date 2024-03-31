@@ -1,18 +1,9 @@
-int global;
-
 void main(void) {
-  int x; 
-  int y;
-  int z;
+bool x;
+bool y;
 
-  x = 1;
-  y = 1;
-  z = 2;
+x = true;
 
-  if(x == y){
-    z = 3;
-  }
-  else{
-    z = 10;
-  }
+y = ~true;
+
 }

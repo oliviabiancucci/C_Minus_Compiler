@@ -16,8 +16,6 @@
  10:    LD 7, -1(5)	return to caller
   3:   LDA 7, 7(7)	jump around i/o code
 * End of standard prelude.
-* allocating global var: global
-* <- vardecl
 * -> fundecl
 * processing function: main
 * jump around function body
@@ -25,85 +23,35 @@
 * -> compound statement
 * processing local var: x -2
 * processing local var: y -3
-* processing local var: z -4
 * -> op
-* -> constant
- 13:   LDC 0, 1(0)	load const
- 14:    ST 0, -5(5)	op: push left
-* <- constant
- 15:    LD 0, -5(5)	op: load left
+ 13:   LDC 0, 1(0)	true condition
+ 14:    ST 0, -4(5)	
+ 15:    LD 0, -4(5)	op: load left
  16:    ST 0, -2(5)	assign: store value
 * <- op
 * -> op
-* -> constant
- 17:   LDC 0, 1(0)	load const
- 18:    ST 0, -5(5)	op: push left
-* <- constant
- 19:    LD 0, -5(5)	op: load left
- 20:    ST 0, -3(5)	assign: store value
-* <- op
 * -> op
-* -> constant
- 21:   LDC 0, 2(0)	load const
- 22:    ST 0, -5(5)	op: push left
-* <- constant
- 23:    LD 0, -5(5)	op: load left
- 24:    ST 0, -4(5)	assign: store value
+ 17:   LDC 0, 1(0)	true condition
+ 18:    ST 0, -5(5)	
+ 19:    LD 0, -4(5)	
+ 20:    LD 1, -5(5)	
+ 21:   LDC 0, 0(0)	
+ 23:   LDC 0, 1(0)	
+ 22:   LDA 7, 1(7)	
+  0:   JEQ 0, 22(7)	
+ 24:    ST 0, -4(5)	storing operation result
 * <- op
-* -> if
-* -> op
- 25:    LD 0, -2(5)	load value in variable x
- 26:    ST 0, -5(5)	store variable value on stack
-* -> id
-* looking up id: x
-* <- id
- 27:    LD 0, -3(5)	load value in variable y
- 28:    ST 0, -6(5)	store variable value on stack
-* -> id
-* looking up id: y
-* <- id
- 29:    LD 0, -5(5)	
- 30:    LD 1, -6(5)	
- 31:   SUB 0, 0, 1	op ==
- 32:   JEQ 0, 2(7)	br if true
- 33:   LDC 0, 0(0)	false case
- 34:   LDA 7, 1(7)	unconditional jump
- 35:   LDC 0, 1(0)	true case
- 36:    ST 0, -5(5)	storing operation result
-* <- op
-* -> compound statement
-* -> op
-* -> constant
- 39:   LDC 0, 3(0)	load const
- 40:    ST 0, -6(5)	op: push left
-* <- constant
- 41:    LD 0, -6(5)	op: load left
- 42:    ST 0, -4(5)	assign: store value
+ 25:    LD 0, -4(5)	op: load left
+ 26:    ST 0, -3(5)	assign: store value
 * <- op
 * <- compound statement
-* if: jump to else belongs here
-* -> compound statement
-* -> op
-* -> constant
- 44:   LDC 0, 10(0)	load const
- 45:    ST 0, -5(5)	op: push left
-* <- constant
- 46:    LD 0, -5(5)	op: load left
- 47:    ST 0, -4(5)	assign: store value
-* <- op
-* <- compound statement
- 43:   LDA 7, 4(7)	if: jmp to end
- 37:    LD 0, -5(5)	load result
- 38:   JEQ 0, 5(7)	if: jmp to else
-* <- if
-* <- compound statement
- 48:    LD 7, -1(5)	load return address
+ 27:    LD 7, -1(5)	load return address
 * <- fundecl
- 49:   LDA 7, -5(7)	jump body
- 50:    ST 5, -3(5)	push ofp
- 51:   LDA 5, -3(5)	push frame
- 52:   LDA 0, 1(7)	load ac with ret ptr
- 53:   LDA 7, -42(7)	jump to main loc
- 54:    LD 5, 0(5)	pop frame
+ 11:   LDA 7, 16(7)	jump body
+ 28:    ST 5, -2(5)	push ofp
+ 29:   LDA 5, -2(5)	push frame
+ 30:   LDA 0, 1(7)	load ac with ret ptr
+ 31:   LDA 7, -20(7)	jump to main loc
+ 32:    LD 5, 0(5)	pop frame
 * End of execution.
- 55:  HALT 0, 0, 0	
+ 33:  HALT 0, 0, 0	

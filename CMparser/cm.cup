@@ -461,7 +461,7 @@ aboolExpression ::= aboolExpression:a AND uboolExpression:u
 
 uboolExpression ::= TILDA uboolExpression:u 
                {:
-                  RESULT = new OpExp(uleft, uright, new NilExp(uleft, uright), OpExp.NOT, u);
+                  RESULT = new OpExp(uleft, uright, new NilExp(uleft, uright), OpExp.TILDA, u);
                :}
                | simpleExpression:s1
                {:
