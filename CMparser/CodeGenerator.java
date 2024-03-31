@@ -150,7 +150,6 @@ public class CodeGenerator implements AbsynVisitor{
         emitComment("-> constant");
         emitRM("LDC", ac, Integer.parseInt(exp.value), 0, "load const"); // holds constant in ac1
         emitRM("ST", ac, level, fp, "op: push left");
-		level--; //today
         emitComment("<- constant");
 		//globalOffset--; //TODO: check this line
 	}
@@ -184,7 +183,6 @@ public class CodeGenerator implements AbsynVisitor{
 					emitRM( "LD", ac, simp.offset, fp, "load value in variable " + simp.name);
 					emitRM( "ST", ac, level, fp, "store variable value on stack");
 				}
-				level--;
 			}
 			else if(exp.dtype instanceof ArrayDec)
 			{
@@ -199,7 +197,6 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( CallExp exp, int level, boolean isAddr){
-		
 		
 		emitComment("-> call of function: " + exp.func);
 
@@ -330,7 +327,6 @@ public class CodeGenerator implements AbsynVisitor{
 
 			emitRM( "LD", ac, level, fp, "op: load left");
 			emitRM( "ST", ac, dec.offset, fp, "assign: store value");
-			level--;
 		}
 		else if(exp.lhs.dtype instanceof ArrayDec)
 		{
