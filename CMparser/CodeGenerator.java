@@ -202,8 +202,18 @@ public class CodeGenerator implements AbsynVisitor{
 
 		FuncDec func = (FuncDec)exp.dtype;
 
-		if(exp.args != null){
-			exp.args.accept(this, level, isAddr); // might just be able to use level for this
+		initFO = -2;
+		int numVar = 0;
+		ExpList list = exp.args;
+		while(list != null && list.head != null)
+		{
+			
+			if(!(list.head instanceof NilExp))
+			{
+				list.head.accept(this, level + initFO - numVar, isAddr);
+			}
+			numVar++;
+			list = list.tail;
 		}
 
 		emitRM("ST", fp, level, fp, "push ofp"); // might just be able to use level for this?
