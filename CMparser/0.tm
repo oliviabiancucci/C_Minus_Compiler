@@ -20,6 +20,7 @@
 * processing function: add
 * jump around function body
  12:    ST 0, -1(5)	store return
+* Function Parameters are null
 * -> compound statement
 * processing local var: c -2
 * -> op
@@ -58,6 +59,7 @@
 * processing function: main
 * jump around function body
  28:    ST 0, -1(5)	store return
+* Function Parameters are null
 * -> compound statement
 * processing local var: x -2
 * processing local var: y -3

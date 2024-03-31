@@ -207,7 +207,6 @@ public class CodeGenerator implements AbsynVisitor{
 		ExpList list = exp.args;
 		while(list != null && list.head != null)
 		{
-			
 			if(!(list.head instanceof NilExp))
 			{
 				list.head.accept(this, level + initFO - numVar, isAddr);
@@ -321,14 +320,6 @@ public class CodeGenerator implements AbsynVisitor{
 	public void visit( AssignExp exp, int level, boolean isAddr){
 		emitComment("-> op");
 
-		// Since we assign the variable below using it's offset we dont need to accept the lhs
-		/* 
-		if(exp.lhs != null){
-			exp.lhs.accept(this, level, true);
-		}
-
-		emitRM("ST", ac, level, fp, "op: push left");
-		*/
 		exp.rhs.accept(this, level, isAddr);
 
 		if(exp.lhs.dtype instanceof SimpleDec)
@@ -464,6 +455,15 @@ public class CodeGenerator implements AbsynVisitor{
 
 		int frameOffset = -2;
 
+		if(exp.params != null)
+		{
+			exp.params.accept(this, frameOffset, isAddr);
+		}
+		else
+		{
+			emitComment("Function Parameters are null");
+		}
+		
 		exp.body.accept(this, frameOffset, isAddr);
 
 		emitRM("LD", pc, -1, fp, "load return address"); // places the value offset(fp) in program counter
