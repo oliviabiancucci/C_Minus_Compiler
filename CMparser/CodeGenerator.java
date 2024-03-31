@@ -206,14 +206,14 @@ public class CodeGenerator implements AbsynVisitor{
 		FuncDec func = (FuncDec)exp.dtype;
 
 		if(exp.args != null){
-			exp.args.accept(this, level + initFO, isAddr);
+			exp.args.accept(this, level + initFO, isAddr); // might just be able to use level for this
 		}
 
-		emitRM("ST", fp, level + ofpFO, fp, "push ofp"); //ofpFO + level?
+		emitRM("ST", fp, level + ofpFO, fp, "push ofp"); // might just be able to use level for this?
 		emitRM("LDA", fp, level, fp, "push frame");
 		emitRM("LDA", ac, 1, pc, "load ac with ret ptr");
 		emitRM_Abs("LDA", pc, func.funAddr, "jump to fun loc");
-		emitRM("LD", fp, 0, fp, "pop frame"); //ofpFO instead of 0?
+		emitRM("LD", fp, 0, fp, "pop frame");
 
 		emitComment("<- call");
 	}
