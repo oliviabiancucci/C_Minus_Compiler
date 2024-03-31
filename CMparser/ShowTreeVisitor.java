@@ -126,7 +126,7 @@ public class ShowTreeVisitor implements AbsynVisitor {
       case OpExp.NE:
         System.out.println(" != ");
         break;
-      case OpExp.NOT:
+      case OpExp.TILDA:
         System.out.println( " ~ " );
         break;
       case OpExp.LT:

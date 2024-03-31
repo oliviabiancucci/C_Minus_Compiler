@@ -11,7 +11,7 @@ public class OpExp extends Exp {
   public final static int UMINUS = 7;
   public final static int COMP   = 8;
   public final static int NE     = 9;
-  public final static int NOT    = 10;
+  public final static int TILDA    = 10;
   public final static int LTE    = 11;
   public final static int GTE    = 12;
   public final static int AND    = 13;

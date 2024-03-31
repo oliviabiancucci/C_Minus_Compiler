@@ -251,7 +251,7 @@ public class CodeGenerator implements AbsynVisitor{
 			  emitRM("LDA", pc, 1, pc, "unconditional jump");
 			  emitRM("LDC", ac, 1, 0, "true case");
 			  break;
-			case OpExp.NOT:
+			case OpExp.TILDA:
 			  int loc1 = 0;
 			  emitRM("LDC", ac, 0, 0, "");
 			  int loc2 = emitSkip(1); //unconditional jump

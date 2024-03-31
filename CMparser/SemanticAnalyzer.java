@@ -472,12 +472,14 @@ public class SemanticAnalyzer implements AbsynVisitor{
                     leftExpRes = array.type.type;
                 }
             }
-            else if (exp.left instanceof NilExp) // special case only occurs when there is a unary minus
+            else if (exp.left instanceof NilExp && exp.right instanceof IntExp) // special case only occurs when there is a unary minus
             {
                 leftExpRes = NameTy.INT;
             }
-
-
+            else if (exp.left instanceof NilExp && exp.right instanceof VarExp || exp.left instanceof NilExp && exp.right instanceof BoolExp) // special case only occurs when there is a tilda (or logical NOT)
+            {
+                leftExpRes = NameTy.BOOL;
+            }
 
             //right side
             if(exp.right instanceof IntExp)
@@ -525,6 +527,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
                 VarExp var = (VarExp)exp.right;
                 if(var.dtype instanceof SimpleDec)
                 {
+                    System.err.println("here");
                     SimpleDec simp = (SimpleDec)var.dtype;
                     rightExpRes = simp.typ.type; 
                 }
@@ -615,7 +618,11 @@ public class SemanticAnalyzer implements AbsynVisitor{
                 {
                     rightExpRes = NameTy.INT;
                 }
-                else if(op.op == OpExp.PLUS || op.op == OpExp.MINUS || op.op == OpExp.TIMES || op.op == OpExp.DIVIDE || op.op == OpExp.UMINUS || op.op == OpExp.EQ)
+                else if(op.op == OpExp.TILDA && op.left instanceof NilExp)
+                {
+                    rightExpRes = NameTy.BOOL;
+                }
+                else if(op.op == OpExp.PLUS || op.op == OpExp.MINUS || op.op == OpExp.TIMES || op.op == OpExp.DIVIDE || op.op == OpExp.UMINUS || op.op == OpExp.EQ || op.op == OpExp.TILDA)
                 {   
 
                     //expressions that can equate to an integer are simple, function call, or an array

@@ -1,15 +1,9 @@
 Entering global scope:
     Entering the scope of the main function:
-        Entering the If block scope:
-        Exiting the If block scope
-        Entering the Else block scope
-        Exiting the Else block scope
-        x INT
-        y INT
-        z INT
+        x BOOL
+        y BOOL
     Exiting the scope of the main function
     output (INT) -> VOID
     input (VOID) -> INT
-    global INT
     main (VOID) -> VOID
 Exiting global scope

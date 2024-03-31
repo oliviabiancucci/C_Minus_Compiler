@@ -1,44 +1,20 @@
 The abstract syntax tree is:
-SimpleDec: global
-    NameTy: INT
 FunctionDec: main
     NameTy: VOID
     CompoundExp:
         VarDecList
             SimpleDec: x
-                NameTy: INT
+                NameTy: BOOL
         VarDecList
             SimpleDec: y
-                NameTy: INT
-        VarDecList
-            SimpleDec: z
-                NameTy: INT
+                NameTy: BOOL
         AssignExp:
             VarExp: 
                 SimpleVar: x
-            IntExp: 1
+            BoolExp: true
         AssignExp:
             VarExp: 
                 SimpleVar: y
-            IntExp: 1
-        AssignExp:
-            VarExp: 
-                SimpleVar: z
-            IntExp: 2
-        IfExp:
-            OpExp: == 
-                VarExp: 
-                    SimpleVar: x
-                VarExp: 
-                    SimpleVar: y
-            CompoundExp:
-                AssignExp:
-                    VarExp: 
-                        SimpleVar: z
-                    IntExp: 3
-        ElseExp:
-            CompoundExp:
-                AssignExp:
-                    VarExp: 
-                        SimpleVar: z
-                    IntExp: 10
+            OpExp: ~ 
+                NilExp
+                BoolExp: true
