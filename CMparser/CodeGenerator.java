@@ -133,14 +133,6 @@ public class CodeGenerator implements AbsynVisitor{
 	public void visit( SimpleVar exp, int level, boolean isAddr){
 		emitComment("-> id");
         emitComment("looking up id: " + exp.name);
-		/*
-		if(isAddr == false){ //TODO: i think level might not be right for the offset here in these emits
-			emitRM("LD", ac, level, fp, "load id value"); 
-		}
-		else{
-			emitRM("LDA", ac, level, fp, "load id address");
-		}
-		*/
 		emitComment("<- id");
 	}
   
@@ -207,25 +199,20 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( CallExp exp, int level, boolean isAddr){
-		int funAddr = -1;
-		int loc2 = -1;
+		
+		
 		emitComment("-> call of function: " + exp.func);
 
-		//save current line in memory
-		//go to function address
-		//create space for parameters
-		// run function code
-		//pass back function returns
-		// return to previous line in memory
+		FuncDec func = (FuncDec)exp.dtype;
 
 		if(exp.args != null){
-			exp.args.accept(this, level, isAddr);
+			exp.args.accept(this, level + initFO, isAddr);
 		}
 
-		emitRM("ST", fp, level, fp, "push ofp"); //ofpFO + level?
+		emitRM("ST", fp, level + ofpFO, fp, "push ofp"); //ofpFO + level?
 		emitRM("LDA", fp, level, fp, "push frame");
 		emitRM("LDA", ac, 1, pc, "load ac with ret ptr");
-		emitRM_Abs("LDA", pc, ((FuncDec)exp.dtype).funAddr, "jump to fun loc");
+		emitRM_Abs("LDA", pc, func.funAddr, "jump to fun loc");
 		emitRM("LD", fp, 0, fp, "pop frame"); //ofpFO instead of 0?
 
 		emitComment("<- call");
@@ -433,7 +420,7 @@ public class CodeGenerator implements AbsynVisitor{
 		{
 			exp.exp.accept(this, level, isAddr);
 		}
-		emitRM("LD", pc, -1, 77, "return to caller");
+		emitRM("LD", pc, -1, 7, "return to caller");
 		emitComment("<- return");
 	}
   
@@ -466,7 +453,7 @@ public class CodeGenerator implements AbsynVisitor{
 			mainEntry = emitLoc;
 		}
 
-		emitRM("ST", 0, -1, fp, "store return"); //TODO: make sure the return address is in register 0
+		emitRM("ST", ac, -1, fp, "store return"); //TODO: make sure the return address is in register 0
 
 		int frameOffset = -2;
 
@@ -475,10 +462,13 @@ public class CodeGenerator implements AbsynVisitor{
 		emitRM("LD", pc, -1, fp, "load return address"); // places the value offset(fp) in program counter
 
 		emitComment("<- fundecl");
-
-		int endLoc = 7;
-		emitRM("LDA", pc, endLoc - startLoc - 1, pc, "jump body");
+		
+		int endLoc = emitLoc;
+		emitBackup(startLoc);
+		emitRM("LDA", pc,  endLoc - startLoc - 1, pc, "jump body");
 		emitRestore();
+		
+		
 	}
   
 	public void visit( SimpleDec exp, int level, boolean isAddr){
