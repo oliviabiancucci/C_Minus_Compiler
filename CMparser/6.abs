@@ -1,25 +1,4 @@
 The abstract syntax tree is:
-FunctionDec: add
-    NameTy: INT
-    SimpleDec: a
-        NameTy: INT
-    SimpleDec: b
-        NameTy: INT
-    CompoundExp:
-        VarDecList
-            SimpleDec: c
-                NameTy: INT
-        AssignExp:
-            VarExp: 
-                SimpleVar: c
-            OpExp: + 
-                VarExp: 
-                    SimpleVar: a
-                VarExp: 
-                    SimpleVar: b
-        ReturnExp:
-            VarExp: 
-                SimpleVar: c
 FunctionDec: main
     NameTy: VOID
     CompoundExp:
@@ -43,7 +22,7 @@ FunctionDec: main
         AssignExp:
             VarExp: 
                 SimpleVar: z
-            CallExp: add
+            OpExp: + 
                 VarExp: 
                     SimpleVar: x
                 VarExp: 

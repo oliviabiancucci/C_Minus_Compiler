@@ -64,7 +64,7 @@
 * processing local var: z -4
 * -> op
 * -> constant
- 29:   LDC 0, 0(0)	load const
+ 29:   LDC 0, 1(0)	load const
  30:    ST 0, -5(5)	op: push left
 * <- constant
  31:    LD 0, -5(5)	op: load left
@@ -72,28 +72,41 @@
 * <- op
 * -> op
 * -> constant
- 33:   LDC 0, 1(0)	load const
+ 33:   LDC 0, 69(0)	load const
  34:    ST 0, -5(5)	op: push left
 * <- constant
  35:    LD 0, -5(5)	op: load left
  36:    ST 0, -3(5)	assign: store value
 * <- op
 * -> op
-* -> constant
- 37:   LDC 0, 2(0)	load const
- 38:    ST 0, -5(5)	op: push left
-* <- constant
- 39:    LD 0, -5(5)	op: load left
- 40:    ST 0, -4(5)	assign: store value
+* -> call of function: add
+ 37:    LD 0, -2(5)	load value in variable x
+ 38:    ST 0, -5(5)	store variable value on stack
+* -> id
+* looking up id: x
+* <- id
+ 39:    LD 0, -3(5)	load value in variable y
+ 40:    ST 0, -5(5)	store variable value on stack
+* -> id
+* looking up id: y
+* <- id
+ 41:    ST 5, -5(5)	push ofp
+ 42:   LDA 5, -5(5)	push frame
+ 43:   LDA 0, 1(7)	load ac with ret ptr
+ 44:   LDA 7, -33(7)	jump to fun loc
+ 45:    LD 5, 0(5)	pop frame
+* <- call
+ 46:    LD 0, -5(5)	op: load left
+ 47:    ST 0, -4(5)	assign: store value
 * <- op
 * <- compound statement
- 41:    LD 7, -1(5)	load return address
+ 48:    LD 7, -1(5)	load return address
 * <- fundecl
- 27:   LDA 7, 14(7)	jump body
- 42:    ST 5, -4(5)	push ofp
- 43:   LDA 5, -4(5)	push frame
- 44:   LDA 0, 1(7)	load ac with ret ptr
- 45:   LDA 7, -18(7)	jump to main loc
- 46:    LD 5, 0(5)	pop frame
+ 27:   LDA 7, 21(7)	jump body
+ 49:    ST 5, -4(5)	push ofp
+ 50:   LDA 5, -4(5)	push frame
+ 51:   LDA 0, 1(7)	load ac with ret ptr
+ 52:   LDA 7, -25(7)	jump to main loc
+ 53:    LD 5, 0(5)	pop frame
 * End of execution.
- 47:  HALT 0, 0, 0	
+ 54:  HALT 0, 0, 0	

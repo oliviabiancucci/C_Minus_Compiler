@@ -23,12 +23,9 @@ public class CodeGenerator implements AbsynVisitor{
 	int ofpFO = 0;
 	int retFO = -1;
 	int initFO = -2;
-	int frameOffset = 0;
+	int frameOffset = -2;
 
 	public void codeGenerator() {
-		int frameOffset = -2; //TODO: check this?
-		globalOffset = 0;
-
 	}
 
 	public void emitRO( String op, int r, int s, int t, String c ) {
@@ -153,6 +150,7 @@ public class CodeGenerator implements AbsynVisitor{
         emitComment("-> constant");
         emitRM("LDC", ac, Integer.parseInt(exp.value), 0, "load const"); // holds constant in ac1
         emitRM("ST", ac, level, fp, "op: push left");
+		level--; //today
         emitComment("<- constant");
 		//globalOffset--; //TODO: check this line
 	}
@@ -175,6 +173,7 @@ public class CodeGenerator implements AbsynVisitor{
 			{
 				SimpleDec simp = (SimpleDec)exp.dtype;
 
+				//TODO: the offset is never set in the variables so its always 0 and not correctttt
 				if(simp.nestLevel == 0) //global scope
 				{
 					emitRM( "LD", ac, simp.offset, gp, "load value in variable " + simp.name);
@@ -185,6 +184,7 @@ public class CodeGenerator implements AbsynVisitor{
 					emitRM( "LD", ac, simp.offset, fp, "load value in variable " + simp.name);
 					emitRM( "ST", ac, level, fp, "store variable value on stack");
 				}
+				level--;
 			}
 			else if(exp.dtype instanceof ArrayDec)
 			{
@@ -206,10 +206,10 @@ public class CodeGenerator implements AbsynVisitor{
 		FuncDec func = (FuncDec)exp.dtype;
 
 		if(exp.args != null){
-			exp.args.accept(this, level + initFO, isAddr); // might just be able to use level for this
+			exp.args.accept(this, level, isAddr); // might just be able to use level for this
 		}
 
-		emitRM("ST", fp, level + ofpFO, fp, "push ofp"); // might just be able to use level for this?
+		emitRM("ST", fp, level, fp, "push ofp"); // might just be able to use level for this?
 		emitRM("LDA", fp, level, fp, "push frame");
 		emitRM("LDA", ac, 1, pc, "load ac with ret ptr");
 		emitRM_Abs("LDA", pc, func.funAddr, "jump to fun loc");
@@ -224,7 +224,7 @@ public class CodeGenerator implements AbsynVisitor{
 		exp.left.accept(this, level, isAddr);
 		exp.right.accept(this, level - 1, isAddr);
 
-		emitRM("LD", ac, level, fp, ""); //todo: i dont think these two lines are needed here/are right
+		emitRM("LD", ac, level, fp, ""); //TODO: this doesnt work when in a function
 		emitRM("LD", ac1, level - 1, fp, "");
 
 		switch(exp.op) {
@@ -330,6 +330,7 @@ public class CodeGenerator implements AbsynVisitor{
 
 			emitRM( "LD", ac, level, fp, "op: load left");
 			emitRM( "ST", ac, dec.offset, fp, "assign: store value");
+			level--;
 		}
 		else if(exp.lhs.dtype instanceof ArrayDec)
 		{
