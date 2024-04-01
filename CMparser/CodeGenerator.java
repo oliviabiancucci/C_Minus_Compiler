@@ -487,14 +487,6 @@ public class CodeGenerator implements AbsynVisitor{
 		if(exp.params != null){
 			exp.params.accept(this, frameOffset, isAddr);
 		}
-<<<<<<< HEAD
-
-		exp.body.accept(this, frameOffset, isAddr);
-=======
-		else{
-			emitComment("Function Parameters are null");
-		}
->>>>>>> 97fa055223c25457c532e88dac0a7ee1bf3f89c9
 
 		exp.body.accept(this, frameOffset, isAddr);
 
