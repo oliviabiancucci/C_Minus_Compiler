@@ -4,6 +4,7 @@ Entering global scope:
         Exiting the If block scope
         x BOOL
         y BOOL
+        k INT
     Exiting the scope of the main function
     output (INT) -> VOID
     input (VOID) -> INT

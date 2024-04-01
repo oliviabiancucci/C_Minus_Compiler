@@ -331,8 +331,10 @@ public class CodeGenerator implements AbsynVisitor{
 			  emitRM("LDC", ac, 1, 0, "true case");
 			  break;
 			case OpExp.OR:
-			  emitRO("SUB", ac, ac, ac1, "op ||");
-			  emitRM("JNE", ac, 2, pc, "br if true");
+			  //emitRO("SUB", ac, ac, ac1, "op ||");
+			  emitRM("JNE", ac, 4, pc, "br if true");
+			  emitRM("LDC", ac, 0, 0, "false case");
+			  emitRM("JNE", ac1, 2, pc, "br if true");
 			  emitRM("LDC", ac, 0, 0, "false case");
 			  emitRM("LDA", pc, 1, pc, "unconditional jump");
 			  emitRM("LDC", ac, 1, 0, "true case");
