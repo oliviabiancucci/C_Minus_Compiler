@@ -31,8 +31,11 @@
 * <- op
 * -> op
 * -> op
- 17:   LDC 0, 1(0)	true condition
- 18:    ST 0, -5(5)	
+ 17:    LD 0, -2(5)	load value in variable x
+ 18:    ST 0, -5(5)	store variable value on stack
+* -> id
+* looking up id: x
+* <- id
  19:    LD 0, -4(5)	
  20:    LD 1, -5(5)	
  21:   LDC 0, 0(0)	

@@ -17,4 +17,5 @@ FunctionDec: main
                 SimpleVar: y
             OpExp: ~ 
                 NilExp
-                BoolExp: true
+                VarExp: 
+                    SimpleVar: x

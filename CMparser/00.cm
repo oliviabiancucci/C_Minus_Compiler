@@ -4,6 +4,6 @@ bool y;
 
 x = true;
 
-y = ~true;
+y = ~x;
 
 }

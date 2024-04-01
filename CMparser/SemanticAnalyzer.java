@@ -529,7 +529,6 @@ public class SemanticAnalyzer implements AbsynVisitor{
                 VarExp var = (VarExp)exp.right;
                 if(var.dtype instanceof SimpleDec)
                 {
-                    System.err.println("here");
                     SimpleDec simp = (SimpleDec)var.dtype;
                     rightExpRes = simp.typ.type; 
                 }

@@ -91,8 +91,12 @@
 * -> fundecl
 * processing function: main
 * jump around function body
+<<<<<<< HEAD
  47:    ST 0, -1(5)	store return
 * Function Parameters are null
+=======
+ 28:    ST 0, -1(5)	store return
+>>>>>>> b9d7ee547e91f5a2576d6a989f93c88af455fcbd
 * -> compound statement
 * processing local var: x -2
 * processing local var: z -3
