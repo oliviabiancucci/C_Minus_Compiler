@@ -26,17 +26,18 @@ public class FuncDec extends Dec{
 		{
 			retString = retString + "VOID";
 		}
-	
-		while(params != null)
+		
+		VarDecLists temp = params;
+		while(temp != null)
 		{
 			if(numParams > 0)
 			{
 				retString = retString + ", ";
 			}
 
-			if(params.head instanceof SimpleDec)
+			if(temp.head instanceof SimpleDec)
 			{
-				SimpleDec simp = (SimpleDec)params.head;
+				SimpleDec simp = (SimpleDec)temp.head;
 				if(simp.typ.type == NameTy.BOOL)
 				{
 					retString = retString + "BOOL";
@@ -51,9 +52,9 @@ public class FuncDec extends Dec{
 				} 
 				numParams++;
 			}
-			else if(params.head instanceof ArrayDec)
+			else if(temp.head instanceof ArrayDec)
 			{
-				ArrayDec array = (ArrayDec)params.head;
+				ArrayDec array = (ArrayDec)temp.head;
 				if(array.type.type == NameTy.BOOL)
 				{
 					retString = retString + "BOOL[]";
@@ -69,7 +70,7 @@ public class FuncDec extends Dec{
 				numParams++;
 			}
 			
-			params = params.tail;
+			temp = temp.tail;
 		}
 		retString = retString + ") -> ";
 

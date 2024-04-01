@@ -20,17 +20,18 @@
 * processing function: add
 * jump around function body
  12:    ST 0, -1(5)	store return
-* Function Parameters are null
+* processing local var: a -2
+* processing local var: b -3
 * -> compound statement
 * processing local var: c -2
 * -> op
 * -> op
- 13:    LD 0, 0(5)	load value in variable a
+ 13:    LD 0, -2(5)	load value in variable a
  14:    ST 0, -3(5)	store variable value on stack
 * -> id
 * looking up id: a
 * <- id
- 15:    LD 0, 0(5)	load value in variable b
+ 15:    LD 0, -3(5)	load value in variable b
  16:    ST 0, -4(5)	store variable value on stack
 * -> id
 * looking up id: b
@@ -105,8 +106,8 @@
  48:    LD 7, -1(5)	load return address
 * <- fundecl
  27:   LDA 7, 21(7)	jump body
- 49:    ST 5, -4(5)	push ofp
- 50:   LDA 5, -4(5)	push frame
+ 49:    ST 5, -6(5)	push ofp
+ 50:   LDA 5, -6(5)	push frame
  51:   LDA 0, 1(7)	load ac with ret ptr
  52:   LDA 7, -25(7)	jump to main loc
  53:    LD 5, 0(5)	pop frame

@@ -393,10 +393,12 @@ public class SemanticAnalyzer implements AbsynVisitor{
 
                 if(numCall != numDef)
                 {
-                    System.err.println(expHead.getClass());
-                    System.err.println(numCall + " " + numDef);
+                    //System.err.println(expHead.getClass());
+                    //System.err.println(numCall + " " + numDef);
                     System.err.println("ERROR: function call does not contain correct number of arguments at row " + (exp.row + 1) + ", column " + (exp.col + 1) + ".");
                 }
+
+                //System.err.println(funcDef.params.getClass());
             }
         }
     }
