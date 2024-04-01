@@ -207,6 +207,11 @@ public class CodeGenerator implements AbsynVisitor{
 
 		FuncDec func = (FuncDec)exp.dtype;
 
+		if(func == null)
+		{
+			System.out.println(exp.func + " is null");
+		}
+
 		initFO = -2;
 		int numVar = 0;
 		ExpList list = exp.args;
@@ -332,8 +337,7 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( AssignExp exp, int level, boolean isAddr){
-		System.err.println("AssignExp");
-		emitComment("-> op");
+		emitComment("-> assign");
 
 		exp.rhs.accept(this, level, isAddr);
 
@@ -341,7 +345,10 @@ public class CodeGenerator implements AbsynVisitor{
 		{
 			SimpleDec dec = (SimpleDec)exp.lhs.dtype;
 
-			emitRM( "LD", ac, level, fp, "op: load left");
+			if(!(exp.rhs instanceof CallExp)) // callExp already places the return result in ac
+			{
+				emitRM( "LD", ac, level, fp, "assign: load left"); // gets top value off of stack to store
+			}
 			emitRM( "ST", ac, dec.offset, fp, "assign: store value");
 		}
 		else if(exp.lhs.dtype instanceof ArrayDec)
@@ -349,7 +356,7 @@ public class CodeGenerator implements AbsynVisitor{
 			//TODO: something eventually
 		}
 	
-		emitComment("<- op");
+		emitComment("<- assign");
 	}
   
 	public void visit( IfExp exp, int level, boolean isAddr){
@@ -436,7 +443,9 @@ public class CodeGenerator implements AbsynVisitor{
 		{
 			exp.exp.accept(this, level, isAddr);
 		}
-		emitRM("LD", pc, -1, 7, "return to caller");
+		emitRM("ST", ac, level, fp, "store return address in register 0");
+
+		emitRM("LD", pc, -1, fp, "load return address"); // places the value offset(fp) in program counter
 		emitComment("<- return");
 	}
   
@@ -473,15 +482,21 @@ public class CodeGenerator implements AbsynVisitor{
 
 		emitRM("ST", ac, -1, fp, "store return"); //TODO: make sure the return address is in register 0
 
-		int frameOffset = -2;
+		frameOffset = -2;
 
 		if(exp.params != null){
 			exp.params.accept(this, frameOffset, isAddr);
 		}
+<<<<<<< HEAD
 
 		exp.body.accept(this, frameOffset, isAddr);
+=======
+		else{
+			emitComment("Function Parameters are null");
+		}
+>>>>>>> 97fa055223c25457c532e88dac0a7ee1bf3f89c9
 
-		emitRM("LD", pc, -1, fp, "load return address"); // places the value offset(fp) in program counter
+		exp.body.accept(this, frameOffset, isAddr);
 
 		emitComment("<- fundecl");
 		
