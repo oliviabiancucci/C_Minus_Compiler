@@ -91,14 +91,18 @@
  53:    LD 0, -4(5)	load result
  54:   JEQ 0, 4(7)	if: jmp to end
 * <- if
+* -> return
+ 59:    ST 0, -4(5)	store return address in register 0
+ 60:    LD 7, -1(5)	load return address
+* <- return
 * <- compound statement
- 59:    LD 7, -1(5)	load return address
+ 61:    LD 7, -1(5)	load return address
 * <- fundecl
- 11:   LDA 7, 48(7)	jump body
- 60:    ST 5, -2(5)	push ofp
- 61:   LDA 5, -2(5)	push frame
- 62:   LDA 0, 1(7)	load ac with ret ptr
- 63:   LDA 7, -52(7)	jump to main loc
- 64:    LD 5, 0(5)	pop frame
+ 11:   LDA 7, 50(7)	jump body
+ 62:    ST 5, -2(5)	push ofp
+ 63:   LDA 5, -2(5)	push frame
+ 64:   LDA 0, 1(7)	load ac with ret ptr
+ 65:   LDA 7, -54(7)	jump to main loc
+ 66:    LD 5, 0(5)	pop frame
 * End of execution.
- 65:  HALT 0, 0, 0	
+ 67:  HALT 0, 0, 0	

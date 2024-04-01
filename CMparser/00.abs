@@ -31,3 +31,5 @@ FunctionDec: main
                     VarExp: 
                         SimpleVar: y
                     BoolExp: true
+        ReturnExp:
+            NilExp

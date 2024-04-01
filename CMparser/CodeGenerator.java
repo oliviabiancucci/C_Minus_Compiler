@@ -445,7 +445,7 @@ public class CodeGenerator implements AbsynVisitor{
 		}
 		emitRM("ST", ac, level, fp, "store return address in register 0");
 
-		emitRM("LD", pc, -1, fp, "load return address"); // places the value offset(fp) in program counter
+		//emitRM("LD", pc, -1, fp, "load return address"); // places the value offset(fp) in program counter
 		emitComment("<- return");
 	}
   
