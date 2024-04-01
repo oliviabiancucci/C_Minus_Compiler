@@ -38,8 +38,6 @@
  16:    ST 0, -6(5)	assign: store value
 * <- assign
 * -> assign
-a
-* ---------------------------------------------------------> INDEXVAR
  17:    LD 0, -2(5)	load value in variable low
  18:    ST 0, -7(5)	store variable value on stack
 * -> id
@@ -93,8 +91,6 @@ a
 * -> compound statement
 * -> if
 * -> op
-a
-* ---------------------------------------------------------> INDEXVAR
  45:    LD 0, -4(5)	load value in variable i
  46:    ST 0, -8(5)	store variable value on stack
 * -> id
@@ -116,8 +112,6 @@ a
 * <- op
 * -> compound statement
 * -> assign
-a
-* ---------------------------------------------------------> INDEXVAR
  59:    LD 0, -4(5)	load value in variable i
  60:    ST 0, -9(5)	store variable value on stack
 * -> id
@@ -232,7 +226,6 @@ a
 * processing local var: t -7
 * -> assign
 * -> call of function: minloc
-a
 * -> id
 * looking up id: a
 * <- id
@@ -255,8 +248,6 @@ a
 117:    ST 0, -5(5)	assign: store value
 * <- assign
 * -> assign
-a
-* ---------------------------------------------------------> INDEXVAR
 118:    LD 0, -5(5)	load value in variable k
 119:    ST 0, -8(5)	store variable value on stack
 * -> id
@@ -266,8 +257,6 @@ a
 121:    ST 0, -7(5)	assign: store value
 * <- assign
 * -> assign
-a
-* ---------------------------------------------------------> INDEXVAR
 122:    LD 0, -4(5)	load value in variable i
 123:    ST 0, -8(5)	store variable value on stack
 * -> id
@@ -382,7 +371,6 @@ a
 157:   JEQ 0, 16(7)	while: jmp to below while loop
 * <- while
 * -> call of function: sort
-x
 * -> id
 * looking up id: x
 * <- id
@@ -432,8 +420,6 @@ x
 * -----> while body start
 * -> compound statement
 * -> call of function: output
-x
-* ---------------------------------------------------------> INDEXVAR
 201:    LD 0, -2(5)	load value in variable i
 202:    ST 0, -6(5)	store variable value on stack
 * -> id

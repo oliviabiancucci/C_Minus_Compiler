@@ -135,7 +135,6 @@ public class CodeGenerator implements AbsynVisitor{
   
 	public void visit( IndexVar exp, int level, boolean isAddr){
 		//System.err.println("IndexVar");
-		emitComment("---------------------------------------------------------> INDEXVAR");
 		exp.index.accept(this, level, isAddr);
 	}
   
@@ -190,7 +189,19 @@ public class CodeGenerator implements AbsynVisitor{
 			else if(exp.dtype instanceof ArrayDec)
 			{
 				ArrayDec array = (ArrayDec)exp.dtype;
-				System.out.println(array.name);
+				IndexVar index = (IndexVar)exp.varName;
+				IntExp value = (IntExp)index.index;
+
+				if(array.nestLevel == 0) //global scope
+				{
+					emitRM( "LD", ac, array.offset - Integer.parseInt(value.value), gp, "load value in array " + array.name);
+					emitRM( "ST", ac, level, gp, "store variable value on stack");
+				}
+				else // local scope
+				{
+					emitRM( "LD", ac, array.offset - Integer.parseInt(value.value), fp, "load value in array " + array.name);
+					emitRM( "ST", ac, level, fp, "store variable value on stack");
+				}
 			}
 		}
 		
@@ -395,7 +406,20 @@ public class CodeGenerator implements AbsynVisitor{
 		}
 		else if(exp.lhs.dtype instanceof ArrayDec)
 		{
-			//TODO: something eventually
+			ArrayDec array = (ArrayDec)exp.lhs.dtype;
+			IndexVar index = (IndexVar)exp.lhs.varName;
+			IntExp value = (IntExp)index.index;
+
+			if(array.nestLevel == 0) //global scope
+			{
+				emitRM( "LD", ac, level, gp, "load value in array " + array.name);
+				emitRM( "ST", ac, array.offset - Integer.parseInt(value.value), gp, "store variable value on stack");
+			}
+			else // local scope
+			{
+				emitRM( "LD", ac, level, fp, "load value in array " + array.name);
+				emitRM( "ST", ac, array.offset - Integer.parseInt(value.value), fp, "store variable value on stack");
+			}
 		}
 	
 		emitComment("<- assign");
@@ -623,7 +647,7 @@ public class CodeGenerator implements AbsynVisitor{
 			int offset = 1; //default offset
 
 			if(exp.head instanceof ArrayDec){ //offset an array by its size
-				offset += (((ArrayDec)exp.head).size); //TODO: check that this is the right result
+				offset = (((ArrayDec)exp.head).size); //TODO: check that this is the right result
 			}
 
 			if(exp.head.nestLevel == 0){
