@@ -90,7 +90,7 @@ class CM {
       }
       else
       {
-        System.out.println("ERROR: Semantic analysis aborted due to syntax errors");
+        System.out.println("ERROR: Compilation aborted due to errors");
       }
     } catch (Exception e) {
       /* do cleanup here -- possibly rethrow e */

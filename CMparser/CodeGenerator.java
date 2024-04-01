@@ -124,10 +124,11 @@ public class CodeGenerator implements AbsynVisitor{
 	}
 
 	public void visit( NameTy exp, int level, boolean isAddr){
-
+		System.err.println("NameTy");
 	}
   
 	public void visit( SimpleVar exp, int level, boolean isAddr){
+		System.err.println("SimpleVar");
 		emitComment("-> id");
         emitComment("looking up id: " + exp.name);
 
@@ -135,19 +136,22 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( IndexVar exp, int level, boolean isAddr){
+		System.err.println("IndexVar");
 		emitComment("---------------------------------------------------------> INDEXVAR");
 		exp.index.accept(this, level, isAddr);
 	}
   
 	public void visit( Vartype exp, int level, boolean isAddr){
+		System.err.println("Vartype");
 		emitComment("---------------------------------------------------------> VARTYPE");
 	}
   
 	public void visit( NilExp exp, int level, boolean isAddr){
-
+		System.err.println("NilExp");
 	}
   
 	public void visit( IntExp exp, int level, boolean isAddr){
+		System.err.println("IntExp");
         emitComment("-> constant");
         emitRM("LDC", ac, Integer.parseInt(exp.value), 0, "load const"); // holds constant in ac1
         emitRM("ST", ac, level, fp, "op: push left");
@@ -156,6 +160,7 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( BoolExp exp, int level, boolean isAddr){
+		System.err.println("BoolExp");
 		if(exp.value == false){
 			emitRM("LDC", ac, 0, 0, "false condition");
 		}
@@ -166,7 +171,7 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( VarExp exp, int level, boolean isAddr){
-		
+		System.err.println("VarExp");
 		if(exp != null)
 		{
 			if(exp.dtype instanceof SimpleDec)
@@ -197,7 +202,7 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( CallExp exp, int level, boolean isAddr){
-		
+		System.err.println("CallExp");
 		emitComment("-> call of function: " + exp.func);
 
 		FuncDec func = (FuncDec)exp.dtype;
@@ -225,6 +230,7 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( OpExp exp, int level, boolean isAddr){
+		System.err.println("OpExp");
 		emitComment("-> op");
 
 		exp.left.accept(this, level, isAddr);
@@ -318,6 +324,7 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( AssignExp exp, int level, boolean isAddr){
+		System.err.println("AssignExp");
 		emitComment("-> op");
 
 		exp.rhs.accept(this, level, isAddr);
@@ -338,6 +345,7 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( IfExp exp, int level, boolean isAddr){
+		System.err.println("IfExp");
 		int loc3 = -1; //end of then block
 		int loc4 = -1; //end of else block
 
@@ -376,6 +384,7 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( WhileExp exp, int level, boolean isAddr){
+		System.err.println("WhileExp");
 		emitComment("-> while");
 		emitComment("while: jump after body comes back here");
 		int whileTest = emitLoc;
@@ -413,6 +422,7 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( ReturnExp exp, int level, boolean isAddr){
+		System.err.println("ReturnExp");
 		emitComment("-> return");
 		if(exp.exp != null)
 		{
@@ -423,6 +433,7 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( CompoundExp exp, int level, boolean isAddr){
+		System.err.println("CompoundExp");
 		emitComment("-> compound statement");
 		if(exp != null)
 		{
@@ -439,6 +450,7 @@ public class CodeGenerator implements AbsynVisitor{
 	}
 
 	public void visit( FuncDec exp, int level, boolean isAddr){
+		System.err.println("FuncDec");
 		emitComment("-> fundecl");
     	emitComment("processing function: " + exp.func);
     	emitComment("jump around function body");
@@ -461,7 +473,7 @@ public class CodeGenerator implements AbsynVisitor{
 		}
 		else
 		{
-			emitComment("Function Parameters are null");
+			System.err.println("Function Parameters are null");
 		}
 		
 		exp.body.accept(this, frameOffset, isAddr);
@@ -474,11 +486,10 @@ public class CodeGenerator implements AbsynVisitor{
 		emitBackup(startLoc);
 		emitRM("LDA", pc,  endLoc - startLoc - 1, pc, "jump body");
 		emitRestore();
-		
-		
 	}
   
 	public void visit( SimpleDec exp, int level, boolean isAddr){
+		System.err.println("SimpleDec");
 		exp.offset = level;
 
 		if(exp.name != null){
@@ -494,6 +505,7 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( ArrayDec exp, int level, boolean isAddr){
+		System.err.println("ArrayDec");
 		exp.offset = level;
 
 		if(exp.name != null){
@@ -508,6 +520,7 @@ public class CodeGenerator implements AbsynVisitor{
 	}
 
 	public void visit( ExpList exp, int level, boolean isAddr){
+		System.err.println("ExpList");
 		while(exp != null && exp.head != null){
 			exp.head.accept(this, level, isAddr);
 			exp = exp.tail;
@@ -515,13 +528,16 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit ( DecLists exp, int level, boolean isAddr){
+		System.err.println("DecLists");
 		while(exp != null && exp.head != null){
+			System.err.println(exp.head);
 			exp.head.accept(this, level, isAddr);
 			exp = exp.tail;
 		}
 	}
   
 	public void visit ( VarDecLists exp, int level, boolean isAddr){
+		System.err.println("VarDecLists");
 		while(exp != null && exp.head != null){
 			exp.head.accept(this, level, isAddr);
 
