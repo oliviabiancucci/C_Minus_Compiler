@@ -311,10 +311,18 @@ public class CodeGenerator implements AbsynVisitor{
 			  emitRM("LDC", ac, 1, 0, "true case");
 			  break;
 			case OpExp.AND:
-
+			  emitRO("SUB", ac, ac, ac1, "op &&");
+			  emitRM("JEQ", ac, 2, pc, "br if true");
+			  emitRM("LDC", ac, 0, 0, "false case");
+			  emitRM("LDA", pc, 1, pc, "unconditional jump");
+			  emitRM("LDC", ac, 1, 0, "true case");
 			  break;
 			case OpExp.OR:
-
+			  emitRO("SUB", ac, ac, ac1, "op ||");
+			  emitRM("JEQ", ac, 2, pc, "br if true");
+			  emitRM("LDC", ac, 0, 0, "false case");
+			  emitRM("LDA", pc, 1, pc, "unconditional jump");
+			  emitRM("LDC", ac, 1, 0, "true case");
 			  break;
 		}
 
@@ -470,10 +478,7 @@ public class CodeGenerator implements AbsynVisitor{
 		if(exp.params != null){
 			exp.params.accept(this, frameOffset, isAddr);
 		}
-		else{
-			emitComment("Function Parameters are null");
-		}
-		
+
 		exp.body.accept(this, frameOffset, isAddr);
 
 		emitRM("LD", pc, -1, fp, "load return address"); // places the value offset(fp) in program counter
@@ -528,7 +533,6 @@ public class CodeGenerator implements AbsynVisitor{
 	public void visit ( DecLists exp, int level, boolean isAddr){
 		System.err.println("DecLists");
 		while(exp != null && exp.head != null){
-			System.err.println(exp.head);
 			exp.head.accept(this, level, isAddr);
 			exp = exp.tail;
 		}

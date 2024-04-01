@@ -1,5 +1,7 @@
 Entering global scope:
     Entering the scope of the main function:
+        Entering the If block scope:
+        Exiting the If block scope
         x BOOL
         y BOOL
     Exiting the scope of the main function

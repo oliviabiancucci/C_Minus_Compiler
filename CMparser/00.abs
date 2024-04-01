@@ -15,7 +15,19 @@ FunctionDec: main
         AssignExp:
             VarExp: 
                 SimpleVar: y
-            OpExp: ~ 
-                NilExp
-                VarExp: 
-                    SimpleVar: x
+            BoolExp: false
+        IfExp:
+            OpExp: && 
+                OpExp: == 
+                    VarExp: 
+                        SimpleVar: x
+                    BoolExp: true
+                OpExp: == 
+                    VarExp: 
+                        SimpleVar: y
+                    BoolExp: true
+            CompoundExp:
+                AssignExp:
+                    VarExp: 
+                        SimpleVar: y
+                    BoolExp: true
