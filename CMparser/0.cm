@@ -1,3 +1,6 @@
+int add(int a);
+int sub2(int a);
+
 int add(int a){
   int z;
 

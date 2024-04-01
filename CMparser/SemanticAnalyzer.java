@@ -130,6 +130,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
         //not found
         if (isDeclared == false) {
             System.err.println("ERROR: the variable " + exp.name + " is undeclared at row " + (exp.row + 1) + ", column " + (exp.col + 1));
+            valid = false;
         }
     }
     
@@ -151,6 +152,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
             //not found
             if (isDeclared == false) {
                 System.err.println("ERROR: the variable " + exp.name + " is undeclared at row " + (exp.row + 1) + ", column " + (exp.col + 1));
+                valid = false;
             }
 
             exp.index.accept(this, level, false);
@@ -165,6 +167,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
                     if(dec.typ.type != NameTy.INT)
                     {
                         System.err.println("ERROR: the index " + dec.name + " is not an integer at row " + (exp.row + 1) + ", column " + (exp.col + 1));
+                        valid = false;
                     }
                 }
             }
@@ -176,11 +179,13 @@ public class SemanticAnalyzer implements AbsynVisitor{
                 if(func.result.type != NameTy.INT)
                 {
                     System.err.println("ERROR: the index " + call.func + " is not an integer at row " + (exp.row + 1) + ", column " + (exp.col + 1));
+                    valid = false;
                 }
             }
             else if(!(exp.index instanceof IntExp))
             {
                 System.err.println("ERROR: the index is not an integer at row " + (exp.row + 1) + ", column " + (exp.col + 1));
+                valid = false;
             }
         }
     }
@@ -277,6 +282,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
             }
             else if (!isDeclared) {
                 System.err.println("ERROR: undefined function " + exp.func + " called at row " + (exp.row + 1) + ", column " + (exp.col + 1));
+                valid = false;
             }
 
             if(isDeclared && exp.args != null) {
@@ -376,6 +382,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
                     if(callArg != funcArg)
                     {
                         System.err.println("ERROR: function call argument does not match function definition parameter at row " + (exp.row + 1) + ", column " + (exp.col + 1) + ".");
+                        valid = false;
                     }
 
                     varHead = varHead.tail;
@@ -396,6 +403,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
                     //System.err.println(expHead.getClass());
                     //System.err.println(numCall + " " + numDef);
                     System.err.println("ERROR: function call does not contain correct number of arguments at row " + (exp.row + 1) + ", column " + (exp.col + 1) + ".");
+                    valid = false;
                 }
 
                 //System.err.println(funcDef.params.getClass());
@@ -417,6 +425,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
             if (((exp.left instanceof IntExp) && (exp.right instanceof BoolExp)) || 
                 ((exp.left instanceof BoolExp) && (exp.right instanceof IntExp))) {
                 System.err.println("ERROR: Mismatched types for operation expression at row " + (exp.row + 1) + ", column " + (exp.col + 1) + ". Expression must only contain one type of int or bool.");
+                valid = false;
             }
 
             //left side
@@ -542,6 +551,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
             if(leftExpRes != rightExpRes)
             {
                 System.err.println("ERROR: operation expressions left and right side have a mismatched type at row " + (exp.row + 1) + ", column " + (exp.col + 1));
+                valid = false;
             }
             else if(exp.left.dtype != null) //if exp.left.dtype is NilExp, it will be null
             {
@@ -660,6 +670,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
             if(leftExpRes != rightExpRes)
             {
                 System.err.println("ERROR: the left and right side of the assignment expressions have a mismatched type at row " + (exp.row + 1) + ", column " + (exp.col + 1));
+                valid = false;
             }
             else
             {
@@ -721,12 +732,14 @@ public class SemanticAnalyzer implements AbsynVisitor{
                 if(dec == null)
                 {
                     System.err.println("ERROR: at row " + (exp.row + 1) + ", column " + (exp.col + 1) +" : called function returned VOID");
+                    valid = false;
                 }
                 else
                 {
                     if(dec.result.type == NameTy.VOID)
                     {
                         System.err.println("ERROR: at row " + (exp.row + 1) + ", column " + (exp.col + 1) +" : called function returned VOID");
+                        valid = false;
                     }
                 }
             }
@@ -750,6 +763,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
         FuncDec fun1 = null;
         if (exp.exp == null) {
             System.err.println("ERROR: function with a non-void returns void at row " + (exp.row + 1) + ", column " + (exp.col + 1));
+            valid = false;
         }
         else {
             int returnType = 99; //initialize it as a number that is not associated with a return type
@@ -817,6 +831,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
             //check if the return value matches the return type
             if (returnType != fun1.result.type) {
                 System.err.println("ERROR: invalid return type for the function at row: " + (exp.row + 1) + ", column: " + (exp.col + 1));
+                valid = false;
             }
         }
     }
@@ -835,8 +850,16 @@ public class SemanticAnalyzer implements AbsynVisitor{
         NodeType dec = new NodeType(exp.func, exp, level);
 
         //function name
-        if(lookup(dec, level) != null){
-            System.err.println("ERROR: duplicate function declaration for " + exp.func + " at row " + (exp.row + 1) + ", column " + (exp.col + 1));
+        ArrayList<NodeType> funcNode = lookup(dec, level);
+        if(funcNode != null)
+        {
+            NodeType prevNode = funcNode.get(funcNode.size()-1);
+            FuncDec prevDec = (FuncDec)prevNode.def;
+            if(!(prevDec.body instanceof NilExp)) // function was previosly prototyped
+            {
+                System.err.println("ERROR: duplicate function declaration for " + exp.func + " at row " + (exp.row + 1) + ", column " + (exp.col + 1));
+                valid = false;
+            }
         }
         else{
             currFunc = dec.name;
@@ -869,6 +892,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
             
             if(exp.typ.type == NameTy.VOID){
                 System.err.println("ERROR: void variable declaration for " + exp.name + " at row " + (exp.row + 1) + ", column " + (exp.col + 1));
+                valid = false;
                 exp.typ.type = NameTy.INT;
                 dec = new NodeType(exp.name, exp, level);
                 if(lookup(dec, level) == null)
@@ -895,6 +919,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
                         }
                     }
                     System.err.println("ERROR: duplicate variable declaration for " + exp.name + " at row " + (exp.row + 1) + ", column " + (exp.col + 1));
+                    valid = false;
                 }
                 else{
                     insert(dec);
@@ -918,6 +943,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
 
             if(lookup(dec, level) != null){
                 System.err.println("ERROR: duplicate variable declaration for " + exp.name + " at row " + (exp.row + 1) + ", column " + (exp.col + 1));
+                valid = false;
             }
             else{
                 insert(dec); //adds it to the table
@@ -968,6 +994,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
         NodeType dec = new NodeType("main", null, level);
         if(lookup(dec, level) == null){
             System.err.println("ERROR: main function not found");
+            valid = false;
         }
         level--;
         System.out.println("Exiting global scope");

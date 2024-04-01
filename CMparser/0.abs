@@ -3,6 +3,16 @@ FunctionDec: add
     NameTy: INT
     SimpleDec: a
         NameTy: INT
+    NilExp
+FunctionDec: sub2
+    NameTy: INT
+    SimpleDec: a
+        NameTy: INT
+    NilExp
+FunctionDec: add
+    NameTy: INT
+    SimpleDec: a
+        NameTy: INT
     CompoundExp:
         VarDecList
             SimpleDec: z

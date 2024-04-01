@@ -1,11 +1,9 @@
-
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import absyn.*;
 
 public class CodeGenerator implements AbsynVisitor{
-	HashMap<String, FuncDec> table = new HashMap<String, FuncDec>();
+	HashMap<String, FuncDec> functionTable = new HashMap<String, FuncDec>();
 	//how to calculate a jump: target - current location - 1
 
 	int emitLoc = 0; //current instruction we are generating
@@ -202,14 +200,13 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( CallExp exp, int level, boolean isAddr){
-		//System.err.println("CallExp");
 		emitComment("-> call of function: " + exp.func);
 
-		FuncDec func = (FuncDec)exp.dtype;
+		FuncDec func = functionTable.get(exp.func);
 
 		if(func == null)
 		{
-			System.out.println(exp.func + " is null");
+			System.out.println(exp.func + " does not exist");
 		}
 
 		initFO = -2;
@@ -229,6 +226,7 @@ public class CodeGenerator implements AbsynVisitor{
 		emitRM("LDA", fp, level, fp, "push frame");
 		emitRM("LDA", ac, 1, pc, "load ac with ret ptr");
 
+		emitComment(func.func + " " + func.funAddr);
 		if(func.funAddr == 0) // funAddr has not been set, will need to backpatch
 		{
 			func.funLoc = emitSkip(1);
@@ -477,44 +475,63 @@ public class CodeGenerator implements AbsynVisitor{
 	}
 
 	public void visit( FuncDec exp, int level, boolean isAddr){
-		//System.err.println("FuncDec");
-		emitComment("-> fundecl");
-    	emitComment("processing function: " + exp.func);
-    	emitComment("jump around function body");
-
-		int startLoc = emitSkip(1);
-
-		exp.funAddr = emitLoc;
-
-		if(exp.funLoc != -1) // funLoc has been set, function has been called before this declaration was reached, need to backpatch jump address in
+		if(!(exp.body instanceof NilExp)) // proper definition
 		{
-			emitBackup(exp.funLoc);
-			emitRM_Abs("LDA", pc, exp.funAddr, "jump to fun loc");
+			emitComment("-> fundecl");
+			emitComment("processing function: " + exp.func);
+			if(functionTable.get(exp.func) != null) // if prototype was declared
+			{
+				exp.funLoc = functionTable.get(exp.func).funLoc; // carry over call location
+				functionTable.replace(exp.func, exp);
+			}
+			else
+			{
+				functionTable.put(exp.func, exp);
+			}
+
+			emitComment("jump around function body");
+			int startLoc = emitSkip(1);
+			exp.funAddr = emitLoc;
+
+			if(exp.funLoc != -1) // funLoc has been set, function has been called before this declaration was reached, need to backpatch jump address in
+			{
+				System.err.println("Backpatching function call at " + exp.funLoc);
+				emitBackup(exp.funLoc);
+				emitRM_Abs("LDA", pc, exp.funAddr, "jump to fun loc");
+				emitRestore();
+			}
+
+			if (exp.func.equals("main")) {
+				mainEntry = emitLoc;
+			}
+
+			emitRM("ST", ac, -1, fp, "store return"); //TODO: make sure the return address is in register 0
+
+			frameOffset = -2;
+
+			if(exp.params != null){
+				exp.params.accept(this, frameOffset, isAddr);
+			}
+
+			exp.body.accept(this, frameOffset, isAddr);
+
+			emitRM("LD", pc, -1, fp, "load return address");
+
+			emitComment("<- fundecl");
+			
+			int endLoc = emitLoc;
+			emitBackup(startLoc);
+			emitRM("LDA", pc,  endLoc - startLoc - 1, pc, "jump body");
 			emitRestore();
 		}
-
-		if (exp.func.equals("main")) {
-			mainEntry = emitLoc;
+		else // prototype
+		{
+			emitComment("-> fundecl");
+			emitComment("processing function prototype: " + exp.func);
+			functionTable.put(exp.func, exp);
+			emitComment("<- fundecl");
 		}
 
-		emitRM("ST", ac, -1, fp, "store return"); //TODO: make sure the return address is in register 0
-
-		frameOffset = -2;
-
-		if(exp.params != null){
-			exp.params.accept(this, frameOffset, isAddr);
-		}
-
-		exp.body.accept(this, frameOffset, isAddr);
-
-		emitRM("LD", pc, -1, fp, "load return address");
-
-		emitComment("<- fundecl");
-		
-		int endLoc = emitLoc;
-		emitBackup(startLoc);
-		emitRM("LDA", pc,  endLoc - startLoc - 1, pc, "jump body");
-		emitRestore();
 	}
   
 	public void visit( SimpleDec exp, int level, boolean isAddr){

@@ -72,7 +72,11 @@ class CM {
           result.accept(semVisitor, 0, false);
         }
       }
-      if(SemanticAnalyzer.valid == true)
+      else
+      {
+        System.err.println("ERROR: Semantic analysis aborted due to syntax errors");
+      }
+      if(parser.valid == true && SemanticAnalyzer.valid == true )
       {
         if(SHOW_CODE && result != null)
         {
@@ -90,7 +94,14 @@ class CM {
       }
       else
       {
-        System.out.println("ERROR: Compilation aborted due to errors");
+        if(!parser.valid)
+        {
+          System.err.println("ERROR: Code generation aborted due to syntax errors");
+        }
+        if(!SemanticAnalyzer.valid)
+        {
+          System.err.println("ERROR: Code generation aborted due to semantic errors");
+        }
       }
     } catch (Exception e) {
       /* do cleanup here -- possibly rethrow e */
