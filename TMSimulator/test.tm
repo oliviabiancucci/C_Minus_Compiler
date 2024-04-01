@@ -23,18 +23,18 @@
 * -> compound statement
 * processing local var: x -2
 * processing local var: y -3
-* -> op
- 13:   LDC 0, 1(0)	true condition
+* -> assign
+ 13:   LDC 0, 0(0)	false condition
  14:    ST 0, -4(5)	
- 15:    LD 0, -4(5)	op: load left
+ 15:    LD 0, -4(5)	assign: load left
  16:    ST 0, -2(5)	assign: store value
-* <- op
-* -> op
+* <- assign
+* -> assign
  17:   LDC 0, 0(0)	false condition
  18:    ST 0, -4(5)	
- 19:    LD 0, -4(5)	op: load left
+ 19:    LD 0, -4(5)	assign: load left
  20:    ST 0, -3(5)	assign: store value
-* <- op
+* <- assign
 * -> if
 * -> op
 * -> op
@@ -81,12 +81,12 @@
  52:    ST 0, -4(5)	storing operation result
 * <- op
 * -> compound statement
-* -> op
+* -> assign
  55:   LDC 0, 1(0)	true condition
  56:    ST 0, -5(5)	
- 57:    LD 0, -5(5)	op: load left
+ 57:    LD 0, -5(5)	assign: load left
  58:    ST 0, -3(5)	assign: store value
-* <- op
+* <- assign
 * <- compound statement
  53:    LD 0, -4(5)	load result
  54:   JEQ 0, 4(7)	if: jmp to end

@@ -11,7 +11,7 @@ FunctionDec: main
         AssignExp:
             VarExp: 
                 SimpleVar: x
-            BoolExp: true
+            BoolExp: false
         AssignExp:
             VarExp: 
                 SimpleVar: y

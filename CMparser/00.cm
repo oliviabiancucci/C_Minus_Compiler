@@ -2,10 +2,9 @@ void main(void) {
 bool x;
 bool y;
 
-x = true; //-2(5)
-y = false; //-3(5)
+x = false;
+y = false;
 
-//lhs -4(5) rhs -5(5)
 if(x == true && y == true){
 	y = true;
 }

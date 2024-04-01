@@ -241,7 +241,7 @@ public class CodeGenerator implements AbsynVisitor{
 		exp.left.accept(this, level, isAddr);
 		exp.right.accept(this, level - 1, isAddr);
 
-		emitRM("LD", ac, level, fp, ""); //TODO: this doesnt work when in a function
+		emitRM("LD", ac, level, fp, "");
 		emitRM("LD", ac1, level - 1, fp, "");
 
 		switch(exp.op) {
@@ -324,7 +324,7 @@ public class CodeGenerator implements AbsynVisitor{
 			  break;
 			case OpExp.OR:
 			  emitRO("SUB", ac, ac, ac1, "op ||");
-			  emitRM("JEQ", ac, 2, pc, "br if true");
+			  emitRM("JNE", ac, 2, pc, "br if true");
 			  emitRM("LDC", ac, 0, 0, "false case");
 			  emitRM("LDA", pc, 1, pc, "unconditional jump");
 			  emitRM("LDC", ac, 1, 0, "true case");
@@ -489,6 +489,8 @@ public class CodeGenerator implements AbsynVisitor{
 		}
 
 		exp.body.accept(this, frameOffset, isAddr);
+
+		emitRM("LD", pc, -1, fp, "load return address");
 
 		emitComment("<- fundecl");
 		
