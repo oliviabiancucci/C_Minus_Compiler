@@ -43,8 +43,8 @@ public class SemanticAnalyzer implements AbsynVisitor{
         }
     }
 
-    private ArrayList<NodeType> lookup(NodeType node){
-        if(table.containsKey(node.name)){
+    private ArrayList<NodeType> lookup(NodeType node, int level){
+        if(table.containsKey(node.name) && level == node.level){
             return table.get(node.name);
         }
         return null;
@@ -835,7 +835,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
         NodeType dec = new NodeType(exp.func, exp, level);
 
         //function name
-        if(lookup(dec) != null){
+        if(lookup(dec, level) != null){
             System.err.println("ERROR: duplicate function declaration for " + exp.func + " at row " + (exp.row + 1) + ", column " + (exp.col + 1));
         }
         else{
@@ -871,13 +871,29 @@ public class SemanticAnalyzer implements AbsynVisitor{
                 System.err.println("ERROR: void variable declaration for " + exp.name + " at row " + (exp.row + 1) + ", column " + (exp.col + 1));
                 exp.typ.type = NameTy.INT;
                 dec = new NodeType(exp.name, exp, level);
-                if(lookup(dec) == null)
+                if(lookup(dec, level) == null)
                 {
                     insert(dec);
                 }
             }
             else{
-                if(lookup(dec) != null){
+                //TODO: remove this giant print later - just for testing
+                if(lookup(dec, level) != null){
+                    for(ArrayList<NodeType> nodes : table.values())
+                    {
+                        if(nodes.isEmpty() == false) // not empty
+                        {
+                            for(int i = 0; i < nodes.size(); i++)
+                            {
+                                NodeType node = nodes.get(i);
+                                if(node.level == level)
+                                {
+                                    indent(level);
+                                    System.err.println(node.name + " " + node.def.toString());
+                                }
+                            }
+                        }
+                    }
                     System.err.println("ERROR: duplicate variable declaration for " + exp.name + " at row " + (exp.row + 1) + ", column " + (exp.col + 1));
                 }
                 else{
@@ -900,7 +916,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
         if (exp != null){
             NodeType dec = new NodeType(exp.name, exp, level);
 
-            if(lookup(dec) != null){
+            if(lookup(dec, level) != null){
                 System.err.println("ERROR: duplicate variable declaration for " + exp.name + " at row " + (exp.row + 1) + ", column " + (exp.col + 1));
             }
             else{
@@ -950,7 +966,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
         printTable(level);
         
         NodeType dec = new NodeType("main", null, level);
-        if(lookup(dec) == null){
+        if(lookup(dec, level) == null){
             System.err.println("ERROR: main function not found");
         }
         level--;
