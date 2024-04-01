@@ -5,7 +5,7 @@ import java.util.HashMap;
 import absyn.*;
 
 public class CodeGenerator implements AbsynVisitor{
-
+	HashMap<String, FuncDec> table = new HashMap<String, FuncDec>();
 	//how to calculate a jump: target - current location - 1
 
 	int emitLoc = 0; //current instruction we are generating
@@ -228,7 +228,15 @@ public class CodeGenerator implements AbsynVisitor{
 		emitRM("ST", fp, level, fp, "push ofp"); // might just be able to use level for this?
 		emitRM("LDA", fp, level, fp, "push frame");
 		emitRM("LDA", ac, 1, pc, "load ac with ret ptr");
-		emitRM_Abs("LDA", pc, func.funAddr, "jump to fun loc");
+
+		if(func.funAddr == 0) // funAddr has not been set, will need to backpatch
+		{
+			func.funLoc = emitSkip(1);
+		}
+		else
+		{
+			emitRM_Abs("LDA", pc, func.funAddr, "jump to fun loc");
+		}
 		emitRM("LD", fp, 0, fp, "pop frame");
 
 		emitComment("<- call");
@@ -477,6 +485,13 @@ public class CodeGenerator implements AbsynVisitor{
 		int startLoc = emitSkip(1);
 
 		exp.funAddr = emitLoc;
+
+		if(exp.funLoc != -1) // funLoc has been set, function has been called before this declaration was reached, need to backpatch jump address in
+		{
+			emitBackup(exp.funLoc);
+			emitRM_Abs("LDA", pc, exp.funAddr, "jump to fun loc");
+			emitRestore();
+		}
 
 		if (exp.func.equals("main")) {
 			mainEntry = emitLoc;
