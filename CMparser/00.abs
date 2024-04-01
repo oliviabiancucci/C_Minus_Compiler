@@ -8,16 +8,19 @@ FunctionDec: main
         VarDecList
             SimpleDec: y
                 NameTy: BOOL
+        VarDecList
+            SimpleDec: k
+                NameTy: INT
         AssignExp:
             VarExp: 
                 SimpleVar: x
-            BoolExp: false
+            BoolExp: true
         AssignExp:
             VarExp: 
                 SimpleVar: y
             BoolExp: false
         IfExp:
-            OpExp: && 
+            OpExp: || 
                 OpExp: == 
                     VarExp: 
                         SimpleVar: x
@@ -29,7 +32,7 @@ FunctionDec: main
             CompoundExp:
                 AssignExp:
                     VarExp: 
-                        SimpleVar: y
-                    BoolExp: true
+                        SimpleVar: k
+                    IntExp: 10
         ReturnExp:
             NilExp

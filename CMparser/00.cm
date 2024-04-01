@@ -1,12 +1,13 @@
 void main(void) {
 bool x;
 bool y;
+int k;
 
-x = false;
+x = true;
 y = false;
 
-if(x == true && y == true){
-	y = true;
+if(x == true || y == true){
+	k = 10;
 }
 
 return;
