@@ -1,25 +1,30 @@
 The abstract syntax tree is:
-FunctionDec: add
+FunctionDec: rec
     NameTy: INT
     SimpleDec: a
         NameTy: INT
-    SimpleDec: b
-        NameTy: INT
     CompoundExp:
         VarDecList
-            SimpleDec: c
+            SimpleDec: z
                 NameTy: INT
-        AssignExp:
-            VarExp: 
-                SimpleVar: c
-            OpExp: + 
+        IfExp:
+            OpExp: > 
                 VarExp: 
                     SimpleVar: a
-                VarExp: 
-                    SimpleVar: b
-        ReturnExp:
-            VarExp: 
-                SimpleVar: c
+                IntExp: 3
+            CompoundExp:
+                AssignExp:
+                    VarExp: 
+                        SimpleVar: z
+                    CallExp: rec
+                        OpExp: - 
+                            VarExp: 
+                                SimpleVar: a
+                            IntExp: 1
+        ElseExp:
+            CompoundExp:
+                ReturnExp:
+                    IntExp: 69
 FunctionDec: main
     NameTy: VOID
     CompoundExp:
@@ -27,24 +32,15 @@ FunctionDec: main
             SimpleDec: x
                 NameTy: INT
         VarDecList
-            SimpleDec: y
-                NameTy: INT
-        VarDecList
             SimpleDec: z
                 NameTy: INT
         AssignExp:
             VarExp: 
                 SimpleVar: x
-            IntExp: 1
-        AssignExp:
-            VarExp: 
-                SimpleVar: y
-            IntExp: 69
+            IntExp: 5
         AssignExp:
             VarExp: 
                 SimpleVar: z
-            CallExp: add
+            CallExp: rec
                 VarExp: 
                     SimpleVar: x
-                VarExp: 
-                    SimpleVar: y

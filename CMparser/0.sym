@@ -1,16 +1,18 @@
 Entering global scope:
-    Entering the scope of the add function:
+    Entering the scope of the rec function:
+        Entering the If block scope:
+        Exiting the If block scope
+        Entering the Else block scope
+        Exiting the Else block scope
         a INT
-        b INT
-        c INT
-    Exiting the scope of the add function
+        z INT
+    Exiting the scope of the rec function
     Entering the scope of the main function:
         x INT
-        y INT
         z INT
     Exiting the scope of the main function
     output (INT) -> VOID
-    add (INT, INT) -> INT
     input (VOID) -> INT
+    rec (INT) -> INT
     main (VOID) -> VOID
 Exiting global scope
