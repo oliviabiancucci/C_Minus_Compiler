@@ -202,41 +202,75 @@ public class CodeGenerator implements AbsynVisitor{
 	public void visit( CallExp exp, int level, boolean isAddr){
 		emitComment("-> call of function: " + exp.func);
 
-		FuncDec func = functionTable.get(exp.func);
-
-		if(func == null)
+		if(exp.func.equals("output"))
 		{
-			System.out.println(exp.func + " does not exist");
-		}
-
-		initFO = -2;
-		int numVar = 0;
-		ExpList list = exp.args;
-		while(list != null && list.head != null)
-		{
-			if(!(list.head instanceof NilExp))
+			initFO = -2;
+			int numVar = 0;
+			ExpList list = exp.args;
+			System.err.println(list.getClass() + " " + list.head.getClass());
+			while(list != null && list.head != null)
 			{
-				list.head.accept(this, level + initFO - numVar, isAddr);
+				if(!(list.head instanceof NilExp))
+				{
+					list.head.accept(this, level + initFO - numVar, isAddr);
+				}
+				numVar++;
+				list = list.tail;
 			}
-			numVar++;
-			list = list.tail;
+			System.err.println(numVar);
+
+			emitRM("ST", fp, level, fp, "push ofp");
+			emitRM("LDA", fp, level, fp, "push frame");
+			emitRM("LDA", ac, 1, pc, "load ac with ret ptr");
+			emitRM_Abs("LDA", pc, 7, "jump to fun loc");
+			emitRM("LD", fp, 0, fp, "pop frame");
 		}
-
-		emitRM("ST", fp, level, fp, "push ofp"); // might just be able to use level for this?
-		emitRM("LDA", fp, level, fp, "push frame");
-		emitRM("LDA", ac, 1, pc, "load ac with ret ptr");
-
-		emitComment(func.func + " " + func.funAddr);
-		if(func.funAddr == 0) // funAddr has not been set, will need to backpatch
+		else if(exp.func.equals("input"))
 		{
-			func.funLoc = emitSkip(1);
+			emitRM("ST", fp, level, fp, "push ofp");
+			emitRM("LDA", fp, level, fp, "push frame");
+			emitRM("LDA", ac, 1, pc, "load ac with ret ptr");
+			emitRM_Abs("LDA", pc, 4, "jump to fun loc");
+			emitRM("LD", fp, 0, fp, "pop frame");
 		}
 		else
 		{
-			emitRM_Abs("LDA", pc, func.funAddr, "jump to fun loc");
-		}
-		emitRM("LD", fp, 0, fp, "pop frame");
+			FuncDec func = functionTable.get(exp.func);
 
+			if(func == null )
+			{
+				System.out.println(exp.func + " does not exist");
+			}
+
+			initFO = -2;
+			int numVar = 0;
+			ExpList list = exp.args;
+			while(list != null && list.head != null)
+			{
+				if(!(list.head instanceof NilExp))
+				{
+					list.head.accept(this, level + initFO - numVar, isAddr);
+				}
+				numVar++;
+				list = list.tail;
+			}
+
+			emitRM("ST", fp, level, fp, "push ofp"); // might just be able to use level for this?
+			emitRM("LDA", fp, level, fp, "push frame");
+			emitRM("LDA", ac, 1, pc, "load ac with ret ptr");
+
+			
+			if(func.funAddr == 0) // funAddr has not been set, will need to backpatch
+			{
+				func.funLoc = emitSkip(1);
+			}
+			else
+			{
+				emitRM_Abs("LDA", pc, func.funAddr, "jump to fun loc");
+			}
+			
+			emitRM("LD", fp, 0, fp, "pop frame");
+		}
 		emitComment("<- call");
 	}
   

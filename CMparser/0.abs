@@ -31,6 +31,10 @@ FunctionDec: add
                             VarExp: 
                                 SimpleVar: a
                             IntExp: 1
+                AssignExp:
+                    VarExp: 
+                        SimpleVar: z
+                    IntExp: 69
                 ReturnExp:
                     VarExp: 
                         SimpleVar: z
@@ -88,3 +92,14 @@ FunctionDec: main
             CallExp: add
                 VarExp: 
                     SimpleVar: x
+        CallExp: output
+            VarExp: 
+                SimpleVar: z
+        AssignExp:
+            VarExp: 
+                SimpleVar: x
+            CallExp: input
+                NilExp
+        CallExp: output
+            VarExp: 
+                SimpleVar: x

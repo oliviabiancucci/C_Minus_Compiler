@@ -7,6 +7,7 @@ int add(int a){
   if(a > 5)
   {
     z = sub2(a + 1);
+    z = 69;
     return z;
   }
   else{
@@ -33,4 +34,8 @@ void main(void) {
 
   x = 8;
   z = add(x);
+  output(z);
+
+  x = input();
+  output(x);
 }
