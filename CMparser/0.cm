@@ -1,12 +1,26 @@
-int rec(int a){
+int add(int a){
   int z;
 
-  if(a > 3){
-    z = rec(a - 1);
+  if(a > 5)
+  {
+    z = sub2(a + 1);
     return z;
   }
   else{
-    return 69;
+    return z;
+  }
+}
+
+int sub2(int a){
+  int z;
+
+  if(a > 5)
+  {
+    z = add(a - 2);
+    return z;
+  }
+  else{
+    return z;
   }
 }
 
@@ -14,6 +28,6 @@ void main(void) {
   int x; 
   int z;
 
-  x = 5;
-  z = rec(x);
+  x = 8;
+  z = add(x);
 }

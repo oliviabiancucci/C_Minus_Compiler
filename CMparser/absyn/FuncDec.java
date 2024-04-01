@@ -6,6 +6,7 @@ public class FuncDec extends Dec{
 	public VarDecLists params;
 	public Exp body;
 	public int funAddr;
+	public int funLoc;
 
 	public FuncDec(int row, int col, NameTy result, String func, VarDecLists params, Exp body)
 	{
@@ -15,6 +16,9 @@ public class FuncDec extends Dec{
 		this.func = func;
 		this.params = params;
 		this.body = body;
+		this.funAddr = 0;
+		this.funLoc = -1;
+
 	}
 
 	public String toString()

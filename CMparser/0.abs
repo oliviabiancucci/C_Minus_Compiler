@@ -1,5 +1,5 @@
 The abstract syntax tree is:
-FunctionDec: rec
+FunctionDec: add
     NameTy: INT
     SimpleDec: a
         NameTy: INT
@@ -11,20 +11,54 @@ FunctionDec: rec
             OpExp: > 
                 VarExp: 
                     SimpleVar: a
-                IntExp: 3
+                IntExp: 5
             CompoundExp:
                 AssignExp:
                     VarExp: 
                         SimpleVar: z
-                    CallExp: rec
-                        OpExp: - 
+                    CallExp: sub2
+                        OpExp: + 
                             VarExp: 
                                 SimpleVar: a
                             IntExp: 1
+                ReturnExp:
+                    VarExp: 
+                        SimpleVar: z
         ElseExp:
             CompoundExp:
                 ReturnExp:
-                    IntExp: 69
+                    VarExp: 
+                        SimpleVar: z
+FunctionDec: sub2
+    NameTy: INT
+    SimpleDec: a
+        NameTy: INT
+    CompoundExp:
+        VarDecList
+            SimpleDec: z
+                NameTy: INT
+        IfExp:
+            OpExp: > 
+                VarExp: 
+                    SimpleVar: a
+                IntExp: 5
+            CompoundExp:
+                AssignExp:
+                    VarExp: 
+                        SimpleVar: z
+                    CallExp: add
+                        OpExp: - 
+                            VarExp: 
+                                SimpleVar: a
+                            IntExp: 2
+                ReturnExp:
+                    VarExp: 
+                        SimpleVar: z
+        ElseExp:
+            CompoundExp:
+                ReturnExp:
+                    VarExp: 
+                        SimpleVar: z
 FunctionDec: main
     NameTy: VOID
     CompoundExp:
@@ -37,10 +71,10 @@ FunctionDec: main
         AssignExp:
             VarExp: 
                 SimpleVar: x
-            IntExp: 5
+            IntExp: 8
         AssignExp:
             VarExp: 
                 SimpleVar: z
-            CallExp: rec
+            CallExp: add
                 VarExp: 
                     SimpleVar: x
