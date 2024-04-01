@@ -44,8 +44,14 @@ public class SemanticAnalyzer implements AbsynVisitor{
     }
 
     private ArrayList<NodeType> lookup(NodeType node, int level){
-        if(table.containsKey(node.name) && level == node.level){
-            return table.get(node.name);
+        if(table.containsKey(node.name)){
+            ArrayList<NodeType> foundNode = table.get(node.name);
+
+            for(int i = 0; i < foundNode.size(); i++){
+                if (foundNode.get(i).level == level){
+                    return table.get(foundNode.get(i).name);
+                }
+            }
         }
         return null;
     }
@@ -254,7 +260,6 @@ public class SemanticAnalyzer implements AbsynVisitor{
                     }
                 }                                                                                                                                                                                                                                                                                
             }
-            //exp.dec = (VarDec) var.dec; //TODO anywhere a simple is used we need a reference to where it is declared
         }
     }
 
@@ -901,23 +906,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
                 }
             }
             else{
-                //TODO: remove this giant print later - just for testing
                 if(lookup(dec, level) != null){
-                    for(ArrayList<NodeType> nodes : table.values())
-                    {
-                        if(nodes.isEmpty() == false) // not empty
-                        {
-                            for(int i = 0; i < nodes.size(); i++)
-                            {
-                                NodeType node = nodes.get(i);
-                                if(node.level == level)
-                                {
-                                    indent(level);
-                                    System.err.println(node.name + " " + node.def.toString());
-                                }
-                            }
-                        }
-                    }
                     System.err.println("ERROR: duplicate variable declaration for " + exp.name + " at row " + (exp.row + 1) + ", column " + (exp.col + 1));
                     valid = false;
                 }
