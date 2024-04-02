@@ -188,6 +188,18 @@ public class SemanticAnalyzer implements AbsynVisitor{
                     valid = false;
                 }
             }
+            else if (exp.index instanceof OpExp)
+            {
+                OpExp op = (OpExp)exp.index;
+                visit(op, level, false);
+                SimpleDec opType = (SimpleDec)op.dtype;
+
+                if(opType.typ.type != NameTy.INT)
+                {
+                    System.err.println("ERROR: the index is not an integer at row " + (exp.row + 1) + ", column " + (exp.col + 1));
+                    valid = false;
+                }
+            }
             else if(!(exp.index instanceof IntExp))
             {
                 System.err.println("ERROR: the index is not an integer at row " + (exp.row + 1) + ", column " + (exp.col + 1));
