@@ -190,6 +190,11 @@ public class CodeGenerator implements AbsynVisitor{
 			{
 				ArrayDec array = (ArrayDec)exp.dtype;
 				IndexVar index = (IndexVar)exp.varName;
+
+				index.accept(this, level, isAddr);
+
+				//load value from stack
+
 				IntExp value = (IntExp)index.index;
 
 				//TODO: implement using variables as indices
