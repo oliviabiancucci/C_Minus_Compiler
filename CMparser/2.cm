@@ -1,7 +1,11 @@
-/* Semantic Errors:
-    1. Row 12: undefined function sort() called.
-    2. Row 20: operation expression has a mismatched type (trying to compare int and bool types).
+/* 
+    A program with no syntatic or semantic errors.
+    Meant to test simple arithmetic, function calls, and if statments.
 */
+int add(int x, int y)
+{
+  return x + y;
+}
 
 int main (void) {
   int x; 
@@ -9,18 +13,23 @@ int main (void) {
   int fac;
   bool z;
 
-  x = sort();
-  fac = -1;
-  while (x > 1) {
-    fac = fac * x;
-    x = x - 1;
-    y = y + 1;
-  } 
+  fac = -2;
+  y = 7;
+  x = add(fac, y);
+  z = true;
 
-  if(z == 1){
-    fac = fac + 2;
+  output(fac);
+
+  if(fac < 0)
+  {
+    if(y > 0)
+    {
+      fac = 420;
+    }
   }
   else{
-    fac = 10;
+    fac = 69;
   }
+
+  output(fac);
 }

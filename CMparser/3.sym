@@ -1,19 +1,30 @@
 Entering global scope:
-    Entering the scope of the add function:
-        a INT
-        b INT
-        c INT
-    Exiting the scope of the add function
+    Entering the scope of the add1 function:
+        x INT
+    Exiting the scope of the add1 function
+    Entering the scope of the sub2 function:
+        x INT
+    Exiting the scope of the sub2 function
+    Entering the scope of the add1 function:
+        Entering the If block scope:
+        Exiting the If block scope
+        Entering the Else block scope
+        Exiting the Else block scope
+        x INT
+    Exiting the scope of the add1 function
+    Entering the scope of the sub2 function:
+        Entering the If block scope:
+        Exiting the If block scope
+        Entering the Else block scope
+        Exiting the Else block scope
+        x INT
+    Exiting the scope of the sub2 function
     Entering the scope of the main function:
-        Entering the While block scope:
-        Exiting the While block scope
-        i INT
-        y INT
-        z INT
-        j BOOL
+        x INT
     Exiting the scope of the main function
     output (INT) -> VOID
-    add (INT, INT) -> INT
     input (VOID) -> INT
+    sub2 (INT) -> INT
     main (VOID) -> VOID
+    add1 (INT) -> INT
 Exiting global scope

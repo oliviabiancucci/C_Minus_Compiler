@@ -1,33 +1,40 @@
 /*
-Semantic Errors:
-    1. Row 12: Invalid return type.
-    2. Row 23: Invalid assignment of an int to a bool.
+    A program with no syntatic or semantic errors.
+    Meant to test simple arithmetic and looping.
 */
 
-int add(int a, int b)
-{
-    int c;
-    c = a + b;
+int add1(int x);
+int sub2(int x);
 
-    return;
+int add1(int x)
+{
+    if(x > 5)
+    {
+        return sub2(x + 1);
+    }
+    else
+    {
+        return x;
+    }
+}
+
+int sub2(int x)
+{
+    if(x > 5)
+    {
+        return add1(x - 2);
+    }
+    else
+    {
+        return x;
+    }
 }
 
 void main(void)
 {
-    int i;
-    int y;
-    int z;
-    bool j;
+    int x;
+    x = 8;
 
-    y = 1;
-    j = 10;
-
-    add(i);
-    
-    while(y != 9){
-        i = 10;
-        y = y + 1;
-    }
-
-    z = add(i, y);
+    output(add1(x));
 }
+

@@ -1,12 +1,39 @@
+/*
+Errors:
+    1. sort function declaration is missing left parenthesis
+    2. integer i has an invalid right hand side of the expression in the while loop
+*/
 
 void main(void) {
-  int x[5]; 
-  
-  x[0] = 0;
-  x[1] = 1;
-  x[2] = 2;
-  x[3] = 3;
-  x[4] = 4;
+  int i;
 
-  x[4+2] = x[4];
+  i = 0;
+  while (i < 10) {
+    x[i] = input();
+    i = i + 1;
+  }
+
+  sort(x, 0, 10);
+
+  i = 0;
+  while (i < 10) {
+    output(x[i]);
+    i = i + ;
+  }
+}
+
+void sort int a[], int low, int high) {
+  int i;
+  int k;
+  int j[10];
+
+  i = low;
+  while (i < high - 1) {
+    int t;
+    k = minloc(a, i, high);
+    t = a[k + 2 * 1];
+    a[k] = a[i];
+    a[i] = t;
+    i = i + 1;
+  }
 }

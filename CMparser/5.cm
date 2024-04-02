@@ -1,27 +1,33 @@
 /*
 Semantic Errors:
-    1. Row 13: Returning an int from a void function - invalid return type.
-	2. Row 16: Duplicate function declaration.
-	3. Row 17: Invalid return type (due to the function already being declared as void).
-	4. Row 21: Void variable declaration.
-	5. Row 24: Undeclared variables used.
-	6. Row 24: Invalid parameter type passed in to function.
-	7. Row 26: Mismatched types for the assignment expression (trying to assign an int to a bool type).
+    1. Row 12: Invalid return type.
+    2. Row 23: Invalid assignment of an int to a bool.
 */
 
-void add(int a, int b){
-	return a + b;
+int add(int a, int b)
+{
+    int c;
+    c = a + b;
+
+    return;
 }
 
-int add(int a, int b){
-	return a + b;
-}
+void main(void)
+{
+    int i;
+    int y;
+    int z;
+    bool j;
 
-void main(void){
-	void c;
-	bool d;
+    y = 1;
+    j = 10;
 
-	add(a, c);
+    add(i);
+    
+    while(y != 9){
+        i = 10;
+        y = y + 1;
+    }
 
-	d = 9 + 10;
+    z = add(i, y);
 }

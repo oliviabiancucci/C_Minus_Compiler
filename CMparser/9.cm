@@ -1,0 +1,57 @@
+/*
+Errors:
+    1. Main method is missing type
+    2. Line 11: i is equal to nothing
+    3. Line 12: assignment is missing right hand side
+    4. Line 20: nothing equals 0
+    5. Line 51: if condition is missing an '&'
+    6. Line 54: return statement is missing a semicolon
+*/
+
+main(void) {
+  int i;
+
+  i = ;
+  while (i < 10) {
+    x[i] = input();
+    i = i + 1;
+  }
+
+  sort(x, 0, 10);
+
+   = 0;
+  while (i < 10) {
+    output(x[i]);
+    i = i + 1;
+  }
+}
+
+void sort (int a[], int low, int high) {
+  int i;
+    int k;
+  int j[10];
+
+  i = low;
+  while (i < high - 1) {
+    int t;
+    k = minloc(a, i, high);
+    t = a[k + 2 * 1];
+    a[k] = a[i];
+    a[i] = t;
+    i = i + 1;
+  }
+
+  if(~x == true)
+  {
+    x = 1;
+  }
+  else
+  {
+    x = 2;
+  }
+
+  if(x && fac || ~x & fac)
+  {
+    return 
+  }
+}

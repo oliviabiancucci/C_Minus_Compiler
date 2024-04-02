@@ -1,4 +1,7 @@
-/* A program with no syntatic or semantic errors.*/
+/* 
+  A program with no syntatic or semantic errors.
+  Meant to test simple arithmetic and looping.
+*/
 
 void main (void) {
   int x; 
@@ -6,8 +9,8 @@ void main (void) {
 
   x = 10;
   y = 0;
-  while (y > x) {
-    y = y + 1;
+  while (y < x) {
+    y = y + 3;
   } 
   
 }

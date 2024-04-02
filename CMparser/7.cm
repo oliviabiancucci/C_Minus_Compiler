@@ -1,12 +1,22 @@
+/* 
+Errors:
+    1. v parameter in gcd function missing type
+    2. main function missing left parenthesis
+    3. if statement is missing the condition
+ */
 
-void main(void) {
-  int x[10]; 
-  int i;
-  
-  i = 0;
+int gcd(int u, v) {
+  if () return u;
+  else return gcd(v, u - u/v*v);
+}
 
-  while(i < 10){
-    x[i] = i;
-    i = i + 1;
-  }
+void main void) {
+  int x;  
+  int y;
+
+  if (v == 0) return u;
+
+  x = input();
+  y = input();
+  output(gcd(x, y));
 }

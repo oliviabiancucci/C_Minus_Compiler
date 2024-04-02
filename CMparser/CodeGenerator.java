@@ -151,6 +151,7 @@ public class CodeGenerator implements AbsynVisitor{
 	public void visit( IntExp exp, int level, boolean isAddr){
 		//System.err.println("IntExp");
         emitComment("-> constant");
+		System.err.println(exp.value);
         emitRM("LDC", ac, Integer.parseInt(exp.value), 0, "load const"); // holds constant in ac1
         emitRM("ST", ac, level, fp, "op: push left");
         emitComment("<- constant");
@@ -315,6 +316,12 @@ public class CodeGenerator implements AbsynVisitor{
 	public void visit( OpExp exp, int level, boolean isAddr){
 		//System.err.println("OpExp");
 		emitComment("-> op");
+
+		/*
+		 * Need to create a UMINUS case as well as store a zero at level
+		 * UMINUS case will subtract the right value from a zero, thus creating a negative number
+		 */
+
 
 		exp.left.accept(this, level, isAddr);
 		exp.right.accept(this, level - 1, isAddr);
