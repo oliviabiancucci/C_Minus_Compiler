@@ -178,7 +178,7 @@ public class CodeGenerator implements AbsynVisitor{
 				if(simp.nestLevel == 0) //global scope
 				{
 					emitRM( "LD", ac, simp.offset, gp, "load value in variable " + simp.name);
-					emitRM( "ST", ac, level, gp, "store variable value on stack");
+					emitRM( "ST", ac, level, fp, "store variable value on stack");
 				}
 				else // local scope
 				{
@@ -410,7 +410,16 @@ public class CodeGenerator implements AbsynVisitor{
 			{
 				emitRM( "LD", ac, level, fp, "assign: load left"); // gets top value off of stack to store
 			}
-			emitRM( "ST", ac, dec.offset, fp, "assign: store value");
+
+			if(dec.nestLevel == 0)
+			{
+				emitRM( "ST", ac, dec.offset, gp, "assign: store value");
+			}
+			else
+			{
+				emitRM( "ST", ac, dec.offset, fp, "assign: store value");
+			}
+			
 		}
 		else if(exp.lhs.dtype instanceof ArrayDec)
 		{
@@ -606,13 +615,14 @@ public class CodeGenerator implements AbsynVisitor{
 		exp.offset = level;
 
 		if(exp.name != null){
-			if (exp.nestLevel == 0){ //TODO: this doesnt work, for some reason the global vars are on level 1
-				emitComment("allocating global var: " + exp.name);
-				emitComment("<- vardecl");
+			emitComment("-> vardecl");
+			if (exp.nestLevel == 0){
+				emitComment("allocating global var: " + exp.name + " " + exp.offset); //TODO: Remove offset printout
 			}
 			else{
-				emitComment("processing local var: " + exp.name + " " + exp.offset);
+				emitComment("processing local var: " + exp.name + " " + exp.offset); //TODO: Remove offset printout
 			}
+			emitComment("<- vardecl");
 		}
 		
 	}
@@ -622,13 +632,14 @@ public class CodeGenerator implements AbsynVisitor{
 		exp.offset = level;
 
 		if(exp.name != null){
+			emitComment("-> vardecl");
 			if (exp.nestLevel == 0){
-				emitComment("allocating global array: " + exp.name);
-				emitComment("<- vardecl");
+				emitComment("allocating global array: " +  exp.name + " " + exp.offset); //TODO: Remove offset printout
 			}
 			else{
-				emitComment("processing local array: " + exp.name + " " + exp.offset);
+				emitComment("processing local array: " + exp.name + " " + exp.offset); //TODO: Remove offset printout
 			}
+			emitComment("<- vardecl");
 		}
 	}
 
@@ -649,7 +660,7 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit ( VarDecLists exp, int level, boolean isAddr){
-		//System.err.println("VarDecLists");
+		emitComment("-> vardeclist");
 		while(exp != null && exp.head != null){
 			exp.head.accept(this, level, isAddr);
 
@@ -667,5 +678,6 @@ public class CodeGenerator implements AbsynVisitor{
 			exp = exp.tail;
 		}
 		frameOffset = level;
+		emitComment("<- vardeclist");
 	}
 }

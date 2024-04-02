@@ -21,12 +21,8 @@
 * jump around function body
  12:    ST 0, -1(5)	store return
 * -> compound statement
-* -> vardecl
 * processing local var: x -2
-* <- vardecl
-* -> vardecl
 * processing local var: fac -3
-* <- vardecl
 * -> assign
 * -> call of function: input
  13:    ST 5, -4(5)	push ofp
