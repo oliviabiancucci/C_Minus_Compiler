@@ -1,6 +1,6 @@
 /* 
     A program with no syntatic or semantic errors.
-    Meant to test simple arithmetic, function calls, and if statments.
+    Meant to test simple arithmetic, negative numbers, function calls, and nested if statments.
 */
 int add(int x, int y)
 {
@@ -17,8 +17,6 @@ int main (void) {
   y = 7;
   x = add(fac, y);
   z = true;
-
-  output(fac);
 
   if(fac < 0)
   {

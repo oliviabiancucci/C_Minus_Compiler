@@ -151,7 +151,7 @@ public class CodeGenerator implements AbsynVisitor{
 	public void visit( IntExp exp, int level, boolean isAddr){
 		//System.err.println("IntExp");
         emitComment("-> constant");
-		System.err.println(exp.value);
+		//System.err.println(exp.value);
         emitRM("LDC", ac, Integer.parseInt(exp.value), 0, "load const"); // holds constant in ac1
         emitRM("ST", ac, level, fp, "op: push left");
         emitComment("<- constant");
@@ -324,6 +324,14 @@ public class CodeGenerator implements AbsynVisitor{
 
 
 		exp.left.accept(this, level, isAddr);
+		if(exp.left instanceof NilExp && exp.op == OpExp.UMINUS)
+		{
+			emitComment("-> constant");
+			//System.err.println(exp.value);
+			emitRM("LDC", ac, 0, 0, "load const"); // holds constant in ac1
+			emitRM("ST", ac, level, fp, "op: push left");
+			emitComment("<- constant");
+		}
 		exp.right.accept(this, level - 1, isAddr);
 
 		emitRM("LD", ac, level, fp, "");
@@ -334,6 +342,9 @@ public class CodeGenerator implements AbsynVisitor{
 			  emitRO("ADD", ac, ac, ac1, "op +");
 			  break;
 			case OpExp.MINUS:
+			  emitRO("SUB", ac, ac, ac1, "op -");
+			  break;
+			case OpExp.UMINUS:
 			  emitRO("SUB", ac, ac, ac1, "op -");
 			  break;
 			case OpExp.TIMES:

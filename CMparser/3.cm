@@ -1,6 +1,6 @@
 /*
     A program with no syntatic or semantic errors.
-    Meant to test simple arithmetic and looping.
+    Meant to test simple arithmetic, function calls, and mutual recursion.
 */
 
 int add1(int x);
