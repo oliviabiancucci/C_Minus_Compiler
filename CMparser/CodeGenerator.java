@@ -192,6 +192,14 @@ public class CodeGenerator implements AbsynVisitor{
 				IndexVar index = (IndexVar)exp.varName;
 				IntExp value = (IntExp)index.index;
 
+				//TODO: implement using variables as indices
+				//TODO: implement using opexp as indices
+				//been using 7.cm and 8.cm for these
+
+				if(Integer.parseInt(value.value) > array.size - 1 || Integer.parseInt(value.value) < 0){
+					System.err.println("ERROR: The index for the array is out of bounds at row " + (exp.row + 1) + ", column " + (exp.col + 1));
+				}
+
 				if(array.nestLevel == 0) //global scope
 				{
 					emitRM( "LD", ac, array.offset - Integer.parseInt(value.value), gp, "load value in array " + array.name);
@@ -406,10 +414,11 @@ public class CodeGenerator implements AbsynVisitor{
 		}
 		else if(exp.lhs.dtype instanceof ArrayDec)
 		{
+			exp.lhs.accept(this, level, isAddr);
 			ArrayDec array = (ArrayDec)exp.lhs.dtype;
 			IndexVar index = (IndexVar)exp.lhs.varName;
 			IntExp value = (IntExp)index.index;
-
+		
 			if(array.nestLevel == 0) //global scope
 			{
 				emitRM( "LD", ac, level, gp, "load value in array " + array.name);

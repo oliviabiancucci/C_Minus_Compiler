@@ -34,7 +34,7 @@ FunctionDec: main
         AssignExp:
             VarExp: 
                 IndexVar : x
-                    IntExp: 0
+                    BoolExp: true
             VarExp: 
                 IndexVar : x
                     IntExp: 4

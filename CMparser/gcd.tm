@@ -45,6 +45,7 @@
  23:   LDC 0, 1(0)	true case
  24:    ST 0, -4(5)	storing operation result
 * <- op
+* -> compound statement
 * -> return
  27:    LD 0, -2(5)	load value in variable u
  28:    ST 0, -5(5)	store variable value on stack
@@ -53,7 +54,9 @@
 * <- id
  29:    ST 0, -5(5)	store return address in register 0
 * <- return
+* <- compound statement
 * if: jump to else belongs here
+* -> compound statement
 * -> return
 * -> call of function: gcd
  31:    LD 0, -3(5)	load value in variable v
@@ -107,6 +110,7 @@
 * <- call
  58:    ST 0, -4(5)	store return address in register 0
 * <- return
+* <- compound statement
  30:   LDA 7, 28(7)	if: jmp to end
  25:    LD 0, -4(5)	load result
  26:   JEQ 0, 4(7)	if: jmp to else

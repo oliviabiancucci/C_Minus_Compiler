@@ -27,59 +27,95 @@
  13:   LDC 0, 0(0)	load const
  14:    ST 0, -7(5)	op: push left
 * <- constant
- 15:    LD 0, -7(5)	load value in array x
- 16:    ST 0, -2(5)	store variable value on stack
-* <- assign
-* -> assign
+ 15:    LD 0, -2(5)	load value in array x
+ 16:    ST 0, -7(5)	store variable value on stack
 * -> constant
- 17:   LDC 0, 1(0)	load const
+ 17:   LDC 0, 0(0)	load const
  18:    ST 0, -7(5)	op: push left
 * <- constant
  19:    LD 0, -7(5)	load value in array x
- 20:    ST 0, -3(5)	store variable value on stack
+ 20:    ST 0, -2(5)	store variable value on stack
 * <- assign
 * -> assign
 * -> constant
- 21:   LDC 0, 2(0)	load const
+ 21:   LDC 0, 1(0)	load const
  22:    ST 0, -7(5)	op: push left
 * <- constant
- 23:    LD 0, -7(5)	load value in array x
- 24:    ST 0, -4(5)	store variable value on stack
-* <- assign
-* -> assign
+ 23:    LD 0, -3(5)	load value in array x
+ 24:    ST 0, -7(5)	store variable value on stack
 * -> constant
- 25:   LDC 0, 3(0)	load const
+ 25:   LDC 0, 1(0)	load const
  26:    ST 0, -7(5)	op: push left
 * <- constant
  27:    LD 0, -7(5)	load value in array x
- 28:    ST 0, -5(5)	store variable value on stack
+ 28:    ST 0, -3(5)	store variable value on stack
 * <- assign
 * -> assign
 * -> constant
- 29:   LDC 0, 4(0)	load const
+ 29:   LDC 0, 2(0)	load const
  30:    ST 0, -7(5)	op: push left
 * <- constant
- 31:    LD 0, -7(5)	load value in array x
- 32:    ST 0, -6(5)	store variable value on stack
+ 31:    LD 0, -4(5)	load value in array x
+ 32:    ST 0, -7(5)	store variable value on stack
+* -> constant
+ 33:   LDC 0, 2(0)	load const
+ 34:    ST 0, -7(5)	op: push left
+* <- constant
+ 35:    LD 0, -7(5)	load value in array x
+ 36:    ST 0, -4(5)	store variable value on stack
 * <- assign
 * -> assign
- 33:    LD 0, -6(5)	load value in array x
- 34:    ST 0, -7(5)	store variable value on stack
 * -> constant
- 35:   LDC 0, 4(0)	load const
- 36:    ST 0, -7(5)	op: push left
+ 37:   LDC 0, 3(0)	load const
+ 38:    ST 0, -7(5)	op: push left
 * <- constant
- 37:    LD 0, -7(5)	load value in array x
- 38:    ST 0, -2(5)	store variable value on stack
+ 39:    LD 0, -5(5)	load value in array x
+ 40:    ST 0, -7(5)	store variable value on stack
+* -> constant
+ 41:   LDC 0, 3(0)	load const
+ 42:    ST 0, -7(5)	op: push left
+* <- constant
+ 43:    LD 0, -7(5)	load value in array x
+ 44:    ST 0, -5(5)	store variable value on stack
+* <- assign
+* -> assign
+* -> constant
+ 45:   LDC 0, 4(0)	load const
+ 46:    ST 0, -7(5)	op: push left
+* <- constant
+ 47:    LD 0, -6(5)	load value in array x
+ 48:    ST 0, -7(5)	store variable value on stack
+* -> constant
+ 49:   LDC 0, 4(0)	load const
+ 50:    ST 0, -7(5)	op: push left
+* <- constant
+ 51:    LD 0, -7(5)	load value in array x
+ 52:    ST 0, -6(5)	store variable value on stack
+* <- assign
+* -> assign
+ 53:    LD 0, -6(5)	load value in array x
+ 54:    ST 0, -7(5)	store variable value on stack
+* -> constant
+ 55:   LDC 0, 4(0)	load const
+ 56:    ST 0, -7(5)	op: push left
+* <- constant
+ 57:    LD 0, -12(5)	load value in array x
+ 58:    ST 0, -7(5)	store variable value on stack
+* -> constant
+ 59:   LDC 0, 10(0)	load const
+ 60:    ST 0, -7(5)	op: push left
+* <- constant
+ 61:    LD 0, -7(5)	load value in array x
+ 62:    ST 0, -12(5)	store variable value on stack
 * <- assign
 * <- compound statement
- 39:    LD 7, -1(5)	load return address
+ 63:    LD 7, -1(5)	load return address
 * <- fundecl
- 11:   LDA 7, 28(7)	jump body
- 40:    ST 5, 0(5)	push ofp
- 41:   LDA 5, 0(5)	push frame
- 42:   LDA 0, 1(7)	load ac with ret ptr
- 43:   LDA 7, -32(7)	jump to main loc
- 44:    LD 5, 0(5)	pop frame
+ 11:   LDA 7, 52(7)	jump body
+ 64:    ST 5, 0(5)	push ofp
+ 65:   LDA 5, 0(5)	push frame
+ 66:   LDA 0, 1(7)	load ac with ret ptr
+ 67:   LDA 7, -56(7)	jump to main loc
+ 68:    LD 5, 0(5)	pop frame
 * End of execution.
- 45:  HALT 0, 0, 0	
+ 69:  HALT 0, 0, 0	
