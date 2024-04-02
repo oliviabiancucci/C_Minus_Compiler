@@ -2,25 +2,9 @@ Entering global scope:
     Entering the scope of the add function:
         a INT
     Exiting the scope of the add function
-    Entering the scope of the sub2 function:
-        a INT
-    Exiting the scope of the sub2 function
     Entering the scope of the add function:
-        Entering the If block scope:
-        Exiting the If block scope
-        Entering the Else block scope
-        Exiting the Else block scope
         a INT
-        z INT
     Exiting the scope of the add function
-    Entering the scope of the sub2 function:
-        Entering the If block scope:
-        Exiting the If block scope
-        Entering the Else block scope
-        Exiting the Else block scope
-        a INT
-        z INT
-    Exiting the scope of the sub2 function
     Entering the scope of the main function:
         x INT
         z INT
@@ -28,6 +12,5 @@ Entering global scope:
     output (INT) -> VOID
     add (INT) -> INT
     input (VOID) -> INT
-    sub2 (INT) -> INT
     main (VOID) -> VOID
 Exiting global scope

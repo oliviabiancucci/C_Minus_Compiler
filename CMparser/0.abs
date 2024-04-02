@@ -4,75 +4,16 @@ FunctionDec: add
     SimpleDec: a
         NameTy: INT
     NilExp
-FunctionDec: sub2
-    NameTy: INT
-    SimpleDec: a
-        NameTy: INT
-    NilExp
 FunctionDec: add
     NameTy: INT
     SimpleDec: a
         NameTy: INT
     CompoundExp:
-        VarDecList
-            SimpleDec: z
-                NameTy: INT
-        IfExp:
-            OpExp: > 
+        ReturnExp:
+            OpExp: + 
                 VarExp: 
                     SimpleVar: a
-                IntExp: 5
-            CompoundExp:
-                AssignExp:
-                    VarExp: 
-                        SimpleVar: z
-                    CallExp: sub2
-                        OpExp: + 
-                            VarExp: 
-                                SimpleVar: a
-                            IntExp: 1
-                AssignExp:
-                    VarExp: 
-                        SimpleVar: z
-                    IntExp: 69
-                ReturnExp:
-                    VarExp: 
-                        SimpleVar: z
-        ElseExp:
-            CompoundExp:
-                ReturnExp:
-                    VarExp: 
-                        SimpleVar: z
-FunctionDec: sub2
-    NameTy: INT
-    SimpleDec: a
-        NameTy: INT
-    CompoundExp:
-        VarDecList
-            SimpleDec: z
-                NameTy: INT
-        IfExp:
-            OpExp: > 
-                VarExp: 
-                    SimpleVar: a
-                IntExp: 5
-            CompoundExp:
-                AssignExp:
-                    VarExp: 
-                        SimpleVar: z
-                    CallExp: add
-                        OpExp: - 
-                            VarExp: 
-                                SimpleVar: a
-                            IntExp: 2
-                ReturnExp:
-                    VarExp: 
-                        SimpleVar: z
-        ElseExp:
-            CompoundExp:
-                ReturnExp:
-                    VarExp: 
-                        SimpleVar: z
+                IntExp: 2
 FunctionDec: main
     NameTy: VOID
     CompoundExp:
@@ -86,20 +27,7 @@ FunctionDec: main
             VarExp: 
                 SimpleVar: x
             IntExp: 8
-        AssignExp:
-            VarExp: 
-                SimpleVar: z
+        CallExp: output
             CallExp: add
                 VarExp: 
                     SimpleVar: x
-        CallExp: output
-            VarExp: 
-                SimpleVar: z
-        AssignExp:
-            VarExp: 
-                SimpleVar: x
-            CallExp: input
-                NilExp
-        CallExp: output
-            VarExp: 
-                SimpleVar: x

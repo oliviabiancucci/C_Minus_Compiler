@@ -1,31 +1,8 @@
 int add(int a);
-int sub2(int a);
 
-int add(int a){
-  int z;
-
-  if(a > 5)
-  {
-    z = sub2(a + 1);
-    z = 69;
-    return z;
-  }
-  else{
-    return z;
-  }
-}
-
-int sub2(int a){
-  int z;
-
-  if(a > 5)
-  {
-    z = add(a - 2);
-    return z;
-  }
-  else{
-    return z;
-  }
+int add(int a)
+{
+  return a + 2;
 }
 
 void main(void) {
@@ -33,9 +10,6 @@ void main(void) {
   int z;
 
   x = 8;
-  z = add(x);
-  output(z);
 
-  x = input();
-  output(x);
+  output(add(x));
 }

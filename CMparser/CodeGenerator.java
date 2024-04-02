@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.util.HashMap;
 
 import absyn.*;
@@ -243,6 +244,7 @@ public class CodeGenerator implements AbsynVisitor{
 			emitRM("LDA", ac, 1, pc, "load ac with ret ptr");
 			emitRM_Abs("LDA", pc, 4, "jump to fun loc");
 			emitRM("LD", fp, 0, fp, "pop frame");
+			emitRM("ST", ac, level, fp, "store result on the stack");
 		}
 		else
 		{
@@ -261,12 +263,23 @@ public class CodeGenerator implements AbsynVisitor{
 				if(!(list.head instanceof NilExp))
 				{
 					list.head.accept(this, level + initFO - numVar, isAddr);
+					if(list.head instanceof CallExp)
+					{
+						emitRM("ST", ac, level - 2, fp, "store inner function call on stack");
+					}
 				}
 				numVar++;
 				list = list.tail;
 			}
 
-			emitRM("ST", fp, level, fp, "push ofp"); // might just be able to use level for this?
+			if(func.func.equals("main")) // adds global offset on main since it is first function on stack
+			{
+				emitRM("ST", fp, level - globalOffset, fp, "push ofp");
+			}
+			else
+			{
+				emitRM("ST", fp, level, fp, "push ofp");
+			}
 			emitRM("LDA", fp, level, fp, "push frame");
 			emitRM("LDA", ac, 1, pc, "load ac with ret ptr");
 
@@ -281,6 +294,7 @@ public class CodeGenerator implements AbsynVisitor{
 			}
 			
 			emitRM("LD", fp, 0, fp, "pop frame");
+			emitRM("ST", ac, level, fp, "store result on the stack");
 		}
 		emitComment("<- call");
 	}
@@ -398,11 +412,13 @@ public class CodeGenerator implements AbsynVisitor{
 		{
 			SimpleDec dec = (SimpleDec)exp.lhs.dtype;
 
+			/* 
 			if(!(exp.rhs instanceof CallExp)) // callExp already places the return result in ac
 			{
 				emitRM( "LD", ac, level, fp, "assign: load left"); // gets top value off of stack to store
 			}
-
+			*/
+			emitRM( "LD", ac, level, fp, "assign: load left"); // gets top value off of stack to store
 			if(dec.nestLevel == 0)
 			{
 				emitRM( "ST", ac, dec.offset, gp, "assign: store value");
@@ -518,8 +534,7 @@ public class CodeGenerator implements AbsynVisitor{
 		{
 			exp.exp.accept(this, level, isAddr);
 		}
-		emitRM("ST", ac, level, fp, "store return address in register 0");
-
+		emitRM("ST", ac, level, fp, "store returned value in register 0");
 		//emitRM("LD", pc, -1, fp, "load return address"); // places the value offset(fp) in program counter
 		emitComment("<- return");
 	}
@@ -531,6 +546,7 @@ public class CodeGenerator implements AbsynVisitor{
 		{
 			if(exp.decs != null){
 				exp.decs.accept(this, level, isAddr);
+				emitComment("FO: " + frameOffset + " GO: " + globalOffset);
 				level = frameOffset;
 			}
 			if(exp.exp != null){
@@ -609,6 +625,7 @@ public class CodeGenerator implements AbsynVisitor{
 			emitComment("-> vardecl");
 			if (exp.nestLevel == 0){
 				emitComment("allocating global var: " + exp.name + " " + exp.offset); //TODO: Remove offset printout
+				globalOffset -= 1;
 			}
 			else{
 				emitComment("processing local var: " + exp.name + " " + exp.offset); //TODO: Remove offset printout
@@ -626,6 +643,7 @@ public class CodeGenerator implements AbsynVisitor{
 			emitComment("-> vardecl");
 			if (exp.nestLevel == 0){
 				emitComment("allocating global array: " +  exp.name + " " + exp.offset); //TODO: Remove offset printout
+				globalOffset -= exp.size;
 			}
 			else{
 				emitComment("processing local array: " + exp.name + " " + exp.offset); //TODO: Remove offset printout
@@ -655,20 +673,31 @@ public class CodeGenerator implements AbsynVisitor{
 		while(exp != null && exp.head != null){
 			exp.head.accept(this, level, isAddr);
 
-			int offset = 1; //default offset
+			
+			int offset = 1;
+			if(exp.head instanceof SimpleDec)
+			{
+				SimpleDec simp = (SimpleDec)exp.head;
 
-			if(exp.head instanceof ArrayDec){ //offset an array by its size
-				offset = (((ArrayDec)exp.head).size); //TODO: check that this is the right result
+				if(simp.nestLevel != 0)
+				{
+					level -= offset;
+				}
+			}
+			else if(exp.head instanceof ArrayDec){ //offset an array by its size
+				ArrayDec array = (ArrayDec)exp.head;
+				offset = array.size; //TODO: check that this is the right result
+
+				if(array.nestLevel != 0)
+				{
+					level -= offset;
+				}
 			}
 
-			if(exp.head.nestLevel == 0){
-				globalOffset -= offset;
-			}
-
-			level -= offset;
 			exp = exp.tail;
 		}
-		frameOffset = level;
+		//VERY IMPORTANT
+		frameOffset = level; // passes the new level back up to compound expression where is it reset for rest of function
 		emitComment("<- vardeclist");
 	}
 }
