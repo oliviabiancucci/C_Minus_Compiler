@@ -1,0 +1,10 @@
+
+void main(void)
+{
+    int array[5];
+    int i;
+
+	array[4] = 5;
+
+    output(array[4]);
+}

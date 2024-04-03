@@ -7,7 +7,7 @@ To build the CM.class executable file, navigate to the CMparser directory and ty
 
 To execute the executable, type:
 
-java -cp /usr/share/java/cup.jar:. CM [-a and/or -s] [insert CM file name here]
+java -cp /usr/share/java/cup.jar:. CM [any number of -a, -s, and/or -c] [insert CM file name here]
 
 	When "-a" is specified, only the parsing is completed and the syntax tree is saved to an output file named "[inputted CM file name].abs" if the program finishes running.
 

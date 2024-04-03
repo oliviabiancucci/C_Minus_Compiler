@@ -450,7 +450,23 @@ public class CodeGenerator implements AbsynVisitor{
 
 			indexVar.accept(this, level-1, isAddr); // accepts on index expression, which should place result on stack - 1
 
-			emitRM( "LD", ac, level-1, fp, "assign: load result of array index calculation into register 0"); // gets top value off of stack to store
+			emitRM( "LD", ac, level - 1, fp, "assign: load result of array index calculation into register 0"); // gets top value off of stack to store
+			
+			//check if the index is less than 0
+			emitRM("JLT", ac, 1, pc, "check if the index is less than 0");
+			emitRM("LDA", pc, 1, pc, "unconditional jump");
+			emitRO("HALT", 0, 0, 0, "array index out of bounds");
+
+			emitRM("LDC", ac1, array.size, 0, "load array size"); //load array size into register 1
+
+			//check if the index is outside of the array bounds
+			emitRO("SUB", ac, ac, ac1, "op >");
+			emitRM("JGT", ac, 1, pc, "br if true");
+			emitRM("LDA", pc, 1, pc, "unconditional jump");
+			emitRO("HALT", 0, 0, 0, "array index out of bounds");
+
+			emitRM( "LD", ac, level - 1, fp, "assign: load result of array index calculation into register 0");
+
 			if(array.nestLevel == 0) //global scope
 			{
 				emitRM( "LDA", ac1, array.offset, gp, "load array base address into register 1");

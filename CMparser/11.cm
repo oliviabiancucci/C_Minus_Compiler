@@ -1,3 +1,7 @@
+void add(int arr[]){
+    arr[0] = arr[1] + arr[2];
+}
+
 void main(void)
 {
     int array[10];
@@ -10,6 +14,8 @@ void main(void)
         array[i] = i + 20;
         i = i + 1;
     }
+
+    add(array);
 
     output(array[5]);
 }
