@@ -162,6 +162,7 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( VarExp exp, int level, boolean isAddr){
+		emitComment("-> varexpression");
 		if(exp != null)
 		{
 			if(exp.dtype instanceof SimpleDec)
@@ -184,36 +185,41 @@ public class CodeGenerator implements AbsynVisitor{
 				ArrayDec array = (ArrayDec)exp.dtype;
 				IndexVar index = (IndexVar)exp.varName;
 
-				index.accept(this, level, isAddr);
-
-				//load value from stack
-
-				IntExp value = (IntExp)index.index;
+				index.accept(this, level, isAddr); // store index exp result in stack
 
 				//TODO: implement using variables as indices
 				//TODO: implement using opexp as indices
 				//been using 7.cm and 8.cm for these
 
-				if(Integer.parseInt(value.value) > array.size - 1 || Integer.parseInt(value.value) < 0){
-					System.err.println("ERROR: The index for the array is out of bounds at row " + (exp.row + 1) + ", column " + (exp.col + 1));
-				}
-
+				emitRM( "LD", ac, level, fp, "assign: load result of array index calculation into register 0"); // gets top value off of stack to store
 				if(array.nestLevel == 0) //global scope
 				{
-					emitRM( "LD", ac, array.offset - Integer.parseInt(value.value), gp, "load value in array " + array.name);
-					emitRM( "ST", ac, level, gp, "store variable value on stack");
+					emitRM( "LDA", ac1, array.offset, gp, "load array base address into register 1");
 				}
 				else // local scope
 				{
-					emitRM( "LD", ac, array.offset - Integer.parseInt(value.value), fp, "load value in array " + array.name);
+					emitRM( "LDA", ac1, array.offset, fp, "load array base address into register 1");
+				}
+				emitRO("SUB", ac1, ac1, ac, "adds the base address to the index");
+				//emitRM( "ST", ac, level-1, fp, "assign: store base address + index below rhs result");
+
+				if(array.nestLevel == 0) //global scope
+				{
+					emitRM( "LD", ac, 0, ac1, "load value in array " + array.name);
+					emitRM( "ST", ac, level, fp, "store variable value on stack");
+				}
+				else // local scope
+				{
+					emitRM( "LD", ac, 0, ac1, "load value in array " + array.name);
 					emitRM( "ST", ac, level, fp, "store variable value on stack");
 				}
 			}
 		}
 		
-		if(exp.varName != null){
-			exp.varName.accept(this, level, isAddr);
-		}
+		// if(exp.varName != null){
+		// 	exp.varName.accept(this, level, isAddr);
+		// }
+		emitComment("<- varexpression");
 	}
   
 	public void visit( CallExp exp, int level, boolean isAddr){
@@ -421,39 +427,49 @@ public class CodeGenerator implements AbsynVisitor{
 		{
 			SimpleDec dec = (SimpleDec)exp.lhs.dtype;
 
-			/* 
-			if(!(exp.rhs instanceof CallExp)) // callExp already places the return result in ac
-			{
-				emitRM( "LD", ac, level, fp, "assign: load left"); // gets top value off of stack to store
-			}
-			*/
 			emitRM( "LD", ac, level, fp, "assign: load left"); // gets top value off of stack to store
 			if(dec.nestLevel == 0)
 			{
-				emitRM( "ST", ac, dec.offset, gp, "assign: store value");
+				emitRM( "ST", ac, dec.offset, gp, "assign: store value from register 0");
 			}
 			else
 			{
-				emitRM( "ST", ac, dec.offset, fp, "assign: store value");
+				emitRM( "ST", ac, dec.offset, fp, "assign: store value from register 0");
 			}
 			
 		}
 		else if(exp.lhs.dtype instanceof ArrayDec)
 		{
-			exp.lhs.accept(this, level, isAddr);
+			// Add index checking for out of bounds
+			// 1. Get the value off the top of the stack (index of array) into register 0
+			// 2. LDC the array size into register 1
+			// 3. if register 0 is bigger than register 1 HALT
+			// 4. Else jump over the HALT
 			ArrayDec array = (ArrayDec)exp.lhs.dtype;
-			IndexVar index = (IndexVar)exp.lhs.varName;
-			IntExp value = (IntExp)index.index;
-		
+			IndexVar indexVar = (IndexVar)exp.lhs.varName;
+
+			indexVar.accept(this, level-1, isAddr); // accepts on index expression, which should place result on stack - 1
+
+			emitRM( "LD", ac, level-1, fp, "assign: load result of array index calculation into register 0"); // gets top value off of stack to store
 			if(array.nestLevel == 0) //global scope
 			{
-				emitRM( "LD", ac, level, gp, "load value in array " + array.name);
-				emitRM( "ST", ac, array.offset - Integer.parseInt(value.value), gp, "store variable value on stack");
+				emitRM( "LDA", ac1, array.offset, gp, "load array base address into register 1");
 			}
 			else // local scope
 			{
-				emitRM( "LD", ac, level, fp, "load value in array " + array.name);
-				emitRM( "ST", ac, array.offset - Integer.parseInt(value.value), fp, "store variable value on stack");
+				emitRM( "LDA", ac1, array.offset, fp, "load array base address into register 1");
+			}
+			emitRO("SUB", ac1, ac1, ac, "adds the base address to the index");
+			//emitRM( "ST", ac, level-1, fp, "assign: store base address + index below rhs result");
+
+			emitRM( "LD", ac, level, fp, "assign: load result of rhs into register 0"); // gets top value off of stack to store
+			if(array.nestLevel == 0) //global scope
+			{
+				emitRM( "ST", ac, 0, ac1, "assign: store value from register 0 ");
+			}
+			else // local scope
+			{
+				emitRM( "ST", ac, 0, ac1, "assign: store value from register 0");
 			}
 		}
 	

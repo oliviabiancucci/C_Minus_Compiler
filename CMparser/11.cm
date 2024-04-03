@@ -1,0 +1,15 @@
+void main(void)
+{
+    int array[10];
+    int i;
+
+    i = 0;
+
+    while(i < 10)
+    {
+        array[i] = i + 20;
+        i = i + 1;
+    }
+
+    output(array[5]);
+}
