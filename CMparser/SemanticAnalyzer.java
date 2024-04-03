@@ -1,5 +1,8 @@
 import absyn.*;
 import java.util.HashMap;
+
+import javax.lang.model.util.SimpleAnnotationValueVisitor6;
+
 import java.util.ArrayList;
 
 public class SemanticAnalyzer implements AbsynVisitor{
@@ -601,7 +604,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
             // lhs of assignment can be a simple or array
             exp.lhs.accept(this, level, false);
             exp.rhs.accept(this, level, false);
-
+          
             if(exp.lhs.dtype instanceof SimpleDec)
             {
                 SimpleDec simp = (SimpleDec)exp.lhs.dtype;
@@ -614,15 +617,18 @@ public class SemanticAnalyzer implements AbsynVisitor{
             }
 
             // rhs of assignment can be a simple, array, function call, opExp, bool, or int
-            if(exp.rhs.dtype instanceof SimpleDec) // declarations use a dtype since rhs is not an dec
+            if(exp.rhs instanceof VarExp)
             {
-                SimpleDec simp = (SimpleDec)exp.rhs.dtype;
-                rightExpRes = simp.typ.type;
-            } 
-            else if(exp.rhs.dtype instanceof ArrayDec) // declarations use a dtype since rhs is not an dec
-            {
-                ArrayDec array = (ArrayDec)exp.rhs.dtype;
-                rightExpRes = array.type.type;
+                if(exp.rhs.dtype instanceof SimpleDec) // declarations use a dtype since rhs is not an dec
+                {
+                    SimpleDec simp = (SimpleDec)exp.rhs.dtype;
+                    rightExpRes = simp.typ.type;
+                } 
+                else if(exp.rhs.dtype instanceof ArrayDec) // declarations use a dtype since rhs is not an dec
+                {
+                    ArrayDec array = (ArrayDec)exp.rhs.dtype;
+                    rightExpRes = array.type.type;
+                }
             }
             else if(exp.rhs instanceof CallExp) 
             {
@@ -640,6 +646,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
             }
             else if(exp.rhs instanceof OpExp) // will need to check each operator
             {
+
                 OpExp op = (OpExp)exp.rhs;
                 //number operators, rest are boolean
                 if(op.op == OpExp.UMINUS && op.left instanceof NilExp)
@@ -695,7 +702,7 @@ public class SemanticAnalyzer implements AbsynVisitor{
             }
 
         }
-        
+    
     }
 
     public void visit(IfExp exp, int level, boolean isAddr) {
