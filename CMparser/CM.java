@@ -34,14 +34,16 @@ class CM {
       }
       else if (argv[i].equals("-s"))
       {
+        SHOW_TREE = true;
         SHOW_TABLE = true;
       }
       else if(argv[i].equals("-c"));
       {
+        SHOW_TREE = true;
+        SHOW_TABLE = true;
         SHOW_CODE = true;
       }
     }
-    //TODO: finish implementing the options below - show_tree and show_table generation to file
     
     /* Start the parser */
     try {
@@ -87,6 +89,7 @@ class CM {
           PrintStream tmFileStream = new PrintStream(tmFile);
           System.setOut(tmFileStream);
           CodeGenerator codeGenVisit = new CodeGenerator();
+          
           codeGenVisit.prelude(fileName);
           result.accept(codeGenVisit, 0, false);
           codeGenVisit.finale();

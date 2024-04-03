@@ -8,12 +8,13 @@ int sub2(int x);
 
 int add1(int x)
 {
+    int y; 
     if(x > 5)
     {
         return sub2(x + 1);
     }
     else
-    {
+    {   
         return x;
     }
 }

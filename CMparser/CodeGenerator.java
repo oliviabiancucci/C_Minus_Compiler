@@ -1,4 +1,4 @@
-import java.lang.reflect.Array;
+
 import java.util.HashMap;
 
 import absyn.*;
@@ -123,43 +123,35 @@ public class CodeGenerator implements AbsynVisitor{
 	}
 
 	public void visit( NameTy exp, int level, boolean isAddr){
-		//System.err.println("NameTy");
+
 	}
   
 	public void visit( SimpleVar exp, int level, boolean isAddr){
-		//System.err.println("SimpleVar");
 		emitComment("-> id");
         emitComment("looking up id: " + exp.name);
-
 		emitComment("<- id");
 	}
   
 	public void visit( IndexVar exp, int level, boolean isAddr){
-		//System.err.println("IndexVar");
 		exp.index.accept(this, level, isAddr);
 	}
   
 	public void visit( Vartype exp, int level, boolean isAddr){
-		//System.err.println("Vartype");
-		emitComment("---------------------------------------------------------> VARTYPE");
+
 	}
   
 	public void visit( NilExp exp, int level, boolean isAddr){
-		//System.err.println("NilExp");
+
 	}
   
 	public void visit( IntExp exp, int level, boolean isAddr){
-		//System.err.println("IntExp");
         emitComment("-> constant");
-		//System.err.println(exp.value);
         emitRM("LDC", ac, Integer.parseInt(exp.value), 0, "load const"); // holds constant in ac1
         emitRM("ST", ac, level, fp, "op: push left");
         emitComment("<- constant");
-		//globalOffset--; //TODO: check this line
 	}
   
 	public void visit( BoolExp exp, int level, boolean isAddr){
-		//System.err.println("BoolExp");
 		if(exp.value == false){
 			emitRM("LDC", ac, 0, 0, "false condition");
 		}
@@ -170,7 +162,6 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( VarExp exp, int level, boolean isAddr){
-		//System.err.println("VarExp");
 		if(exp != null)
 		{
 			if(exp.dtype instanceof SimpleDec)
@@ -233,7 +224,6 @@ public class CodeGenerator implements AbsynVisitor{
 			initFO = -2;
 			int numVar = 0;
 			ExpList list = exp.args;
-			System.err.println(list.getClass() + " " + list.head.getClass());
 			while(list != null && list.head != null)
 			{
 				if(!(list.head instanceof NilExp))
@@ -243,7 +233,6 @@ public class CodeGenerator implements AbsynVisitor{
 				numVar++;
 				list = list.tail;
 			}
-			System.err.println(numVar);
 
 			emitRM("ST", fp, level, fp, "push ofp");
 			emitRM("LDA", fp, level, fp, "push frame");
@@ -269,18 +258,14 @@ public class CodeGenerator implements AbsynVisitor{
 				System.out.println(exp.func + " does not exist");
 			}
 
-			initFO = -2;
-			int numVar = 0;
+			initFO = -2; // used to push onto calling functions stack
+			int numVar = 0; // keeps track of number of variables so that parameters are not written on top of one another
 			ExpList list = exp.args;
 			while(list != null && list.head != null)
 			{
 				if(!(list.head instanceof NilExp))
 				{
 					list.head.accept(this, level + initFO - numVar, isAddr);
-					if(list.head instanceof CallExp)
-					{
-						emitRM("ST", ac, level - 2, fp, "store inner function call on stack");
-					}
 				}
 				numVar++;
 				list = list.tail;
@@ -297,10 +282,11 @@ public class CodeGenerator implements AbsynVisitor{
 			emitRM("LDA", fp, level, fp, "push frame");
 			emitRM("LDA", ac, 1, pc, "load ac with ret ptr");
 
-			
+			// TODO: may need to turn this into array of function calls in case function is called more than once before definition
 			if(func.funAddr == 0) // funAddr has not been set, will need to backpatch
 			{
-				func.funLoc = emitSkip(1);
+				func.funLocs[func.funLocs.length - 1] = emitSkip(1); // stores the location of call in an array for backpatching
+				func.copyLocs(); // creates a new array which is one space larger in anticipation for another backpatching call
 			}
 			else
 			{
@@ -310,26 +296,18 @@ public class CodeGenerator implements AbsynVisitor{
 			emitRM("LD", fp, 0, fp, "pop frame");
 			emitRM("ST", ac, level, fp, "store result on the stack");
 		}
-		emitComment("<- call");
+		emitComment("<- call of function" + exp.func);
 	}
   
 	public void visit( OpExp exp, int level, boolean isAddr){
-		//System.err.println("OpExp");
 		emitComment("-> op");
-
-		/*
-		 * Need to create a UMINUS case as well as store a zero at level
-		 * UMINUS case will subtract the right value from a zero, thus creating a negative number
-		 */
-
 
 		exp.left.accept(this, level, isAddr);
 		if(exp.left instanceof NilExp && exp.op == OpExp.UMINUS)
 		{
 			emitComment("-> constant");
-			//System.err.println(exp.value);
-			emitRM("LDC", ac, 0, 0, "load const"); // holds constant in ac1
-			emitRM("ST", ac, level, fp, "op: push left");
+			emitRM("LDC", ac, 0, 0, "load const"); // places a 0 in register 0
+			emitRM("ST", ac, level, fp, "op: push left"); // adds it to the stack in place of where rhs of opExp would have been
 			emitComment("<- constant");
 		}
 		exp.right.accept(this, level - 1, isAddr);
@@ -429,7 +407,7 @@ public class CodeGenerator implements AbsynVisitor{
 			  break;
 		}
 
-		emitRM("ST", ac, level, fp, "storing operation result");
+		emitRM("ST", ac, level, fp, "storing operation result"); // places result on stack
 
 		emitComment("<- op");
 	}
@@ -483,7 +461,6 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( IfExp exp, int level, boolean isAddr){
-		//System.err.println("IfExp");
 		int loc3 = -1; //end of then block
 		int loc4 = -1; //end of else block
 
@@ -522,7 +499,6 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( WhileExp exp, int level, boolean isAddr){
-		//System.err.println("WhileExp");
 		emitComment("-> while");
 		emitComment("while: jump after body comes back here");
 		int whileTest = emitLoc;
@@ -535,8 +511,8 @@ public class CodeGenerator implements AbsynVisitor{
 		emitComment("-----> while body start");
         exp.body.accept(this, level - 1, isAddr);
 		// unconditional jump to before the test condition
-		emitRM_Abs("LDA", pc, whileTest, "while: jmp back to test exp"); // (whileTest: top) - (emitLoc: current) - 1
-		int loc2 = emitLoc;
+		emitRM_Abs("LDA", pc, whileTest, "while: jmp back to test exp");
+		int loc2 = emitLoc; // gets the location at the end of the while loop for when loop ends
 		emitComment("<----- while body end");
         
 		// writes lines just below test expression
@@ -560,19 +536,16 @@ public class CodeGenerator implements AbsynVisitor{
 	}
   
 	public void visit( ReturnExp exp, int level, boolean isAddr){
-		//System.err.println("ReturnExp");
 		emitComment("-> return");
 		if(exp.exp != null)
 		{
 			exp.exp.accept(this, level, isAddr);
 		}
-		emitRM("ST", ac, level, fp, "store returned value in register 0");
-		//emitRM("LD", pc, -1, fp, "load return address"); // places the value offset(fp) in program counter
+		emitRM("LD", ac, level, fp, "store returned value in register 0");
 		emitComment("<- return");
 	}
   
 	public void visit( CompoundExp exp, int level, boolean isAddr){
-		//System.err.println("CompoundExp");
 		emitComment("-> compound statement");
 		if(exp != null)
 		{
@@ -586,17 +559,17 @@ public class CodeGenerator implements AbsynVisitor{
 			}
 		}
 		emitComment("<- compound statement");
-
 	}
 
 	public void visit( FuncDec exp, int level, boolean isAddr){
-		if(!(exp.body instanceof NilExp)) // proper definition
+		if(!(exp.body instanceof NilExp)) // full definition
 		{
 			emitComment("-> fundecl");
 			emitComment("processing function: " + exp.func);
 			if(functionTable.get(exp.func) != null) // if prototype was declared
 			{
-				exp.funLoc = functionTable.get(exp.func).funLoc; // carry over call location
+				// copies all of the previous references into current 
+				exp.funLocs = functionTable.get(exp.func).funLocs;
 				functionTable.replace(exp.func, exp);
 			}
 			else
@@ -608,12 +581,14 @@ public class CodeGenerator implements AbsynVisitor{
 			int startLoc = emitSkip(1);
 			exp.funAddr = emitLoc;
 
-			if(exp.funLoc != -1) // funLoc has been set, function has been called before this declaration was reached, need to backpatch jump address in
+			int i = 0;
+			while(exp.funLocs[i] != -1) // funLoc has been set, function has been called before this declaration was reached, need to backpatch jump address in
 			{
-				System.err.println("Backpatching function call at " + exp.funLoc);
-				emitBackup(exp.funLoc);
+				System.err.println("Backpatching function call at " + exp.funLocs[i]);
+				emitBackup(exp.funLocs[i]);
 				emitRM_Abs("LDA", pc, exp.funAddr, "jump to fun loc");
 				emitRestore();
+				i++;
 			}
 
 			if (exp.func.equals("main")) {
@@ -641,10 +616,10 @@ public class CodeGenerator implements AbsynVisitor{
 		}
 		else // prototype
 		{
-			emitComment("-> fundecl");
+			emitComment("-> funproto");
 			emitComment("processing function prototype: " + exp.func);
 			functionTable.put(exp.func, exp);
-			emitComment("<- fundecl");
+			emitComment("<- funproto");
 		}
 
 	}

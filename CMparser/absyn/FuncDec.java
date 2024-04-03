@@ -1,12 +1,14 @@
 package absyn;
 
+import java.util.ArrayList;
+
 public class FuncDec extends Dec{
 	public NameTy result;
 	public String func;
 	public VarDecLists params;
 	public Exp body;
 	public int funAddr;
-	public int funLoc;
+	public int[] funLocs = new int[1];
 
 	public FuncDec(int row, int col, NameTy result, String func, VarDecLists params, Exp body)
 	{
@@ -17,7 +19,7 @@ public class FuncDec extends Dec{
 		this.params = params;
 		this.body = body;
 		this.funAddr = 0;
-		this.funLoc = -1;
+		this.funLocs[0] = -1;
 
 	}
 
@@ -100,5 +102,15 @@ public class FuncDec extends Dec{
 	
 	public void accept( AbsynVisitor visitor, int level, boolean isAddr) {
 		visitor.visit( this, level, isAddr );
+	}
+
+	public void copyLocs()
+	{
+		int len = this.funLocs.length;
+		int[] newList = new int[len + 1];
+
+		System.arraycopy(this.funLocs, 0, newList, 0, len);
+		this.funLocs = newList;
+		funLocs[len] = -1;
 	}
 }

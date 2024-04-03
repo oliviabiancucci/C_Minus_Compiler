@@ -1,16 +1,19 @@
 /* 
   A program with no syntatic or semantic errors.
-  Meant to test simple arithmetic and looping.
+  Meant to test simple arithmetic, looping, and input/output functions.
 */
-
-void main (void) {
+void main (void) 
+{
   int x; 
   int y;
 
-  x = 10;
+  x = input();
   y = 0;
-  while (y < x) {
+  
+  while (y < x) 
+  {
     y = y + 3;
   } 
   
+  output(y);
 }

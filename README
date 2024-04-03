@@ -13,6 +13,8 @@ java -cp /usr/share/java/cup.jar:. CM [-a and/or -s] [insert CM file name here]
 
 	When "-s" is specified, both the parsing and semantic analysis is completed. The symbol table will be saved to an output file named "[inputted CM file name].sym" if the program finishes running. If there are syntatic errors, the program terminates right after parsing.
 
-	When both of the above flags are specified, both output files will be generated if there are no syntatic errors. If there are syntatic errors, only the syntax tree output file will be generated.
+	When "-c" is specified, parsing, semantic analysis, and code generate will be completed. The generated code will be saved to an output file named "[inputted CM file name].tm" if the program finishes. Syntactic or semantic errors will cause the program to terminate before code generation.
+
+	When all of the above flags are specified, all output files will be generated if there are no syntatic/semantic errors. If there are syntatic errors, only the syntax tree output file will be generated. If there are semantic errors, the code generation will not start.
 
 There are 5 test files that come with the program, each with different possible errors and different structures to test the semantic analyzer. These files are c1.cm, c2.cm, c3.cm, c4.cm, and c5.cm. An example execution of c1.cm would look like "java -cp /usr/share/java/cup.jar:. CM -s c1.cm" and would generate the abstract syntax tree and the symbol table.

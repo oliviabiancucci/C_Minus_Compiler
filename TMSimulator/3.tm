@@ -16,12 +16,12 @@
  10:    LD 7, -1(5)	return to caller
   3:   LDA 7, 7(7)	jump around i/o code
 * End of standard prelude.
-* -> fundecl
+* -> funproto
 * processing function prototype: add1
-* <- fundecl
-* -> fundecl
+* <- funproto
+* -> funproto
 * processing function prototype: sub2
-* <- fundecl
+* <- funproto
 * -> fundecl
 * processing function: add1
 * jump around function body
@@ -32,66 +32,72 @@
 * <- vardecl
 * <- vardeclist
 * -> compound statement
+* -> vardeclist
+* -> vardecl
+* processing local var: y -3
+* <- vardecl
+* <- vardeclist
+* FO: -4 GO: 0
 * -> if
 * -> op
  13:    LD 0, -2(5)	load value in variable x
- 14:    ST 0, -3(5)	store variable value on stack
+ 14:    ST 0, -4(5)	store variable value on stack
 * -> id
 * looking up id: x
 * <- id
 * -> constant
  15:   LDC 0, 5(0)	load const
- 16:    ST 0, -4(5)	op: push left
+ 16:    ST 0, -5(5)	op: push left
 * <- constant
- 17:    LD 0, -3(5)	
- 18:    LD 1, -4(5)	
+ 17:    LD 0, -4(5)	
+ 18:    LD 1, -5(5)	
  19:   SUB 0, 0, 1	op >
  20:   JGT 0, 2(7)	br if true
  21:   LDC 0, 0(0)	false case
  22:   LDA 7, 1(7)	unconditional jump
  23:   LDC 0, 1(0)	true case
- 24:    ST 0, -3(5)	storing operation result
+ 24:    ST 0, -4(5)	storing operation result
 * <- op
 * -> compound statement
 * -> return
 * -> call of function: sub2
 * -> op
  27:    LD 0, -2(5)	load value in variable x
- 28:    ST 0, -6(5)	store variable value on stack
+ 28:    ST 0, -7(5)	store variable value on stack
 * -> id
 * looking up id: x
 * <- id
 * -> constant
  29:   LDC 0, 1(0)	load const
- 30:    ST 0, -7(5)	op: push left
+ 30:    ST 0, -8(5)	op: push left
 * <- constant
- 31:    LD 0, -6(5)	
- 32:    LD 1, -7(5)	
+ 31:    LD 0, -7(5)	
+ 32:    LD 1, -8(5)	
  33:   ADD 0, 0, 1	op +
- 34:    ST 0, -6(5)	storing operation result
+ 34:    ST 0, -7(5)	storing operation result
 * <- op
- 35:    ST 5, -4(5)	push ofp
- 36:   LDA 5, -4(5)	push frame
+ 35:    ST 5, -5(5)	push ofp
+ 36:   LDA 5, -5(5)	push frame
  37:   LDA 0, 1(7)	load ac with ret ptr
  39:    LD 5, 0(5)	pop frame
- 40:    ST 0, -4(5)	store result on the stack
-* <- call
- 41:    ST 0, -4(5)	store returned value in register 0
+ 40:    ST 0, -5(5)	store result on the stack
+* <- call of functionsub2
+ 41:    LD 0, -5(5)	store returned value in register 0
 * <- return
 * <- compound statement
 * if: jump to else belongs here
 * -> compound statement
 * -> return
  43:    LD 0, -2(5)	load value in variable x
- 44:    ST 0, -3(5)	store variable value on stack
+ 44:    ST 0, -4(5)	store variable value on stack
 * -> id
 * looking up id: x
 * <- id
- 45:    ST 0, -3(5)	store returned value in register 0
+ 45:    LD 0, -4(5)	store returned value in register 0
 * <- return
 * <- compound statement
  42:   LDA 7, 3(7)	if: jmp to end
- 25:    LD 0, -3(5)	load result
+ 25:    LD 0, -4(5)	load result
  26:   JEQ 0, 16(7)	if: jmp to else
 * <- if
 * <- compound statement
@@ -153,8 +159,8 @@
  74:   LDA 7, -63(7)	jump to fun loc
  75:    LD 5, 0(5)	pop frame
  76:    ST 0, -4(5)	store result on the stack
-* <- call
- 77:    ST 0, -4(5)	store returned value in register 0
+* <- call of functionadd1
+ 77:    LD 0, -4(5)	store returned value in register 0
 * <- return
 * <- compound statement
 * if: jump to else belongs here
@@ -165,7 +171,7 @@
 * -> id
 * looking up id: x
 * <- id
- 81:    ST 0, -3(5)	store returned value in register 0
+ 81:    LD 0, -3(5)	store returned value in register 0
 * <- return
 * <- compound statement
  78:   LDA 7, 3(7)	if: jmp to end
@@ -208,13 +214,13 @@
  94:   LDA 7, -83(7)	jump to fun loc
  95:    LD 5, 0(5)	pop frame
  96:    ST 0, -5(5)	store result on the stack
-* <- call
+* <- call of functionadd1
  97:    ST 5, -3(5)	push ofp
  98:   LDA 5, -3(5)	push frame
  99:   LDA 0, 1(7)	load ac with ret ptr
 100:   LDA 7, -94(7)	jump to fun loc
 101:    LD 5, 0(5)	pop frame
-* <- call
+* <- call of functionoutput
 * <- compound statement
 102:    LD 7, -1(5)	load return address
 * <- fundecl
