@@ -1,7 +1,7 @@
 Cameron Fraser (1133621) 
 Olivia Biancucci (1136788)
 
-This is a parser implementation for the C- language created by Fei Song for CIS 4650. The project implementation is heavily inspired by the implementation created and outlines in lectures and starter code given by Fei Song.
+This is a parser implementation for the C- language created by Fei Song for CIS 4650. The project implementation is inspired by the implementation created and outlines in lectures and starter code given by Fei Song.
 
 To build the CM.class executable file, navigate to the CMparser directory and type the command "make" in the terminal. This should generate the executable "CM.class" as well as the required files needed to parse the C- input files.
 
